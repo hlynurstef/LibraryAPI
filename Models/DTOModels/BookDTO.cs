@@ -28,5 +28,9 @@ namespace LibraryAPI.Models.DTOModels
         /// The ISBN number of the book.
         /// </summary>
         public string ISBN { get; set; }
+        /// <summary>
+        /// Book Availability
+        /// </summary>
+        public bool Available { get; set; }
     }
 }

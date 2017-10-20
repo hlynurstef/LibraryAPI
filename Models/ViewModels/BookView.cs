@@ -11,6 +11,7 @@ namespace LibraryAPI.Models.ViewModels
         /// <summary>
         /// The title of the book.
         /// </summary>
+        //[Required] install nuget packet
         public string Title { get; set; }
         /// <summary>
         /// The Author of the book.

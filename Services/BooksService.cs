@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using LibraryAPI.Models.DTOModels;
+using LibraryAPI.Models.ViewModels;
 using LibraryAPI.Repositories;
 
 namespace LibraryAPI.Services
@@ -14,6 +15,11 @@ namespace LibraryAPI.Services
         public IEnumerable<BookDTO> GetBooks() {
             var books = _repo.GetBooks();
             return books;
+        }
+
+        public BookDTO AddBook(BookView book)
+        {
+            return _repo.AddBook(book);
         }
     }
 }

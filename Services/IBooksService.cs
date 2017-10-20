@@ -1,10 +1,12 @@
 using System.Collections.Generic;
 using LibraryAPI.Models.DTOModels;
+using LibraryAPI.Models.ViewModels;
 
 namespace LibraryAPI.Services
 {
     public interface IBooksService
     {
-         IEnumerable<BookDTO> GetBooks();
+        BookDTO AddBook(BookView book);
+        IEnumerable<BookDTO> GetBooks();
     }
 }

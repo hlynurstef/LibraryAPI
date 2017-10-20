@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using LibraryAPI.Models.ViewModels;
 using LibraryAPI.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -27,7 +28,18 @@ namespace LibraryAPI.Controllers
             return Ok(books);
         }
 
-        // TODO: POST /books - Bæta við bók
+        [HttpPost("books")]
+        public IActionResult PostBook([FromBody]BookView book){
+            //Console.WriteLine(book);
+            if(book == null){
+                return BadRequest();
+            }
+            if(!ModelState.IsValid){
+                return StatusCode(412, "modelstate is not valid");
+            }
+            // FIXME: should return created at route?
+            return Ok(_booksService.AddBook(book));
+        }
 
         // TODO: GET /books/{book_id} - Sækja öll gögn um bók (m.a. lánasögu)
 

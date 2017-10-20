@@ -2,6 +2,8 @@
 using System.Linq;
 using System.Collections.Generic;
 using LibraryAPI.Models.DTOModels;
+using LibraryAPI.Models.EntityModels;
+using LibraryAPI.Models.ViewModels;
 
 namespace LibraryAPI.Repositories
 {
@@ -24,6 +26,31 @@ namespace LibraryAPI.Repositories
                             ISBN = b.ISBN
                         }).ToList();
             return books;
+        }
+
+        public BookDTO AddBook(BookView book){
+            var bookEntity = new Book{
+                    Title = book.Title,
+                    Author = book.Author,
+                    ReleaseDate = book.ReleaseDate,
+                    ISBN = book.ISBN,
+                    Available = true 
+                    };
+            _db.Books.Add(bookEntity);
+            try{
+                _db.SaveChanges();
+            }
+            catch(System.Exception e){
+                Console.WriteLine(e);
+            }
+            return new BookDTO{
+                Id = bookEntity.Id,
+                Title = book.Title,
+                Author = book.Author,
+                ReleaseDate = book.ReleaseDate,
+                ISBN = book.ISBN,
+                Available = true
+            };
         }
     }
 }
