@@ -23,7 +23,8 @@ namespace LibraryAPI.Repositories
                             Title = b.Title,
                             Author = b.Author,
                             ReleaseDate = b.ReleaseDate,
-                            ISBN = b.ISBN
+                            ISBN = b.ISBN,
+                            Available = b.Available
                         }).ToList();
             return books;
         }
