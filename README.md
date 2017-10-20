@@ -30,6 +30,7 @@ If you are using VSCode we recommend the following extensions:
 * C# XML Documentation Comments
     * Auto-generation of XML comments
 * C# Snippets
+* TODO Highlights
 * NuGet Package Manager
     * Simplifies adding NuGet packages to projects and/or solutions
     * Documentation: https://github.com/jmrog/vscode-nuget-package-manager/blob/master/README.md (Links to an external site.)Links to an external site. 
@@ -80,8 +81,6 @@ dotnet run
 ```
 
 At this point the Api should be up and running on your localhost on port 5000. To test the Api you can, for example, open up Postman and try sending a GET request to http://localhost:5000/books and you should see a list of books returned.
-
-A step by step series of examples that tell you have to get a development env running
 
 # Running the tests
 
