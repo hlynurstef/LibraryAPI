@@ -14,8 +14,17 @@ namespace LibraryAPI.Repositories
         }
 
         public IEnumerable<BookReviewsDTO> GetAllBookReviews() {
-            // TODO: Get information from database
-            return new List<BookReviewsDTO>();
+            var bookReviews = (from b in _db.Books
+                                select new BookReviewsDTO {
+                                    BookId = b.Id,
+                                    BookTitle = b.Title,
+                                    BookAuthor = b.Author,
+                                    ISBN = b.ISBN,
+                                    Stars = (from r in _db.Reviews
+                                            where r.BookID == b.Id
+                                            select r.Stars).ToList()
+                                }).ToList();
+            return bookReviews;
         }
     }
 }
