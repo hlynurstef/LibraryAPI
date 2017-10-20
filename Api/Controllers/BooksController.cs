@@ -29,7 +29,7 @@ namespace LibraryAPI.Controllers
         }
 
         [HttpPost("books")]
-        public IActionResult PostBook([FromBody]BookView book){
+        public IActionResult AddBook([FromBody]BookView book){
             //Console.WriteLine(book);
             if(book == null){
                 return BadRequest();
@@ -37,8 +37,14 @@ namespace LibraryAPI.Controllers
             if(!ModelState.IsValid){
                 return StatusCode(412, "modelstate is not valid");
             }
-            // FIXME: should return created at route?
-            return Ok(_booksService.AddBook(book));
+            var newBook = _booksService.AddBook(book);
+            return CreatedAtRoute("GetBookById", new {bookId = newBook.Id}, newBook);
+        }
+
+
+        [HttpGet("books/{bookId}", Name = "GetBookById")]
+        public IActionResult GetBookById(int bookId){
+            return Ok(_booksService.GetBookById(bookId));
         }
 
         // TODO: GET /books/{book_id} - Sækja öll gögn um bók (m.a. lánasögu)

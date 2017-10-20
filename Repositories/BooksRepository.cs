@@ -51,6 +51,22 @@ namespace LibraryAPI.Repositories
                 ISBN = book.ISBN,
                 Available = true
             };
+
+        }
+        public BookDTO GetBookById(int id){
+            var book = (from b in _db.Books
+                       where b.Id == id
+                       select new BookDTO{
+                           Id = b.Id,
+                           Title = b.Title,
+                           Author = b.Author,
+                           ReleaseDate = b.ReleaseDate,
+                           ISBN = b.ISBN,
+                           Available = b.Available
+                       }  
+            
+            ).FirstOrDefault();
+            return book;
         }
     }
 }

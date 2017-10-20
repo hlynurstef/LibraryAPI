@@ -9,6 +9,8 @@ namespace LibraryAPI.Repositories
          IEnumerable<BookDTO> GetBooks();
 
          BookDTO AddBook(BookView book);
+
+         BookDTO GetBookById(int id);
     }
 
 }
