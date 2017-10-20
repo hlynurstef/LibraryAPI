@@ -1,4 +1,6 @@
-namespace LibraryAPI.EntityModels
+using System;
+
+namespace LibraryAPI.Models.EntityModels
 {
     /// <summary>
     /// An entity model of a loan that is used as the

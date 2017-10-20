@@ -1,4 +1,4 @@
-namespace LibraryAPI.EntityModels
+namespace LibraryAPI.Models.EntityModels
 {
     /// <summary>
     /// An entity model of a book that is used as the
@@ -6,6 +6,7 @@ namespace LibraryAPI.EntityModels
     /// </summary>
     public class Review
     {
+        
         /// <summary>
         /// The User Id of the review.
         /// </summary>
