@@ -28,5 +28,10 @@ namespace LibraryAPI.Models.EntityModels
         /// The ISBN number of the book.
         /// </summary>
         public string ISBN { get; set; }
+        /// <summary>
+        /// Whether the book is available for loan.
+        /// </summary>
+        public bool Available { get; set; }
+        
     }
 }
