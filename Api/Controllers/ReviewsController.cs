@@ -21,28 +21,33 @@ namespace LibraryAPI.Controllers
         /// Gets all reviews for all books.
         /// </summary>
         /// <returns>List of all reviews for all books.</returns>
-        [HttpGet]
-        [Route("books/reviews")]
+        [HttpGet("books/reviews")]
         public IActionResult GetAllBookReviews()
         {
             var reviews = _reviewsService.GetAllBookReviews();
             return Ok(reviews);
         }
 
-        // TODO: GET /users/{user_id}/reviews - Sækja dóma fyrir notanda
+        // TODO: GET    /books/{bookId}/reviews          - Fá alla dóma fyrir bók
 
-        // TODO: POST /users/{user_id}/reviews/{book_id} - Skrá dóma fyrir bók
+        // TODO: GET    /books/{bookId}/reviews/{userId} - Fá dóm frá notanda fyrir bók
 
-        // TODO: DELETE /users/{user_id}/reviews/{book_id} - Fjarlæga dóma
+        // TODO: PUT    /books/{bookId}/reviews/{userId} - Breyta dómi notanda um bók
 
-        // TODO: PUT /users/{user_id}/reviews/{book_id} - Uppfæra dóma um bók
+        // TODO: DELETE /books/{bookId}/reviews/{userId} - Eyða dómi notanda um bók
 
-        // TODO: GET /books/{book_id}/reviews - Fá alla dóma fyrir bók
 
-        // TODO: GET /books/{book_id}/reviews/{user_id} - Fá dóm frá notanda fyrir bók
+        // TODO: GET    /users/{userId}/reviews          - Sækja dóma fyrir notanda
 
-        // TODO: PUT /books/{book_id}/reviews/{user_id} - Breyta dómi notanda um bók
+        // TODO: GET    /users/{userId}/reviews/{bookId} - Sækja dóma fyrir bók
 
-        // TODO: DELETE /books/{book_id}/reviews/{user_id} - Eyða dómi notanda um bók
+        // TODO: POST   /users/{userId}/reviews/{bookId} - Skrá dóma fyrir bók
+
+        // TODO: DELETE /users/{userId}/reviews/{bookId} - Fjarlæga dóma
+
+        // TODO: PUT    /users/{userId}/reviews/{bookId} - Uppfæra dóma um bók
+
+
+
     }
 }
