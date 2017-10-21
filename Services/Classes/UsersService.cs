@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using LibraryAPI.Models.DTOModels;
+using LibraryAPI.Models.ViewModels;
 using LibraryAPI.Repositories;
 
 namespace LibraryAPI.Services
@@ -11,6 +12,17 @@ namespace LibraryAPI.Services
         public UsersService(IUsersRepository repo) {
             _repo = repo;
         }
+
+        public UserDTO AddUser(UserView user)
+        {
+            return _repo.AddUser(user);
+        }
+
+        public UserDTO GetUserById(int userId)
+        {
+            return _repo.GetUserById(userId);
+        }
+
         public IEnumerable<UserDTO> GetUsers() {
             var users = _repo.GetUsers();
             return users;
