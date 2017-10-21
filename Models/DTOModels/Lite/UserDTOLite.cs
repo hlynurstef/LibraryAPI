@@ -1,11 +1,12 @@
-namespace LibraryAPI.Models.EntityModels
+using System.Collections.Generic;
+
+namespace LibraryAPI.Models.DTOModels
 {
     /// <summary>
-    /// An entity model of a user that is used as the 
-    /// data structure in our database.
-    /// This model should not be exposed to the user!
+    /// A DTO model of a user used when displaying
+    /// information to the user.
     /// </summary>
-    public class User
+    public class UserDTOLite
     {
         /// <summary>
         /// The Id of the user.
@@ -26,6 +27,6 @@ namespace LibraryAPI.Models.EntityModels
         /// <summary>
         /// The phone number of the user.
         /// </summary>
-        public string PhoneNumber { get; set; }
+        public string PhoneNumber { get; set; }        
     }
 }

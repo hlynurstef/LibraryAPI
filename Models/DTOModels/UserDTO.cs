@@ -1,8 +1,10 @@
+using System.Collections.Generic;
+
 namespace LibraryAPI.Models.DTOModels
 {
     /// <summary>
-    /// A DTO model of a user used when sending information within the application.
-    /// This model should not be exposed to the user!
+    /// A DTO model of a user used when displaying
+    /// information to the user.
     /// </summary>
     public class UserDTO
     {
@@ -26,5 +28,10 @@ namespace LibraryAPI.Models.DTOModels
         /// The phone number of the user.
         /// </summary>
         public string PhoneNumber { get; set; }
+        /// <summary>
+        /// The history of loans for this user.
+        /// </summary>
+        public IEnumerable<LoanDTO> LoanHistory { get; set; }
+        
     }
 }

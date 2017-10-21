@@ -2,6 +2,10 @@ using System.Collections.Generic;
 
 namespace LibraryAPI.Models.DTOModels
 {
+    /// <summary>
+    /// A DTO model of a book review used when displaying
+    /// information to the user.
+    /// </summary>
     public class BookReviewsDTO
     {
         /// <summary>

@@ -3,8 +3,8 @@ using System;
 namespace LibraryAPI.Models.DTOModels
 {
     /// <summary>
-    /// A DTO model of a book used when sending information within the application.
-    /// This model should not be exposed to the user!
+    /// A DTO model of a book used when displaying
+    /// information to the user.
     /// </summary>
     public class BookDTO
     {
