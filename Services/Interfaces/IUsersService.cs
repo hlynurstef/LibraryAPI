@@ -6,7 +6,7 @@ namespace LibraryAPI.Services
 {
     public interface IUsersService
     {
-         IEnumerable<UserDTO> GetUsers();
+         IEnumerable<UserDTOLite> GetUsers();
          UserDTO AddUser(UserView user);
          UserDTO GetUserById(int userId);
     }

@@ -37,7 +37,8 @@ namespace LibraryAPI.Repositories
                 Name = userEntity.Name,
                 Address = userEntity.Address,
                 Email = userEntity.Email,
-                PhoneNumber = userEntity.PhoneNumber
+                PhoneNumber = userEntity.PhoneNumber,
+                LoanHistory = new List<LoanDTO>()
             };
         }
 
@@ -50,15 +51,23 @@ namespace LibraryAPI.Repositories
                             Name = u.Name,
                             Address = u.Address,
                             Email = u.Email,
-                            PhoneNumber = u.PhoneNumber
+                            PhoneNumber = u.PhoneNumber,
+                            LoanHistory = (from l in _db.Loans
+                                            where l.UserId == userID
+                                            join b in _db.Books on l.BookId equals b.Id
+                                            select new LoanDTO {
+                                                Id = l.Id,
+                                                BookTitle = b.Title,
+                                                LoanDate = l.LoanDate
+                                            }).ToList()
                         }).SingleOrDefault();
 
             return user;
         }
 
-        public IEnumerable<UserDTO> GetUsers() {
+        public IEnumerable<UserDTOLite> GetUsers() {
             var users = (from u in _db.Users
-                        select new UserDTO {
+                        select new UserDTOLite {
                             Id = u.Id,
                             Name = u.Name,
                             Address = u.Address,

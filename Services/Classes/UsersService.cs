@@ -23,7 +23,7 @@ namespace LibraryAPI.Services
             return _repo.GetUserById(userId);
         }
 
-        public IEnumerable<UserDTO> GetUsers() {
+        public IEnumerable<UserDTOLite> GetUsers() {
             var users = _repo.GetUsers();
             return users;
         }
