@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using LibraryAPI.Models.DTOModels;
 using LibraryAPI.Models.ViewModels;
 using LibraryAPI.Models.EntityModels;
+using Microsoft.EntityFrameworkCore;
+using LibraryAPI.Exceptions;
 
 namespace LibraryAPI.Repositories
 {
@@ -42,10 +44,29 @@ namespace LibraryAPI.Repositories
             };
         }
 
-        public UserDTO GetUserById(int userID)
+        public void DeleteUser(int userId)
         {
             var user = (from u in _db.Users
-                        where u.Id == userID
+                        where u.Id == userId
+                        select u).SingleOrDefault();
+            
+            if (user == null) {
+                throw new NotFoundException("User with id " + userId + " does not exist");
+            }
+
+            try {
+                _db.Users.Remove(user);
+                _db.SaveChanges();
+            }
+            catch(DbUpdateException e) {
+                Console.WriteLine(e);
+            }
+        }
+
+        public UserDTO GetUserById(int userId)
+        {
+            var user = (from u in _db.Users
+                        where u.Id == userId
                         select new UserDTO {
                             Id = u.Id,
                             Name = u.Name,
@@ -53,7 +74,7 @@ namespace LibraryAPI.Repositories
                             Email = u.Email,
                             PhoneNumber = u.PhoneNumber,
                             LoanHistory = (from l in _db.Loans
-                                            where l.UserId == userID
+                                            where l.UserId == userId
                                             join b in _db.Books on l.BookId equals b.Id
                                             select new LoanDTO {
                                                 Id = l.Id,

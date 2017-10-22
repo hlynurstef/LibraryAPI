@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using LibraryAPI.Exceptions;
 using LibraryAPI.Models.ViewModels;
 using LibraryAPI.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -57,6 +58,23 @@ namespace LibraryAPI.Controllers
         public IActionResult GetUserById(int userId) {
             var user = _usersService.GetUserById(userId);
             return Ok(user);
+        }
+
+        /// <summary>
+        /// Deletes a user from the database by id.
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        [HttpDelete("users/{userId}")]
+        public IActionResult DeleteUser(int userId) {
+            // TODO: Add cascade on delete?
+            try {
+                _usersService.DeleteUser(userId);
+                return StatusCode(204);
+            }
+            catch(NotFoundException e) {
+                return NotFound(e.Message);
+            }
         }
 
         

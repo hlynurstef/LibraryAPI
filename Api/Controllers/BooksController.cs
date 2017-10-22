@@ -43,7 +43,7 @@ namespace LibraryAPI.Controllers
 
         // TODO: GET    /books/{bookId} - Sækja öll gögn um bók (m.a. lánasögu)
         [HttpGet("books/{bookId}", Name = "GetBookById")]
-        public IActionResult GetBookById(int bookId){
+        public IActionResult GetBookById(int bookId) {
             return Ok(_booksService.GetBookById(bookId));
         }
 

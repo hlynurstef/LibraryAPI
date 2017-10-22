@@ -18,6 +18,11 @@ namespace LibraryAPI.Services
             return _repo.AddUser(user);
         }
 
+        public void DeleteUser(int userId)
+        {
+            _repo.DeleteUser(userId);
+        }
+
         public UserDTO GetUserById(int userId)
         {
             return _repo.GetUserById(userId);

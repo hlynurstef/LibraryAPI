@@ -6,8 +6,9 @@ namespace LibraryAPI.Repositories
 {
     public interface IUsersRepository
     {
-         IEnumerable<UserDTOLite> GetUsers();
-         UserDTO AddUser(UserView user);
-         UserDTO GetUserById(int userID);
+        IEnumerable<UserDTOLite> GetUsers();
+        UserDTO AddUser(UserView user);
+        UserDTO GetUserById(int userId);
+        void DeleteUser(int userId);
     }
 }
