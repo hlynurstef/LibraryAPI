@@ -26,7 +26,10 @@ namespace LibraryAPI.Controllers
             var books = _booksService.GetBooks();
             return Ok(books);
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="book"></param>
         [HttpPost("books")]
         public IActionResult AddBook([FromBody]BookView book){
             //Console.WriteLine(book);
@@ -47,10 +50,28 @@ namespace LibraryAPI.Controllers
             return Ok(_booksService.GetBookById(bookId));
         }
 
+        [HttpDelete("books/{bookId}")]
+        public IActionResult DeleteBookById(int bookId){
+            var book = _booksService.DeleteBookById(bookId);
+            return Ok(book);
+        }
 
-        // TODO: DELETE /books/{bookId} - Fjarlæga bók
+        [HttpPut("books/{bookId}")]
+        public IActionResult EditBookById(int bookId, [FromBody]BookView book ){
+            if(GetBookById(bookId) == null)
+            {
+                return NotFound();
+            }
+            if(book == null){
+                return BadRequest();
+            }
+            if(!ModelState.IsValid){
+                return StatusCode(412, "modelstate is not valid");
+            }
+            var newBook = _booksService.EditBookById(bookId, book);
+            return CreatedAtRoute("GetBookById", new {bookId = newBook.Id}, newBook);
+        }
 
-        // TODO: PUT    /books/{bookId} - Uppfæra bók
 
          
         // TODO: GET    /users/{userId}/books          - Sækja skráningu um bækur sem notandi er með í láni

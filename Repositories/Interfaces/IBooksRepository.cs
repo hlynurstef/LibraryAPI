@@ -11,6 +11,9 @@ namespace LibraryAPI.Repositories
          BookDTO AddBook(BookView book);
 
          BookDTO GetBookById(int id);
+
+         BookDTO DeleteBookById(int id);
+         BookDTO EditBookById(int id, BookView book);
     }
 
 }

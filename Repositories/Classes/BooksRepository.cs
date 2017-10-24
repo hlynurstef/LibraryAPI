@@ -69,5 +69,52 @@ namespace LibraryAPI.Repositories
             ).FirstOrDefault();
             return book;
         }
+        public BookDTO DeleteBookById(int id){
+
+            var book = (from b in _db.Books
+                    where b.Id == id
+                    select new BookDTO{
+                           Id = b.Id,
+                           Title = b.Title,
+                           Author = b.Author,
+                           ReleaseDate = b.ReleaseDate,
+                           ISBN = b.ISBN,
+                           Available = b.Available
+                    }
+            ).FirstOrDefault();
+
+            var bookEntity = (from b in _db.Books
+                       where b.Id == id
+                       select b
+            ).FirstOrDefault();
+            _db.Remove(bookEntity);
+            try{
+                _db.SaveChanges();
+            }
+            catch(System.Exception e){
+                Console.WriteLine(e);
+            }
+            return book;
+        }
+        BookDTO IBooksRepository.EditBookById(int id, BookView book){
+            var bookEntity = _db.Books.SingleOrDefault(b => b.Id == id);
+            
+            bookEntity.Author = book.Author;
+            bookEntity.ISBN = book.ISBN;
+            bookEntity.Title = book.Title;
+            bookEntity.ReleaseDate = book.ReleaseDate;
+
+            _db.SaveChanges();
+
+            var retBook = new BookDTO{
+                          Id = id,
+                          Title = bookEntity.Title,
+                          Author = bookEntity.Author,
+                          ReleaseDate = bookEntity.ReleaseDate,
+                          ISBN = bookEntity.ISBN,
+                          Available = bookEntity.Available
+            };
+            return retBook;
+        }
     }
 }

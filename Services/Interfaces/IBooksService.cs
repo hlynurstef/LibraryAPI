@@ -10,5 +10,9 @@ namespace LibraryAPI.Services
         IEnumerable<BookDTO> GetBooks();
 
         BookDTO GetBookById(int id);
+        
+        BookDTO DeleteBookById(int id);
+
+        BookDTO EditBookById(int id, BookView book);
     }
 }

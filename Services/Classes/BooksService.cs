@@ -24,6 +24,15 @@ namespace LibraryAPI.Services
         public BookDTO GetBookById(int id)
         {
             return _repo.GetBookById(id);
+        }
+
+        public BookDTO DeleteBookById(int id)
+        {
+            return _repo.DeleteBookById(id);
         } 
+        public BookDTO EditBookById(int id, BookView book)
+        {
+            return _repo.EditBookById(id, book);
+        }
     }
 }
