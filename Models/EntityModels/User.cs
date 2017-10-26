@@ -27,5 +27,11 @@ namespace LibraryAPI.Models.EntityModels
         /// The phone number of the user.
         /// </summary>
         public string PhoneNumber { get; set; }
+        /// <summary>
+        /// If true, the user has been deleted and should not show up in any get request
+        /// </summary>
+        /// <returns></returns>
+        public bool Deleted { get; set; }
+        
     }
 }

@@ -22,7 +22,8 @@ namespace LibraryAPI.Repositories
                 Name = user.Name,
                 Address = user.Address,
                 Email = user.Email,
-                PhoneNumber = user.PhoneNumber
+                PhoneNumber = user.PhoneNumber,
+                Deleted = false
             };
 
             _db.Users.Add(userEntity);
@@ -54,8 +55,9 @@ namespace LibraryAPI.Repositories
                 throw new NotFoundException("User with id " + userId + " does not exist");
             }
 
+            user.Deleted = true;
+
             try {
-                _db.Users.Remove(user);
                 _db.SaveChanges();
             }
             catch(DbUpdateException e) {
@@ -69,7 +71,7 @@ namespace LibraryAPI.Repositories
                         where u.Id == userId
                         select u).SingleOrDefault();
             
-            if (user == null) {
+            if (user == null || user.Deleted == true) {
                 throw new NotFoundException("User with id " + userId + " does not exist");
             }
 
@@ -90,6 +92,7 @@ namespace LibraryAPI.Repositories
         {
             var user = (from u in _db.Users
                         where u.Id == userId
+                        && u.Deleted == false
                         select new UserDTO {
                             Id = u.Id,
                             Name = u.Name,
@@ -105,12 +108,16 @@ namespace LibraryAPI.Repositories
                                                 LoanDate = l.LoanDate
                                             }).ToList()
                         }).SingleOrDefault();
+            if (user == null) {
+                throw new NotFoundException("User with id " + userId + " does not exist");
+            }
 
             return user;
         }
 
         public IEnumerable<UserDTOLite> GetUsers() {
             var users = (from u in _db.Users
+                        where u.Deleted == false
                         select new UserDTOLite {
                             Id = u.Id,
                             Name = u.Name,

@@ -56,8 +56,13 @@ namespace LibraryAPI.Controllers
         /// <returns>The requested User</returns>
         [HttpGet("users/{userId}", Name = "GetUserById")]
         public IActionResult GetUserById(int userId) {
+            try {
             var user = _usersService.GetUserById(userId);
             return Ok(user);
+            }
+            catch(NotFoundException e) {
+                return NotFound(e.Message);
+            }
         }
 
         /// <summary>
@@ -82,7 +87,7 @@ namespace LibraryAPI.Controllers
         /// </summary>
         /// <param name="user">The view model with the updated user information</param>
         /// <param name="userId">The user id corresponding to the user that should be updated</param>
-        /// <returns></returns>
+        /// <returns>204 if succesful</returns>
         [HttpPut("users/{userId}")]
         public IActionResult DeleteUser([FromBody] UserView user, int userId) {
             if(user == null){
