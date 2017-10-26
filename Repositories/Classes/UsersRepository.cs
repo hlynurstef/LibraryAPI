@@ -69,9 +69,10 @@ namespace LibraryAPI.Repositories
         {
             var user = (from u in _db.Users
                         where u.Id == userId
+                        && u.Deleted == false
                         select u).SingleOrDefault();
             
-            if (user == null || user.Deleted == true) {
+            if (user == null) {
                 throw new NotFoundException("User with id " + userId + " does not exist");
             }
 
