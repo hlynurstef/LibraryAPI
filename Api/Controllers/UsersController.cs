@@ -57,8 +57,8 @@ namespace LibraryAPI.Controllers
         [HttpGet("users/{userId}", Name = "GetUserById")]
         public IActionResult GetUserById(int userId) {
             try {
-            var user = _usersService.GetUserById(userId);
-            return Ok(user);
+                var user = _usersService.GetUserById(userId);
+                return Ok(user);
             }
             catch(NotFoundException e) {
                 return NotFound(e.Message);
