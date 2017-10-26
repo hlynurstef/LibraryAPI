@@ -23,6 +23,11 @@ namespace LibraryAPI.Services
             _repo.DeleteUser(userId);
         }
 
+        public void UpdateUser(UserView user, int userId) 
+        {
+            _repo.UpdateUser(user, userId);
+        }
+
         public UserDTO GetUserById(int userId)
         {
             return _repo.GetUserById(userId);

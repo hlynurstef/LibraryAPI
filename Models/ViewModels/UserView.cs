@@ -2,7 +2,7 @@ namespace LibraryAPI.Models.ViewModels
 {
     /// <summary>
     /// A view model of a user.
-    /// This is the model that is used when a user is creating a new user.
+    /// This is the model that is used when a user is creating and updating a user.
     /// </summary>
     public class UserView
     {

@@ -63,6 +63,29 @@ namespace LibraryAPI.Repositories
             }
         }
 
+        public void UpdateUser(UserView updatedUser, int userId)
+        {
+            var user = (from u in _db.Users
+                        where u.Id == userId
+                        select u).SingleOrDefault();
+            
+            if (user == null) {
+                throw new NotFoundException("User with id " + userId + " does not exist");
+            }
+
+            user.Name = updatedUser.Name;
+            user.Address = updatedUser.Address;
+            user.Email = updatedUser.Email;
+            user.PhoneNumber = updatedUser.PhoneNumber;
+            
+            try {
+                _db.SaveChanges();
+            }
+            catch(DbUpdateException e) {
+                Console.WriteLine(e);
+            }
+        }
+
         public UserDTO GetUserById(int userId)
         {
             var user = (from u in _db.Users

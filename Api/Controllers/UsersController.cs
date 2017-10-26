@@ -77,11 +77,29 @@ namespace LibraryAPI.Controllers
             }
         }
 
-        
+        /// <summary>
+        /// Updates a user from the database by id.
+        /// </summary>
+        /// <param name="user">The view model with the updated user information</param>
+        /// <param name="userId">The user id corresponding to the user that should be updated</param>
+        /// <returns></returns>
+        [HttpPut("users/{userId}")]
+        public IActionResult DeleteUser([FromBody] UserView user, int userId) {
+            if(user == null){
+                return BadRequest();
+            }
+            if(!ModelState.IsValid){
+                return StatusCode(412, "Modelstate is not valid");
+            }
 
-        // TODO: DELETE /users/{userId} - Fjarlæga notanda
-
-        // TODO: PUT    /users/{userId} - Uppfæra notanda
-
+            try {
+                // TODO: Should this return the newly updated user ? 
+                _usersService.UpdateUser(user, userId);
+                return StatusCode(204);
+            }
+            catch(NotFoundException e) {
+                return NotFound(e.Message);
+            }
+        }
     }
 }

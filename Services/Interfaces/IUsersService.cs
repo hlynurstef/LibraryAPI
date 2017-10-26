@@ -10,5 +10,6 @@ namespace LibraryAPI.Services
          UserDTO AddUser(UserView user);
          UserDTO GetUserById(int userId);
          void DeleteUser(int userId);
+         void UpdateUser(UserView user, int userId);
     }
 }
