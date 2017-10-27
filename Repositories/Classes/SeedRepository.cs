@@ -25,7 +25,7 @@ namespace LibraryAPI.Repositories
         {
 
             try {
-                using (StreamReader r = new StreamReader("../data/Books.json"))
+                using (StreamReader r = new StreamReader("../Data/Books.json"))
                 {    
                     string json = r.ReadToEnd();
                     
