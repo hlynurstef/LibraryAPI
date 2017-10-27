@@ -27,13 +27,14 @@ namespace LibraryAPI.Controllers
             var books = _booksService.GetBooks();
             return Ok(books);
         }
+
+        // POST /books
         /// <summary>
-        /// 
+        /// Create a new book
         /// </summary>
-        /// <param name="book"></param>
+        /// <param name="book">The book view object from body</param>
         [HttpPost("books")]
         public IActionResult AddBook([FromBody]BookView book){
-            //Console.WriteLine(book);
             if(book == null){
                 return BadRequest();
             }
@@ -44,36 +45,72 @@ namespace LibraryAPI.Controllers
             return CreatedAtRoute("GetBookById", new {bookId = newBook.Id}, newBook);
         }
 
+        // GET /books/{bookId}
+        /// <summary>
+        /// Gets a single book by id.
+        /// </summary>
+        /// <param name="bookId">The Id of the book to get</param>
+        /// <returns>The requested book</returns>
         [HttpGet("books/{bookId}", Name = "GetBookById")]
         public IActionResult GetBookById(int bookId) {
             // TODO:  Sækja öll gögn um bók (m.a. lánasögu)
-            // TODO: Try catch if book not found
-            return Ok(_booksService.GetBookById(bookId));
+            try {
+                var book = _booksService.GetBookById(bookId);
+                return Ok(book);
+            }
+            catch (NotFoundException e) {
+                return NotFound(e.Message);
+            }
         }
 
+        // DELETE /books/{bookId}
+        /// <summary>
+        /// Deletes a single book by id.
+        /// </summary>
+        /// <param name="bookId">The Id of the book to delete</param>
+        /// <returns>StatusCode 204 if successful</returns>
         [HttpDelete("books/{bookId}")]
         public IActionResult DeleteBookById(int bookId){
-            var book = _booksService.DeleteBookById(bookId);
-            return Ok(book);
+            try {
+                _booksService.DeleteBookById(bookId);
+                return NoContent();
+            }
+            catch(NotFoundException e) {
+                return NotFound(e.Message);
+            }
         }
 
+        // PUT /books/{bookId}
+        /// <summary>
+        /// Updates a book by Id
+        /// </summary>
+        /// <param name="bookId">The id of the book to update</param>
+        /// <param name="book">The updated information from the request body</param>
+        /// <returns>StatusCode 204 if successful</returns>
         [HttpPut("books/{bookId}")]
-        public IActionResult EditBookById(int bookId, [FromBody]BookView book ){
-            if(GetBookById(bookId) == null)
-            {
-                return NotFound();
-            }
+        public IActionResult UpdateBookById(int bookId, [FromBody]BookView book ){
             if(book == null){
                 return BadRequest();
             }
             if(!ModelState.IsValid){
                 return StatusCode(412, "modelstate is not valid");
             }
-            var newBook = _booksService.EditBookById(bookId, book);
-            return CreatedAtRoute("GetBookById", new {bookId = newBook.Id}, newBook);
+
+            try {
+                _booksService.UpdateBookById(bookId, book);
+                return NoContent();
+            }
+            catch(NotFoundException e) {
+                return NotFound(e.Message);
+            }
         }
         
-        // TODO: GET    /users/{userId}/books          - Sækja skráningu um bækur sem notandi er með í láni
+        // GET /users/{userId}/books
+        /// <summary>
+        /// Gets list of books that a user has checked out.
+        /// </summary>
+        /// <param name="userId">The id of the user</param>
+        /// <returns>A list of books</returns>
         [HttpGet("users/{userId}/books", Name = "GetBooksByUserId")]
         public IActionResult GetBooksByUserId(int userId) {
             try {

@@ -11,9 +11,9 @@ namespace LibraryAPI.Services
 
         BookDTOLite GetBookById(int id);
         
-        BookDTOLite DeleteBookById(int id);
+        void DeleteBookById(int id);
 
-        BookDTOLite EditBookById(int id, BookView book);
+        void UpdateBookById(int id, BookView book);
 
         IEnumerable<BookDTOLite> GetBooksByUserId(int userId);
     }

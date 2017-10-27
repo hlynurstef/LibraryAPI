@@ -12,8 +12,8 @@ namespace LibraryAPI.Repositories
 
          BookDTOLite GetBookById(int id);
 
-         BookDTOLite DeleteBookById(int id);
-         BookDTOLite EditBookById(int id, BookView book);
+         void DeleteBookById(int id);
+         void UpdateBookById(int id, BookView book);
          IEnumerable<BookDTOLite> GetBooksByUserId(int userId);
     }
 
