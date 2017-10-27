@@ -43,10 +43,10 @@ namespace LibraryAPI.Controllers
             return CreatedAtRoute("GetBookById", new {bookId = newBook.Id}, newBook);
         }
 
-
-        // TODO: GET    /books/{bookId} - Sækja öll gögn um bók (m.a. lánasögu)
         [HttpGet("books/{bookId}", Name = "GetBookById")]
         public IActionResult GetBookById(int bookId) {
+            // TODO:  Sækja öll gögn um bók (m.a. lánasögu)
+            // TODO: Try catch if book not found
             return Ok(_booksService.GetBookById(bookId));
         }
 
@@ -72,9 +72,14 @@ namespace LibraryAPI.Controllers
             return CreatedAtRoute("GetBookById", new {bookId = newBook.Id}, newBook);
         }
 
-
-         
+        /* 
         // TODO: GET    /users/{userId}/books          - Sækja skráningu um bækur sem notandi er með í láni
+        [HttpGet("users/{userId}/books", Name = "GetBooksByUserId")]
+        public IActionResult GetBooksByUserId(int bookId) {
+            return Ok(_booksService.GetBookById(bookId));
+        }
+        */
+
 
         // TODO: POST   /users/{userId}/books/{bookId} - Skrá útlán á bók
 
