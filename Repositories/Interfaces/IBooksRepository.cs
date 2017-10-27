@@ -10,7 +10,7 @@ namespace LibraryAPI.Repositories
 
          BookDTOLite AddBook(BookView book);
 
-         BookDTOLite GetBookById(int id);
+         BookDTO GetBookById(int id);
 
          void DeleteBookById(int id);
          void UpdateBookById(int id, BookView book);

@@ -37,6 +37,6 @@ namespace LibraryAPI.Models.DTOModels
         /// <summary>
         /// List of all reviews for this book.
         /// </summary>
-        public List<Review> Reviews { get; set; }
+        public List<ReviewDTO> Reviews { get; set; }
     }
 }

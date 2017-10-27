@@ -21,7 +21,7 @@ namespace LibraryAPI.Services
         {
             return _repo.AddBook(book);
         }
-        public BookDTOLite GetBookById(int id)
+        public BookDTO GetBookById(int id)
         {
             return _repo.GetBookById(id);
         }
