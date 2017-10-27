@@ -32,6 +32,8 @@ namespace Api
             services.AddTransient<IUsersRepository, UsersRepository>();
             services.AddTransient<IUsersService, UsersService>();
             services.AddTransient<IReviewsRepository, ReviewsRepository>();
+            services.AddTransient<ISeedRepository, SeedRepository>();
+            services.AddTransient<ISeedService, SeedService>();
             services.AddTransient<IReviewsService, ReviewsService>();
             services.AddTransient<IRecommendationsRepository, RecommendationsRepository>();
             services.AddTransient<IRecommendationsService, RecommendationsService>();

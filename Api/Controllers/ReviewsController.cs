@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using LibraryAPI.Services;
 using Microsoft.AspNetCore.Mvc;
+using LibraryAPI.Exceptions;
 
 namespace LibraryAPI.Controllers
 {
@@ -29,7 +30,17 @@ namespace LibraryAPI.Controllers
         }
 
         // TODO: GET    /books/{bookId}/reviews          - Fá alla dóma fyrir bók
-
+        [HttpGet("books/{bookId}/reviews")]
+        public IActionResult GetAllReviewsForBook(int bookId) 
+        {
+            try {
+                var reviews = _reviewsService.GetAllReviewsForBook(bookId);
+                return Ok(reviews);
+            } catch (NotFoundException e) {
+                return NotFound(e.Message);
+            }
+            
+        }
         // TODO: GET    /books/{bookId}/reviews/{userId} - Fá dóm frá notanda fyrir bók
 
         // TODO: PUT    /books/{bookId}/reviews/{userId} - Breyta dómi notanda um bók
