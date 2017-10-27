@@ -12,9 +12,9 @@ namespace LibraryAPI.Services
             _repo = repo;
         }
 
-        public IEnumerable<BookReviewsDTO> GetAllBookReviews() {
-            var bookReviews = _repo.GetAllBookReviews();
-            return bookReviews;
+        public IEnumerable<ReviewDTO> GetAllBookReviews() {
+            var reviews = _repo.GetAllBookReviews();
+            return reviews;
         }
     }
 }

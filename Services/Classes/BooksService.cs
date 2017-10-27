@@ -26,13 +26,13 @@ namespace LibraryAPI.Services
             return _repo.GetBookById(id);
         }
 
-        public BookDTOLite DeleteBookById(int id)
+        public void DeleteBookById(int id)
         {
-            return _repo.DeleteBookById(id);
+            _repo.DeleteBookById(id);
         } 
-        public BookDTOLite EditBookById(int id, BookView book)
+        public void UpdateBookById(int id, BookView book)
         {
-            return _repo.EditBookById(id, book);
+            _repo.UpdateBookById(id, book);
         }
         public IEnumerable<BookDTOLite> GetBooksByUserId(int userId)
         {

@@ -33,6 +33,11 @@ namespace LibraryAPI.Models.EntityModels
         /// Whether the book is available for loan.
         /// </summary>
         public bool Available { get; set; }
+        /// <summary>
+        /// Whether this book has been deleted or not.
+        /// </summary>
+        public bool Deleted { get; set; }
+        
         
     }
 }
