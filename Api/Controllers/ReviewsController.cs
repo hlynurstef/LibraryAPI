@@ -37,7 +37,7 @@ namespace LibraryAPI.Controllers
                 var reviews = _reviewsService.GetAllReviewsForBook(bookId);
                 return Ok(reviews);
             } catch (NotFoundException e) {
-                return NotFound("{\"error\": \"" + e.Message + " \"}");
+                return NotFound(e.Message);
             }
             
         }
