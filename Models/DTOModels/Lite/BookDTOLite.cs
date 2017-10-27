@@ -8,7 +8,7 @@ namespace LibraryAPI.Models.DTOModels
     /// A DTO model of a book used when displaying
     /// information to the user.
     /// </summary>
-    public class BookDTO
+    public class BookDTOLite
     {
         /// <summary>
         /// The Id of the book.
@@ -38,9 +38,5 @@ namespace LibraryAPI.Models.DTOModels
         /// List of all reviews for this book.
         /// </summary>
         public List<Review> Reviews { get; set; }
-        /// <summary>
-        /// The history of people who have taken this book out on a loan
-        /// </summary>
-        public List<Loan> LoanHistory { get; set; }
     }
 }
