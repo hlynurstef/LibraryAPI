@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using LibraryAPI.Models.ViewModels;
 using LibraryAPI.Services;
 using Microsoft.AspNetCore.Mvc;
+using LibraryAPI.Exceptions;
 
 namespace LibraryAPI.Controllers
 {
@@ -71,22 +72,23 @@ namespace LibraryAPI.Controllers
             var newBook = _booksService.EditBookById(bookId, book);
             return CreatedAtRoute("GetBookById", new {bookId = newBook.Id}, newBook);
         }
-
-        /* 
+        
         // TODO: GET    /users/{userId}/books          - Sækja skráningu um bækur sem notandi er með í láni
         [HttpGet("users/{userId}/books", Name = "GetBooksByUserId")]
-        public IActionResult GetBooksByUserId(int bookId) {
-            return Ok(_booksService.GetBookById(bookId));
+        public IActionResult GetBooksByUserId(int userId) {
+            try {
+                var books = _booksService.GetBooksByUserId(userId);
+                return Ok(books);
+            }
+            catch (NotFoundException e) {
+                return NotFound(e.Message);
+            }
         }
-        */
-
 
         // TODO: POST   /users/{userId}/books/{bookId} - Skrá útlán á bók
 
         // TODO: DELETE /users/{userId}/books/{bookId} - Skila bók
 
         // TODO: PUT    /users/{userId}/books/{bookId} - Uppfæra útlánaskráningu
-
-
     }
 }

@@ -6,14 +6,15 @@ namespace LibraryAPI.Repositories
 {
     public interface IBooksRepository
     {
-         IEnumerable<BookDTO> GetBooks();
+         IEnumerable<BookDTOLite> GetBooks();
 
-         BookDTO AddBook(BookView book);
+         BookDTOLite AddBook(BookView book);
 
-         BookDTO GetBookById(int id);
+         BookDTOLite GetBookById(int id);
 
-         BookDTO DeleteBookById(int id);
-         BookDTO EditBookById(int id, BookView book);
+         BookDTOLite DeleteBookById(int id);
+         BookDTOLite EditBookById(int id, BookView book);
+         IEnumerable<BookDTOLite> GetBooksByUserId(int userId);
     }
 
 }

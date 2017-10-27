@@ -15,21 +15,23 @@ namespace LibraryAPI.Repositories
             _db = db;
         }
 
-        public IEnumerable<BookDTO> GetBooks()
+        public IEnumerable<BookDTOLite> GetBooks()
         {
             var books = (from b in _db.Books
-                        select new BookDTO {
+                        select new BookDTOLite {
                             Id = b.Id,
                             Title = b.Title,
                             Author = b.Author,
                             ReleaseDate = b.ReleaseDate,
                             ISBN = b.ISBN,
-                            Available = b.Available
+                            Available = b.Available,
+                            // TODO: Populate list of reviews
+                            Reviews = null
                         }).ToList();
             return books;
         }
 
-        public BookDTO AddBook(BookView book){
+        public BookDTOLite AddBook(BookView book){
             var bookEntity = new Book{
                     Title = book.Title,
                     Author = book.Author,
@@ -44,42 +46,47 @@ namespace LibraryAPI.Repositories
             catch(System.Exception e){
                 Console.WriteLine(e);
             }
-            return new BookDTO{
+            return new BookDTOLite{
                 Id = bookEntity.Id,
                 Title = book.Title,
                 Author = book.Author,
                 ReleaseDate = book.ReleaseDate,
                 ISBN = book.ISBN,
-                Available = true
+                Available = true,
+                // TODO: Populate list of reviews
+                Reviews = null
             };
 
         }
-        public BookDTO GetBookById(int id){
+        public BookDTOLite GetBookById(int id){
             var book = (from b in _db.Books
                        where b.Id == id
-                       select new BookDTO{
+                       select new BookDTOLite{
                            Id = b.Id,
                            Title = b.Title,
                            Author = b.Author,
                            ReleaseDate = b.ReleaseDate,
                            ISBN = b.ISBN,
-                           Available = b.Available
+                           Available = b.Available,
+                           // TODO: Populate list of reviews
+                            Reviews = null
                        }  
             
             ).FirstOrDefault();
             return book;
         }
-        public BookDTO DeleteBookById(int id){
-
+        public BookDTOLite DeleteBookById(int id){
             var book = (from b in _db.Books
                     where b.Id == id
-                    select new BookDTO{
-                           Id = b.Id,
-                           Title = b.Title,
-                           Author = b.Author,
-                           ReleaseDate = b.ReleaseDate,
-                           ISBN = b.ISBN,
-                           Available = b.Available
+                    select new BookDTOLite{
+                            Id = b.Id,
+                            Title = b.Title,
+                            Author = b.Author,
+                            ReleaseDate = b.ReleaseDate,
+                            ISBN = b.ISBN,
+                            Available = b.Available,
+                            // TODO: Populate list of reviews
+                            Reviews = null
                     }
             ).FirstOrDefault();
 
@@ -96,7 +103,8 @@ namespace LibraryAPI.Repositories
             }
             return book;
         }
-        BookDTO IBooksRepository.EditBookById(int id, BookView book){
+
+        public BookDTOLite EditBookById(int id, BookView book) {
             var bookEntity = _db.Books.SingleOrDefault(b => b.Id == id);
             
             bookEntity.Author = book.Author;
@@ -106,15 +114,37 @@ namespace LibraryAPI.Repositories
 
             _db.SaveChanges();
 
-            var retBook = new BookDTO{
-                          Id = id,
-                          Title = bookEntity.Title,
-                          Author = bookEntity.Author,
-                          ReleaseDate = bookEntity.ReleaseDate,
-                          ISBN = bookEntity.ISBN,
-                          Available = bookEntity.Available
+            var retBook = new BookDTOLite{
+                            Id = id,
+                            Title = bookEntity.Title,
+                            Author = bookEntity.Author,
+                            ReleaseDate = bookEntity.ReleaseDate,
+                            ISBN = bookEntity.ISBN,
+                            Available = bookEntity.Available,
+                            // TODO: Populate list of reviews
+                            Reviews = null
             };
             return retBook;
+        }
+
+        public IEnumerable<BookDTOLite> GetBooksByUserId(int userId)
+        {
+            var books = (from b in _db.Books
+                        join l in _db.Loans on b.Id equals l.BookId
+                         where l.UserId == userId
+                         && l.HasBeenReturned == false
+                         select new BookDTOLite {
+                            Id = b.Id,
+                            Title = b.Title,
+                            Author = b.Author,
+                            ReleaseDate = b.ReleaseDate,
+                            ISBN = b.ISBN,
+                            Available = b.Available,
+                            // TODO: Populate list of reviews
+                            Reviews = null
+                         }).ToList();
+
+            return books;
         }
     }
 }

@@ -12,27 +12,31 @@ namespace LibraryAPI.Services
         public BooksService(IBooksRepository repo) {
             _repo = repo;
         }
-        public IEnumerable<BookDTO> GetBooks() {
+        public IEnumerable<BookDTOLite> GetBooks() {
             var books = _repo.GetBooks();
             return books;
         }
 
-        public BookDTO AddBook(BookView book)
+        public BookDTOLite AddBook(BookView book)
         {
             return _repo.AddBook(book);
         }
-        public BookDTO GetBookById(int id)
+        public BookDTOLite GetBookById(int id)
         {
             return _repo.GetBookById(id);
         }
 
-        public BookDTO DeleteBookById(int id)
+        public BookDTOLite DeleteBookById(int id)
         {
             return _repo.DeleteBookById(id);
         } 
-        public BookDTO EditBookById(int id, BookView book)
+        public BookDTOLite EditBookById(int id, BookView book)
         {
             return _repo.EditBookById(id, book);
+        }
+        public IEnumerable<BookDTOLite> GetBooksByUserId(int userId)
+        {
+            return _repo.GetBooksByUserId(userId);
         }
     }
 }

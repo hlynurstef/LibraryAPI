@@ -6,13 +6,15 @@ namespace LibraryAPI.Services
 {
     public interface IBooksService
     {
-        BookDTO AddBook(BookView book);
-        IEnumerable<BookDTO> GetBooks();
+        BookDTOLite AddBook(BookView book);
+        IEnumerable<BookDTOLite> GetBooks();
 
-        BookDTO GetBookById(int id);
+        BookDTOLite GetBookById(int id);
         
-        BookDTO DeleteBookById(int id);
+        BookDTOLite DeleteBookById(int id);
 
-        BookDTO EditBookById(int id, BookView book);
+        BookDTOLite EditBookById(int id, BookView book);
+
+        IEnumerable<BookDTOLite> GetBooksByUserId(int userId);
     }
 }
