@@ -13,18 +13,18 @@ namespace LibraryAPI.Repositories
             _db = db;
         }
 
-        public IEnumerable<BookReviewsDTO> GetAllBookReviews() {
-            var bookReviews = (from b in _db.Books
-                                select new BookReviewsDTO {
-                                    BookId = b.Id,
-                                    BookTitle = b.Title,
-                                    BookAuthor = b.Author,
-                                    ISBN = b.ISBN,
-                                    Stars = (from r in _db.Reviews
-                                            where r.BookID == b.Id
-                                            select r.Stars).ToList()
-                                }).ToList();
-            return bookReviews;
+        public IEnumerable<ReviewDTO> GetAllBookReviews() {
+            var reviews = (from r in _db.Reviews
+                            join b in _db.Books on r.BookID equals b.Id
+                            select new ReviewDTO {
+                                UserId = r.UserId,
+                                BookTitle = b.Title,
+                                BookId = r.BookID,
+                                ReviewText = r.ReviewText,
+                                Stars = r.Stars
+                            }).ToList();
+
+            return reviews;
         }
     }
 }
