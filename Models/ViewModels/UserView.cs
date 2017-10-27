@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace LibraryAPI.Models.ViewModels
 {
     /// <summary>
@@ -9,18 +11,22 @@ namespace LibraryAPI.Models.ViewModels
         /// <summary>
         /// The name of the user.
         /// </summary>
+        [Required]
         public string Name { get; set; }
         /// <summary>
         /// The Home address of the user.
         /// </summary>
+        [Required]
         public string Address { get; set; }
         /// <summary>
         /// The email of the user.
         /// </summary>
+        [Required]
         public string Email { get; set; }
         /// <summary>
         /// The phone number of the user.
         /// </summary>
+        [Required]
         public string PhoneNumber { get; set; }
     }
 }
