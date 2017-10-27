@@ -25,6 +25,9 @@ namespace LibraryAPI.Models.EntityModels
         /// The date of the loan.
         /// </summary>
         public DateTime LoanDate { get; set; }
+        /// <summary>
+        /// Whether this book has been returned or not.
+        /// </summary>
         public bool HasBeenReturned { get; set; }
     }
 }

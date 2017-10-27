@@ -30,7 +30,6 @@ namespace LibraryAPI.Models.EntityModels
         /// <summary>
         /// If true, the user has been deleted and should not show up in any get request
         /// </summary>
-        /// <returns></returns>
         public bool Deleted { get; set; }
         
     }
