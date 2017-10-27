@@ -6,5 +6,7 @@ namespace LibraryAPI.Repositories
     public interface IReviewsRepository
     {
         IEnumerable<ReviewDTO> GetAllBookReviews();
+
+        IEnumerable<ReviewDTO> GetAllReviewsForBook(int bookId);
     }
 }

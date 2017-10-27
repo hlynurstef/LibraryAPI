@@ -16,5 +16,10 @@ namespace LibraryAPI.Services
             var reviews = _repo.GetAllBookReviews();
             return reviews;
         }
+
+        public IEnumerable<ReviewDTO> GetAllReviewsForBook(int bookId) {
+            var reviews = _repo.GetAllReviewsForBook(bookId);
+            return reviews;
+        }
     }
 }
