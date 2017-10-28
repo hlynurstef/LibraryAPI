@@ -111,5 +111,25 @@ namespace LibraryAPI.Repositories
                 return null;
             }
         }
+
+        public IEnumerable<ReviewDTO> GetReviewsForUser(int userId) {
+            var user = (from u in _db.Users
+                        where u.Id == userId && u.Deleted == false
+                        select u).SingleOrDefault();
+            if(user == null) {
+                throw new NotFoundException("User with id: " + userId + " not found.");
+            }
+
+            return (from r in _db.Reviews
+                    where r.UserId == userId
+                    join b in _db.Books on r.BookId equals b.Id
+                    select new ReviewDTO {
+                        UserId = userId,
+                        BookTitle = b.Title,
+                        BookId = r.BookId,
+                        ReviewText = r.ReviewText,
+                        Stars = r.Stars
+                    }).ToList();
+        }
     }
 }
