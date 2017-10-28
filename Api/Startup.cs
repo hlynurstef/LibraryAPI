@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using LibraryAPI.Repositories;
@@ -11,6 +12,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Microsoft.Extensions.PlatformAbstractions;
 using Swashbuckle.AspNetCore.Swagger;
 
 namespace Api
@@ -45,7 +47,18 @@ namespace Api
             services.AddMvc();
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new Info { Title = "Library API - Efribrú", Version = "v1" });
+                c.SwaggerDoc("v1", 
+                    new Info { 
+                        Title = "Library API - Efribrú", 
+                        Version = "v1",
+                        Description = "A Library API to simplify Jóhanna's management of her books",
+                        Contact = new Contact { Name = "Andri <andrii13@ru.is>, Guðjón <gudjonss12@ru.is>, Gunnar <gunnarg15@ru.is> & Hlynur <hlynurs15@ru.is>", 
+                                    Email = "library@mikligardur.com", 
+                                    Url = "http://library.mikligardur.com/"
+                        } 
+                    });
+                var filePath = Path.Combine(PlatformServices.Default.Application.ApplicationBasePath, "SWCapi.xml");
+                 c.IncludeXmlComments(filePath);
             });
         
         }

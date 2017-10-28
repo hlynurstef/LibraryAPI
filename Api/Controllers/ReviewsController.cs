@@ -9,10 +9,17 @@ using LibraryAPI.Models.ViewModels;
 
 namespace LibraryAPI.Controllers
 {
+    /// <summary>
+    /// Review controller class, handles requests related to reviews
+    /// </summary>
     public class ReviewsController : Controller
     {
         private readonly IReviewsService _reviewsService;
 
+        /// <summary>
+        /// Generates a new Review service to be used.
+        /// </summary>
+        /// <param name="reviewsService">reviewService</param>
         public ReviewsController(IReviewsService reviewsService) {
             _reviewsService = reviewsService;
         }
@@ -76,7 +83,7 @@ namespace LibraryAPI.Controllers
         /// </summary>
         /// <param name="userId">Id of the user giving the review</param>
         /// <param name="bookId">Id of the book being reviewed</param>
-        /// <param name="review">ReviewText & Stars for book</param>
+        /// <param name="review">ReviewDTO</param>
         /// <returns></returns>
         [HttpPost("users/{userId}/reviews/{bookId}")]
         public IActionResult AddReviewToBook(int userId, int bookId, [FromBody] ReviewView review) {
