@@ -157,5 +157,10 @@ namespace LibraryAPI.Repositories
 
             return books;
         }
+
+        public void ReturnBook(int userId, int bookId)
+        {
+            
+        }
     }
 }
