@@ -9,7 +9,7 @@ namespace LibraryAPI.Services
         BookDTOLite AddBook(BookView book);
         IEnumerable<BookDTOLite> GetBooks();
 
-        BookDTOLite GetBookById(int id);
+        BookDTO GetBookById(int id);
         
         void DeleteBookById(int id);
 

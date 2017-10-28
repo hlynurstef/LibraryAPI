@@ -61,28 +61,38 @@ namespace LibraryAPI.Repositories
             };
 
         }
-        public BookDTOLite GetBookById(int id){
+        public BookDTO GetBookById(int id){
             var book = (from b in _db.Books
-                        where b.Id == id
+                        where b.Id == id 
                         && b.Deleted == false
                         // TODO: should be BookDTO (has loan history as well)
-                        select new BookDTOLite{
+                        select new BookDTO{
                             Id = b.Id,
                             Title = b.Title,
                             Author = b.Author,
                             ReleaseDate = b.ReleaseDate,
                             ISBN = b.ISBN,
-                            Available = b.Available,
-                            // TODO: Populate list of reviews
-                            Reviews = null
-                       }  
-            
-            ).FirstOrDefault();
-
+                            Available = b.Available,  
+                            Reviews = (from r in _db.Reviews
+                                       where r.BookID == b.Id
+                                       select new ReviewDTO{
+                                           BookId = r.BookID,
+                                           UserId = r.UserId,
+                                           BookTitle = b.Title,
+                                           ReviewText = r.ReviewText,
+                                           Stars = r.Stars
+                                       }).ToList(),
+                            LoanHistory = (from l in _db.Loans
+                                           where l.BookId == b.Id
+                                           select new LoanDTO{
+                                               BookTitle = b.Title,
+                                               Id = l.Id,
+                                               LoanDate = l.LoanDate
+                                           }).ToList()                                   
+                        }).FirstOrDefault();
             if (book == null) {
                 throw new NotFoundException("Book with id: " + id + " not found.");
             }
-
             return book;
         }
         public void DeleteBookById(int id){
