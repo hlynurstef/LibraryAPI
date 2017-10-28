@@ -38,5 +38,10 @@ namespace LibraryAPI.Services
         {
             return _repo.GetBooksByUserId(userId);
         }
+
+        public void ReturnBook(int userId, int bookId)
+        {
+            _repo.ReturnBook(userId, bookId);
+        }
     }
 }

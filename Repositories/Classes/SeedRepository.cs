@@ -87,7 +87,7 @@ namespace LibraryAPI.Repositories
                         Book newBook = new Book {
                             Id = book.bok_id,
                             Title = book.bok_titill,
-                            Author = (book.fornafn_hofundar + book.eftirnafn_hofundar),
+                            Author = (book.fornafn_hofundar + " " + book.eftirnafn_hofundar),
                             ReleaseDate = book.utgafudagur,
                             ISBN = book.ISBN,
                             Available = true
@@ -116,14 +116,13 @@ namespace LibraryAPI.Repositories
                 using (StreamReader r = new StreamReader("../Data/Users.json"))
                 {    
                     string json = r.ReadToEnd();
-                    int counter = 0;
 
                     List<UserSeed> users = JsonConvert.DeserializeObject<List<UserSeed>>(json);
                     foreach(UserSeed user in users)
                     {
                         User newUser = new User {
                             Id = user.vinur_id,
-                            Name = (user.fornafn + user.eftirnafn),
+                            Name = (user.fornafn + " " + user.eftirnafn),
                             Address = user.heimilisfang,
                             Email = user.netfang,
                             PhoneNumber = null,
@@ -132,9 +131,7 @@ namespace LibraryAPI.Repositories
                         
                         if (user.lanasafn != null) {
                             foreach(LoanSeed loan in user.lanasafn) {
-                                counter++;
                                 Loan newLoan = new Loan {
-                                    Id = counter,
                                     UserId = user.vinur_id,
                                     BookId = loan.bok_id,
                                     LoanDate = loan.lanadagsetning,

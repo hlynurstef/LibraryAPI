@@ -11,5 +11,7 @@ namespace LibraryAPI.Services
         IEnumerable<ReviewDTO> GetAllReviewsForBook(int bookId);
 
         ReviewDTO AddReviewToBook(int userId, int bookId, ReviewView review);
+
+        IEnumerable<ReviewDTO> GetReviewsForUser(int userId);
     }
 }

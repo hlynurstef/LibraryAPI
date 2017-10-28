@@ -16,5 +16,6 @@ namespace LibraryAPI.Services
         void UpdateBookById(int id, BookView book);
 
         IEnumerable<BookDTOLite> GetBooksByUserId(int userId);
+        void ReturnBook(int userId, int bookId);
     }
 }

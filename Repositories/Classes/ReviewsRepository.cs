@@ -16,6 +16,10 @@ namespace LibraryAPI.Repositories
             _db = db;
         }
 
+        /// <summary>
+        /// Get all book reviews for all books in the system.
+        /// </summary>
+        /// <returns>List ReviewDTO for all reviews</returns>
         public IEnumerable<ReviewDTO> GetAllBookReviews() {
             var reviews = (from r in _db.Reviews
                             join b in _db.Books on r.BookId equals b.Id
@@ -30,6 +34,11 @@ namespace LibraryAPI.Repositories
             return reviews;
         }
 
+        /// <summary>
+        /// Get all reviews for a specific book
+        /// </summary>
+        /// <param name="bookId">Id of the book you want the reviews of</param>
+        /// <returns>List of ReviewDTO for a book</returns>
         public IEnumerable<ReviewDTO> GetAllReviewsForBook(int bookId) {
             // 
             var book = (from b in _db.Books
@@ -55,6 +64,15 @@ namespace LibraryAPI.Repositories
             return reviews;
         }
 
+        /// <summary>
+        /// Adds a review to a book from a specific user.
+        /// The User does not have to have a loan history for the book
+        /// since he might have read it from somewhere else.
+        /// </summary>
+        /// <param name="userId">Id of the user giving the review</param>
+        /// <param name="bookId">Id of the book being reviewed</param>
+        /// <param name="review">ReviewText and Stars</param>
+        /// <returns>ReviewDTO for the book review</returns>
         public ReviewDTO AddReviewToBook(int userId, int bookId, ReviewView review) {
             // Checking if user exists.
             var user = (from u in _db.Users
@@ -92,6 +110,26 @@ namespace LibraryAPI.Repositories
                 Console.WriteLine(e);
                 return null;
             }
+        }
+
+        public IEnumerable<ReviewDTO> GetReviewsForUser(int userId) {
+            var user = (from u in _db.Users
+                        where u.Id == userId && u.Deleted == false
+                        select u).SingleOrDefault();
+            if(user == null) {
+                throw new NotFoundException("User with id: " + userId + " not found.");
+            }
+
+            return (from r in _db.Reviews
+                    where r.UserId == userId
+                    join b in _db.Books on r.BookId equals b.Id
+                    select new ReviewDTO {
+                        UserId = userId,
+                        BookTitle = b.Title,
+                        BookId = r.BookId,
+                        ReviewText = r.ReviewText,
+                        Stars = r.Stars
+                    }).ToList();
         }
     }
 }
