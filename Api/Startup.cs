@@ -11,6 +11,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Swashbuckle.AspNetCore.Swagger;
 
 namespace Api
 {
@@ -39,6 +40,13 @@ namespace Api
             services.AddTransient<IRecommendationsService, RecommendationsService>();
             services.AddDbContext<AppDataContext>(options => 
                 options.UseSqlite("Data Source=../Repositories/LibraryAPI.db", b => b.MigrationsAssembly("Api")));
+
+            // Adding swagger stuff
+            services.AddMvc();
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new Info { Title = "Library API - Efribrú", Version = "v1" });
+            });
         
         }
 
@@ -49,6 +57,12 @@ namespace Api
             {
                 app.UseDeveloperExceptionPage();
             }
+            
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+            });
 
             app.UseMvc();
         }
