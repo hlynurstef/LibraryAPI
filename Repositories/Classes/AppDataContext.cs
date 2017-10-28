@@ -11,7 +11,7 @@ namespace LibraryAPI.Repositories
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Entity<Review>().HasKey(table => new {
-                table.BookID, table.UserId
+                table.BookId, table.UserId
             });
         }
 
