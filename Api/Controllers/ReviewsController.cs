@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using LibraryAPI.Services;
 using Microsoft.AspNetCore.Mvc;
 using LibraryAPI.Exceptions;
+using LibraryAPI.Models.ViewModels;
 
 namespace LibraryAPI.Controllers
 {
@@ -53,6 +54,22 @@ namespace LibraryAPI.Controllers
         // TODO: GET    /users/{userId}/reviews/{bookId} - Sækja dóma fyrir bók
 
         // TODO: POST   /users/{userId}/reviews/{bookId} - Skrá dóma fyrir bók
+        [HttpGet("users/{userId}/reviews/{bookId}")]
+        public IActionResult AddReviewToBook(int? userId, int? bookId, [FromBody] ReviewView review) {
+            if(userId == null || bookId == null) {
+                return BadRequest();
+            }
+            if(!ModelState.IsValid) {
+                return StatusCode(412, "modelstate is not valid");
+            }
+            try {
+                var newReview = _reviewsService.AddReviewToBook(userId.Value, bookId.Value, review);
+                //FIXME: Create a createdAt path and return that instead.
+                return StatusCode(201);
+            } catch (NotFoundException e) {
+                return NotFound(e.Message);
+            }
+        }
 
         // TODO: DELETE /users/{userId}/reviews/{bookId} - Fjarlæga dóma
 

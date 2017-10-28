@@ -9,20 +9,6 @@ namespace LibraryAPI.Models.ViewModels
     public class ReviewView
     {
         /// <summary>
-        /// Id of the user giving the review.
-        /// </summary>
-        [Required]
-        // int? is used because it needs to bo nullable in order
-        // for Required to work.
-        public int? UserId { get; set; }
-
-        /// <summary>
-        /// Id of the book the review is about.
-        /// </summary>
-        [Required]
-        public int? BookId { get; set; }
-
-        /// <summary>
         /// The review itself.
         /// </summary>
         public string ReviewText { get; set; }
@@ -32,6 +18,8 @@ namespace LibraryAPI.Models.ViewModels
         /// </summary>
         [Required]
         [RegularExpression("^[1-5]{1}", ErrorMessage = "Stars must be on the scale 1 to 5")]
+        // int? is used because it needs to bo nullable in order
+        // for Required to work.
         public int? Stars { get; set; }
     }
 }

@@ -74,9 +74,9 @@ namespace LibraryAPI.Repositories
                             ISBN = b.ISBN,
                             Available = b.Available,  
                             Reviews = (from r in _db.Reviews
-                                       where r.BookID == b.Id
+                                       where r.BookId == b.Id
                                        select new ReviewDTO{
-                                           BookId = r.BookID,
+                                           BookId = r.BookId,
                                            UserId = r.UserId,
                                            BookTitle = b.Title,
                                            ReviewText = r.ReviewText,
