@@ -53,11 +53,10 @@ namespace LibraryAPI.Controllers
 
         // TODO: GET    /users/{userId}/reviews/{bookId} - Sækja dóma fyrir bók
 
-        // TODO: POST   /users/{userId}/reviews/{bookId} - Skrá dóma fyrir bók
-        [HttpGet("users/{userId}/reviews/{bookId}")]
+        [HttpPost("users/{userId}/reviews/{bookId}")]
         public IActionResult AddReviewToBook(int? userId, int? bookId, [FromBody] ReviewView review) {
             if(userId == null || bookId == null) {
-                return BadRequest();
+                return BadRequest();    
             }
             if(!ModelState.IsValid) {
                 return StatusCode(412, "modelstate is not valid");
