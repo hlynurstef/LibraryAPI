@@ -18,10 +18,12 @@ namespace LibraryAPI.UnitTests
         [TestMethod]
         public void AddUserToDatabase()
         {
+            // Arrange
             var options = new DbContextOptionsBuilder<AppDataContext>()
                 .UseInMemoryDatabase(databaseName: "Add_writes_to_database")
                 .Options;
 
+            // Act
             // Run the test against one instance of the context
             using (var context = new AppDataContext(options))
             {
@@ -34,6 +36,7 @@ namespace LibraryAPI.UnitTests
                 });
             }
 
+            // Assert
             // Use a separate instance of the context to verify correct data was saved to database
             using (var context = new AppDataContext(options))
             {
