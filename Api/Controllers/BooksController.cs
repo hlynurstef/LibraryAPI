@@ -147,7 +147,7 @@ namespace LibraryAPI.Controllers
         /// <param name="userId">The id of the user</param>
         /// <param name="bookId">The id of the book</param>
         /// <returns>The loan record</returns>
-         [HttpPost("/users/{userId}/books/{bookId}")]
+         [HttpPost("users/{userId}/books/{bookId}")]
          public IActionResult LendBookToUser(int userId, int bookId){
              try {
                  _booksService.LendBookToUser(userId, bookId);
@@ -158,5 +158,20 @@ namespace LibraryAPI.Controllers
             }
         }
         // TODO: PUT    /users/{userId}/books/{bookId} - Uppfæra útlánaskráningu
+
+        [HttpPut("/users/{userId}/books/{bookId}")]
+        public IActionResult UpdateLoanRegistration(int userId, int bookId, [FromBody]LoanView loan){
+            if(loan == null){
+                Console.WriteLine("whut!!!!");
+                return BadRequest();
+            }
+            try{
+                _booksService.UpdateLoanRegistration(userId, bookId, loan);
+                return NoContent();
+            }
+            catch(NotFoundException e){
+                return NotFound(e.Message);   
+            }
+        }
     }
 }

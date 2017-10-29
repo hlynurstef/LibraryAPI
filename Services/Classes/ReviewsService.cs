@@ -32,5 +32,8 @@ namespace LibraryAPI.Services
         public ReviewDTO GetBookReviewFromUser(int userId, int bookId){
             return _repo.GetBookReviewFromUser(userId, bookId);
         }
+        public void DeleteUsersBookReview(int userId, int bookId){
+            _repo.DeleteUsersBookReview(userId, bookId);
+        }
     }
 }

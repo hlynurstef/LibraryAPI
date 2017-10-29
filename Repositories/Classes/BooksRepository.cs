@@ -161,20 +161,18 @@ namespace LibraryAPI.Repositories
                                            Stars = r.Stars
                                        }).ToList(),
                          }).ToList();
-
             return books;
         }
 
         public void LendBookToUser(int userId, int bookId){
             var bookEntity = _db.Books.SingleOrDefault(b => (b.Id == bookId && b.Deleted == false));
-            var userEntity = _db.Users.SingleOrDefault(u => (u.Id == userId && u.Deleted == false));
-            
             if(bookEntity == null){
                 throw new NotFoundException("Book with id: " + bookId + " not found.");
             }
             if(bookEntity.Available == false){
                 throw new NotFoundException("Book with id: " + bookId + " is already out.");
             }
+            var userEntity = _db.Users.SingleOrDefault(u => (u.Id == userId && u.Deleted == false));
             if(userEntity == null){
                 throw new NotFoundException("Book with id: " + bookId + " not found.");
             }
@@ -212,6 +210,25 @@ namespace LibraryAPI.Repositories
             catch(System.Exception e) {
                 Console.WriteLine(e);
             }
+        }
+        public void UpdateLoanRegistration(int userId, int bookId, LoanView loan){
+            var bookEntity = _db.Books.SingleOrDefault(b => (b.Id == bookId && b.Deleted == false));
+            if(bookEntity == null){
+                throw new NotFoundException("Book with id: " + bookId + " not found.");
+            }
+            var userEntity = _db.Users.SingleOrDefault(u => (u.Id == userId && u.Deleted == false));
+            if(userEntity == null){
+                throw new NotFoundException("Book with id: " + bookId + " not found.");
+            }
+            var loanEntity = _db.Loans.SingleOrDefault(l => (l.Id == loan.Id));
+            if(loanEntity == null){
+                throw new NotFoundException("Loan with id: " + loan.Id + " not found.");
+            }
+            loanEntity.BookId = loan.BookId;
+            loanEntity.HasBeenReturned = loan.HasBeenReturned;
+            loanEntity.LoanDate = loan.LoanDate;
+            loanEntity.UserId = loan.UserId;
+            _db.SaveChanges();
         }
     }
 }

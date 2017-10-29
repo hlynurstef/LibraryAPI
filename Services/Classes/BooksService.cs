@@ -44,5 +44,9 @@ namespace LibraryAPI.Services
         {
             _repo.ReturnBook(userId, bookId);
         }
+
+        public void UpdateLoanRegistration(int userId, int bookId, LoanView book){
+            _repo.UpdateLoanRegistration(userId, bookId, book);
+        }
     }
 }

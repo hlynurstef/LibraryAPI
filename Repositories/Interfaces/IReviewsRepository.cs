@@ -14,6 +14,8 @@ namespace LibraryAPI.Repositories
 
         IEnumerable<ReviewDTO> GetReviewsForUser(int userId);
 
-        ReviewDTO GetBookReviewFromUser(int userId, int BookId);
+        ReviewDTO GetBookReviewFromUser(int userId, int bookId);
+
+        void DeleteUsersBookReview(int userId, int bookId);
     }
 }
