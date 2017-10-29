@@ -9,10 +9,17 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace LibraryAPI.Controllers
 {
+    /// <summary>
+    /// User controller class that handles all user related queries.
+    /// </summary>
     public class UsersController : Controller
     {
         private readonly IUsersService _usersService;
 
+        /// <summary>
+        /// Instantiates a new user service when creating the controller
+        /// </summary>
+        /// <param name="usersService">User Serivce</param>
         public UsersController(IUsersService usersService) {
             _usersService = usersService;
         }

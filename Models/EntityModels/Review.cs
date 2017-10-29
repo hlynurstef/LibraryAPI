@@ -15,7 +15,7 @@ namespace LibraryAPI.Models.EntityModels
         /// <summary>
         /// The Book Id of the review.
         /// </summary>
-        public int BookID { get; set; }
+        public int BookId { get; set; }
         /// <summary>
         /// The review text.
         /// </summary>

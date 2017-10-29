@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using LibraryAPI.Models.DTOModels;
 using LibraryAPI.Repositories;
+using LibraryAPI.Models.ViewModels;
 
 namespace LibraryAPI.Services
 {
@@ -13,13 +14,19 @@ namespace LibraryAPI.Services
         }
 
         public IEnumerable<ReviewDTO> GetAllBookReviews() {
-            var reviews = _repo.GetAllBookReviews();
-            return reviews;
+            return _repo.GetAllBookReviews();
         }
 
         public IEnumerable<ReviewDTO> GetAllReviewsForBook(int bookId) {
-            var reviews = _repo.GetAllReviewsForBook(bookId);
-            return reviews;
+            return  _repo.GetAllReviewsForBook(bookId);
+        }
+
+        public ReviewDTO AddReviewToBook(int userId, int bookId, ReviewView review) {
+            return _repo.AddReviewToBook(userId, bookId, review);
+        }
+
+        public IEnumerable<ReviewDTO> GetReviewsForUser(int userId) {
+            return _repo.GetReviewsForUser(userId);
         }
     }
 }

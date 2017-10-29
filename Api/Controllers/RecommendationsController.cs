@@ -1,8 +1,12 @@
 using LibraryAPI.Services;
+using LibraryAPI.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LibraryAPI.Controllers
 {
+    /// <summary>
+    /// A controller class for book recommendations
+    /// </summary>
     public class RecommendationsController : Controller
     {
         private readonly IRecommendationsService _recService;
@@ -11,10 +15,24 @@ namespace LibraryAPI.Controllers
             _recService = recService;
         }
 
-        // TODO: GET /users/{userId}/recommendation - Fá lista yfir vænlegar og ólesnar bækur
+        // GET /users/{userId}/recommendation - Fá lista yfir vænlegar og ólesnar bækur
+        /// <summary>
+        /// Returns a list of recommendations for the user.
+        /// </summary>
+        /// <remarks>
+        /// This is done by finding books the user has read and finding books by the same authors that the user has not read
+        /// If no such books are found, we recommend five random books that the user has not read
+        /// </remarks>
+        /// <param name="userId">The id of the user in question</param>
+        /// <returns>A list of books that we recommend to the user</returns>
         [HttpGet("users/{userId}/recommendation")]
         public IActionResult GetRecommendationsForUser(int userId) {
-            return Ok(_recService.GetRecommendationsForUser(userId));
+            try {
+                return Ok(_recService.GetRecommendationsForUser(userId));
+            }
+            catch(NotFoundException e) {
+                return NotFound(e.Message);
+            }
         }
     }
 }

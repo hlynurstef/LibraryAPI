@@ -120,6 +120,25 @@ namespace LibraryAPI.Controllers
                 return NotFound(e.Message);
             }
         }
+        // DELETE /users/{userId}/books/{bookId} - Skila bók
+        /// <summary>
+        /// A user returns a book using the userId and the bookId
+        /// </summary>
+        /// <param name="userId">The Id of the user that is going to return a book</param>
+        /// <param name="bookId">The Id of the book to return</param>
+        /// <returns>StatusCode 204 if successful</returns>
+        [HttpDelete("users/{userId}/books/{bookId}")]
+        public IActionResult ReturnBook(int userId, int bookId){
+            try {
+                _booksService.ReturnBook(userId, bookId);
+                return NoContent();
+            }
+            catch(NotFoundException e) {
+                return NotFound(e.Message);
+            }
+        }
+
+
 
         // POST  /users/{userId}/books/{bookId}
         /// <summary>
@@ -140,7 +159,6 @@ namespace LibraryAPI.Controllers
          }
         // TODO: POST   /users/{userId}/books/{bookId} - Skrá útlán á bók
 
-        // TODO: DELETE /users/{userId}/books/{bookId} - Skila bók
 
         // TODO: PUT    /users/{userId}/books/{bookId} - Uppfæra útlánaskráningu
     }

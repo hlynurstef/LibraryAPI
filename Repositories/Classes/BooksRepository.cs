@@ -164,6 +164,7 @@ namespace LibraryAPI.Repositories
 
             return books;
         }
+
         public void LendBookToUser(int userId, int bookId){
             var bookEntity = _db.Books.SingleOrDefault(b => (b.Id == bookId && b.Deleted == false));
             var userEntity = _db.Users.SingleOrDefault(u => (u.Id == userId && u.Deleted == false));
@@ -187,6 +188,30 @@ namespace LibraryAPI.Repositories
             bookEntity.Available = false;
             _db.Loans.Add(loan);
             _db.SaveChanges();      
+        }
+        public void ReturnBook(int userId, int bookId)
+        {
+            // Check if the user has a loan for the book
+            Loan loan = (from l in _db.Loans
+                        where l.UserId == userId
+                        && l.BookId == bookId
+                        && l.HasBeenReturned == false
+                        join b in _db.Books on l.BookId equals b.Id
+                        select l).FirstOrDefault(); 
+
+            if (loan == null) 
+            {
+                throw new NotFoundException("No loan found for user " + userId + " matching the book " + bookId);
+            }
+
+            loan.HasBeenReturned = true;
+
+            try {
+                _db.SaveChanges();
+            }
+            catch(System.Exception e) {
+                Console.WriteLine(e);
+            }
         }
     }
 }
