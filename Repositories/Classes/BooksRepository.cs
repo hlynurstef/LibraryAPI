@@ -151,11 +151,42 @@ namespace LibraryAPI.Repositories
                             ReleaseDate = b.ReleaseDate,
                             ISBN = b.ISBN,
                             Available = b.Available,
-                            // TODO: Populate list of reviews
-                            Reviews = null
+                            Reviews = (from r in _db.Reviews
+                                       where r.BookID == b.Id
+                                       select new ReviewDTO{
+                                           BookId = r.BookID,
+                                           UserId = r.UserId,
+                                           BookTitle = b.Title,
+                                           ReviewText = r.ReviewText,
+                                           Stars = r.Stars
+                                       }).ToList(),
                          }).ToList();
 
             return books;
+        }
+        public void LendBookToUser(int userId, int bookId){
+            var bookEntity = _db.Books.SingleOrDefault(b => (b.Id == bookId && b.Deleted == false));
+            var userEntity = _db.Users.SingleOrDefault(u => (u.Id == userId && u.Deleted == false));
+            
+            if(bookEntity == null){
+                throw new NotFoundException("Book with id: " + bookId + " not found.");
+            }
+            if(bookEntity.Available == false){
+                throw new NotFoundException("Book with id: " + bookId + " is already out.");
+            }
+            if(userEntity == null){
+                throw new NotFoundException("Book with id: " + bookId + " not found.");
+            }
+
+            var loan = new Loan{
+                BookId = bookEntity.Id,
+                UserId = userEntity.Id,
+                LoanDate = DateTime.Now,
+                HasBeenReturned = false
+            };
+            bookEntity.Available = false;
+            _db.Loans.Add(loan);
+            _db.SaveChanges();      
         }
     }
 }

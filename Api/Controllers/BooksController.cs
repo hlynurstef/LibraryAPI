@@ -53,7 +53,6 @@ namespace LibraryAPI.Controllers
         /// <returns>The requested book</returns>
         [HttpGet("books/{bookId}", Name = "GetBookById")]
         public IActionResult GetBookById(int bookId) {
-            // TODO:  Sækja öll gögn um bók (m.a. lánasögu)
             try {
                 var book = _booksService.GetBookById(bookId);
                 return Ok(book);
@@ -122,6 +121,23 @@ namespace LibraryAPI.Controllers
             }
         }
 
+        // POST  /users/{userId}/books/{bookId}
+        /// <summary>
+        /// Lends a book to a user
+        /// </summary>
+        /// <param name="userId">The id of the user</param>
+        /// <param name="bookId">The id of the book</param>
+        /// <returns>The loan record</returns>
+         [HttpPost("/users/{userId}/books/{bookId}")]
+         public IActionResult LendBookToUser(int userId, int bookId){
+             try {
+                 _booksService.LendBookToUser(userId, bookId);
+                 return StatusCode(201, "Created");
+             }
+             catch (NotFoundException e){
+                 return NotFound(e.Message);
+             }
+         }
         // TODO: POST   /users/{userId}/books/{bookId} - Skrá útlán á bók
 
         // TODO: DELETE /users/{userId}/books/{bookId} - Skila bók

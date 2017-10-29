@@ -25,7 +25,6 @@ namespace LibraryAPI.Services
         {
             return _repo.GetBookById(id);
         }
-
         public void DeleteBookById(int id)
         {
             _repo.DeleteBookById(id);
@@ -37,6 +36,9 @@ namespace LibraryAPI.Services
         public IEnumerable<BookDTOLite> GetBooksByUserId(int userId)
         {
             return _repo.GetBooksByUserId(userId);
+        }
+        public void LendBookToUser(int userId, int bookId){
+            _repo.LendBookToUser(userId, bookId);
         }
     }
 }
