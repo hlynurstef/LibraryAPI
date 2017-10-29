@@ -14,6 +14,7 @@ namespace LibraryAPI.Repositories
          IEnumerable<BookDTOLite> GetBooksByUserId(int userId);
          void LendBookToUser(int userId, int bookId);
          void ReturnBook(int userId, int bookId);
+         void UpdateLoanRegistration(int userId, int bookId, LoanView book);
     }
 
 }

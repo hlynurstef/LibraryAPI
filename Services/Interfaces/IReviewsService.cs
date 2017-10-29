@@ -13,6 +13,9 @@ namespace LibraryAPI.Services
         ReviewDTO AddReviewToBook(int userId, int bookId, ReviewView review);
 
         IEnumerable<ReviewDTO> GetReviewsForUser(int userId);
+
         ReviewDTO GetBookReviewFromUser(int userId, int bookId);
+
+        void DeleteUsersBookReview(int userId, int bookId);
     }
 }
