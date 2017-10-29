@@ -6,11 +6,11 @@ using System.Configuration;
 using LibraryAPI.Models.DTOModels;
 using LibraryAPI.Models.ViewModels;
 using LibraryAPI.Models.EntityModels;
+using LibraryAPI.Models.SeedModels;
 using Microsoft.EntityFrameworkCore;
 using LibraryAPI.Exceptions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using Models;
 
 namespace LibraryAPI.Repositories
 {
