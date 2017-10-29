@@ -152,14 +152,11 @@ namespace LibraryAPI.Controllers
              try {
                  _booksService.LendBookToUser(userId, bookId);
                  return StatusCode(201, "Created");
-             }
-             catch (NotFoundException e){
-                 return NotFound(e.Message);
-             }
-         }
-        // TODO: POST   /users/{userId}/books/{bookId} - Skrá útlán á bók
-
-
+            }
+            catch (NotFoundException e){
+                return NotFound(e.Message);
+            }
+        }
         // TODO: PUT    /users/{userId}/books/{bookId} - Uppfæra útlánaskráningu
     }
 }

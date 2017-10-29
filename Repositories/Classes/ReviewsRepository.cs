@@ -131,5 +131,33 @@ namespace LibraryAPI.Repositories
                         Stars = r.Stars
                     }).ToList();
         }
+
+        public ReviewDTO GetBookReviewFromUser(int userId, int bookId){
+            var user = (from u in _db.Users
+                        where u.Id == userId && u.Deleted == false
+                        select u).SingleOrDefault();
+            if(user == null) {
+                throw new NotFoundException("User with id: " + userId + " not found.");
+            }
+            var book = (from b in _db.Books
+                        where b.Id == bookId && b.Deleted == false
+                        select b).SingleOrDefault();
+            if(book == null){
+                throw new NotFoundException("Book with id "+ bookId + " not found.");
+            }
+            var review = (from r in _db.Reviews
+                        where r.BookId == bookId && r.UserId == userId
+                        select r).SingleOrDefault();
+            if(review == null){
+                throw new NotFoundException("Review for book with id "+ bookId + " user with id " + userId + " not found.");
+            }
+            return new ReviewDTO{
+                UserId = review.UserId,
+                BookId = review.BookId,
+                BookTitle = book.Title,
+                Stars = review.Stars,
+                ReviewText = review.ReviewText
+            };
+        }
     }
 }

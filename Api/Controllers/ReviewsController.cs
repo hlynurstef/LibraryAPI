@@ -51,9 +51,18 @@ namespace LibraryAPI.Controllers
             } catch (NotFoundException e) {
                 return NotFound(e.Message);
             }
-            
         }
 
+        [HttpGet("books/{bookId}/reviews/{userId}")]
+        public IActionResult GetBookReviewFromUser(int bookId, int userId){
+            try {
+                var review = _reviewsService.GetBookReviewFromUser(bookId, userId);
+                return Ok(review);
+            }
+            catch (NotFoundException e) {
+                return NotFound(e.Message);
+            }
+        }
         // TODO: GET    /books/{bookId}/reviews/{userId} - Fá dóm frá notanda fyrir bók
 
         // TODO: PUT    /books/{bookId}/reviews/{userId} - Breyta dómi notanda um bók

@@ -28,5 +28,9 @@ namespace LibraryAPI.Services
         public IEnumerable<ReviewDTO> GetReviewsForUser(int userId) {
             return _repo.GetReviewsForUser(userId);
         }
+
+        public ReviewDTO GetBookReviewFromUser(int userId, int bookId){
+            return _repo.GetBookReviewFromUser(userId, bookId);
+        }
     }
 }
