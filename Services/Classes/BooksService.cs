@@ -37,15 +37,12 @@ namespace LibraryAPI.Services
         {
             return _repo.GetBooksByUserId(userId);
         }
-<<<<<<< HEAD
         public void LendBookToUser(int userId, int bookId){
             _repo.LendBookToUser(userId, bookId);
-=======
-
+        }
         public void ReturnBook(int userId, int bookId)
         {
             _repo.ReturnBook(userId, bookId);
->>>>>>> c8e733fe10ceba1f7ee0bd2a6040da69b3a9d4df
         }
     }
 }
