@@ -127,21 +127,21 @@ namespace LibraryAPI.UnitTests.BooksRepositoryTests
                 Title = "A Game Of Thrones",
                 Author = "George R.R. Martin",
                 ReleaseDate = new DateTime(1996, 8, 1),
-                ISBN = "535135468543246846541"
+                ISBN = "214124235"
             };
 
             var book2 = new BookView {
                 Title = "The Hobbit",
                 Author = "Tolkien",
                 ReleaseDate = new DateTime(1996, 8,  1),
-                ISBN = "535135468543246846541"
+                ISBN = "541312312"
             };
 
             var book3 = new BookView {
                 Title = "Programming with c++",
                 Author = "Bjarne Stoustrup",
                 ReleaseDate = new DateTime(1996, 8, 1),
-                ISBN = "535135468543246846541"
+                ISBN = "2423423123"
             };
 
             
@@ -159,6 +159,19 @@ namespace LibraryAPI.UnitTests.BooksRepositoryTests
             Assert.AreEqual("A Game Of Thrones", books.Where(x => x.Title == "A Game Of Thrones").SingleOrDefault().Title);
             Assert.AreEqual("The Hobbit", books.Where(x => x.Title == "The Hobbit").SingleOrDefault().Title);
             Assert.AreEqual("Programming with c++", books.Where(x => x.Title == "Programming with c++").SingleOrDefault().Title);
+        }
+
+        [TestMethod]
+        public void Books_DeleteBookById()
+        {
+            // Arrange
+            var repo = new BooksRepository(context);
+
+            // Act
+            repo.DeleteBookById(1);
+
+            // Assert
+            Assert.AreEqual(0, context.Books.Count());
         }
     }
 }
