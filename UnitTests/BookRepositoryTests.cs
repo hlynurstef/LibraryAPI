@@ -6,6 +6,7 @@ using LibraryAPI.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using LibraryAPI.Models.EntityModels;
+using LibraryAPI.Models.DTOModels;
 
 namespace LibraryAPI.UnitTests.BooksRepositoryTests
 {
@@ -48,7 +49,7 @@ namespace LibraryAPI.UnitTests.BooksRepositoryTests
             context = new AppDataContext(options);
 
             context.Users.Add(new User {
-                Id = 1,
+                //Id = 1,
                 Name = NAME_DABS,
                 Address = ADDRESS_DABS,
                 Email = EMAIL_DABS,
@@ -57,7 +58,7 @@ namespace LibraryAPI.UnitTests.BooksRepositoryTests
             });
 
             context.Books.Add(new Book {
-                Id = 1,
+                //Id = 1,
                 Title = TITLE_LOTR,
                 Author = AUTHOR_LOTR,
                 ReleaseDate = RELEASE_LOTR,
@@ -67,7 +68,7 @@ namespace LibraryAPI.UnitTests.BooksRepositoryTests
             });
 
             context.Loans.Add(new Loan {
-                Id = 1,
+                //Id = 1,
                 UserId = USERID_LOAN,
                 BookId = BOOKID_LOAN,
                 LoanDate = STARTDATE_LOAN,
@@ -189,9 +190,10 @@ namespace LibraryAPI.UnitTests.BooksRepositoryTests
         {
             // Arrange
             var repo = new BooksRepository(context);
+            int id = (context.Books.Where(u => u.Title == TITLE_LOTR).SingleOrDefault()).Id;
 
             // Act
-            repo.DeleteBookById(1);
+            repo.DeleteBookById(id);
 
             // Assert
             Assert.AreEqual(0, context.Books.Count());
@@ -203,9 +205,11 @@ namespace LibraryAPI.UnitTests.BooksRepositoryTests
         {
             // Arrange
             var repo = new BooksRepository(context);
+                // Get highest Id
+            int id = (context.Books.OrderByDescending(u => u.Id).FirstOrDefault()).Id;
 
             // Act
-            repo.DeleteBookById(3);
+            repo.DeleteBookById(id+1);
 
             // Assert
             Assert.Fail();
@@ -216,6 +220,7 @@ namespace LibraryAPI.UnitTests.BooksRepositoryTests
         {
             // Arrange
             var repo = new BooksRepository(context);
+            int id = (context.Books.Where(u => u.Title == TITLE_LOTR).SingleOrDefault()).Id;
             var updatedBook = new BookView {
                 Title = "Not a Game",
                 Author = "Jigsaw",
@@ -224,11 +229,11 @@ namespace LibraryAPI.UnitTests.BooksRepositoryTests
             };
 
             // Act
-            repo.UpdateBookById(1, updatedBook);
+            repo.UpdateBookById(id, updatedBook);
             
             // Assert
-            Assert.AreEqual("Not a Game", context.Books.Where(x => x.Id == 1).SingleOrDefault().Title);
-            Assert.AreEqual("Jigsaw", context.Books.Where(x => x.Id == 1).SingleOrDefault().Author);
+            Assert.AreEqual("Not a Game", context.Books.Where(x => x.Id == id).SingleOrDefault().Title);
+            Assert.AreEqual("Jigsaw", context.Books.Where(x => x.Id == id).SingleOrDefault().Author);
         }
 
         [TestMethod]
@@ -237,6 +242,8 @@ namespace LibraryAPI.UnitTests.BooksRepositoryTests
         {
             // Arrange
             var repo = new BooksRepository(context);
+            int id = (context.Books.OrderByDescending(u => u.Id).FirstOrDefault()).Id;
+
             var updatedBook = new BookView {
                 Title = "Not a Game",
                 Author = "Mr. Boom Bastic",
@@ -245,10 +252,10 @@ namespace LibraryAPI.UnitTests.BooksRepositoryTests
             };
 
             // Act
-            repo.UpdateBookById(15, updatedBook);
+            repo.UpdateBookById(id+1, updatedBook);
             
             // Assert
-            Assert.Fail();
+            Assert.Fail("Should have thrown a NotFoundException");
         }
     }
 }
