@@ -111,7 +111,6 @@ namespace LibraryAPI.Controllers
             }
 
             try {
-                // TODO: Should this return the newly updated user ? 
                 _usersService.UpdateUser(user, userId);
                 return StatusCode(204);
             }
