@@ -101,15 +101,15 @@ namespace LibraryAPI.UnitTests.BooksRepositoryTests
 
             // Assert
             Assert.AreEqual(2, context.Books.Count());
-            Assert.AreEqual("A Game Of Thrones", context.Books.Where(x => x.Title == "A Game Of Thrones").SingleOrDefault().Title);
-            Assert.AreEqual("George R.R. Martin", context.Books.Where(x => x.Title == "A Game Of Thrones").SingleOrDefault().Author);
-            Assert.AreEqual(new DateTime(1996,8,1), context.Books.Where(x => x.Title == "A Game Of Thrones").SingleOrDefault().ReleaseDate);
-            Assert.AreEqual("535135468543246846541", context.Books.Where(x => x.Title == "A Game Of Thrones").SingleOrDefault().ISBN);
+            Assert.AreEqual("A Game Of Thrones", context.Books.Where(b => b.Title == "A Game Of Thrones").SingleOrDefault().Title);
+            Assert.AreEqual("George R.R. Martin", context.Books.Where(b => b.Title == "A Game Of Thrones").SingleOrDefault().Author);
+            Assert.AreEqual(new DateTime(1996,8,1), context.Books.Where(b => b.Title == "A Game Of Thrones").SingleOrDefault().ReleaseDate);
+            Assert.AreEqual("535135468543246846541", context.Books.Where(b => b.Title == "A Game Of Thrones").SingleOrDefault().ISBN);
         }
 
         [TestMethod]
         [ExpectedException(typeof(AlreadyExistsException))]
-        public void Books_AddBook_Conflicting_Resource()
+        public void Books_AddBook_AddSameBook()
         {
             // Arrange
             var repo = new BooksRepository(context);
@@ -128,6 +128,31 @@ namespace LibraryAPI.UnitTests.BooksRepositoryTests
         }
 
         [TestMethod]
+        public void Books_AddBook_AddBookAgainThatHasBeenDeleted()
+        {
+            // Arrange
+            var repo = new BooksRepository(context);
+            var deletedBook = (from b in context.Books
+                                where b.Title == TITLE_LOTR
+                                select b).SingleOrDefault();
+            deletedBook.Deleted = true;
+            context.SaveChanges();
+
+            var book = new BookView {
+                Title = TITLE_LOTR,
+                Author = AUTHOR_LOTR,
+                ReleaseDate = RELEASE_LOTR,
+                ISBN = ISBN_LOTR
+            };
+
+            // Act
+            repo.AddBook(book);
+
+            // Assert
+            Assert.AreEqual(2, context.Books.Where(b => b.ISBN == ISBN_LOTR).ToList().Count());
+        }
+
+        [TestMethod]
         public void Books_GetBooks_OneBook()
         {
             // Arrange
@@ -138,7 +163,7 @@ namespace LibraryAPI.UnitTests.BooksRepositoryTests
 
             // Assert
             Assert.AreEqual(1, books.Count());
-            Assert.AreEqual("The Lord of The Rings", books.Where(x => x.Title == "The Lord of The Rings").SingleOrDefault().Title);
+            Assert.AreEqual("The Lord of The Rings", books.Where(b => b.Title == "The Lord of The Rings").SingleOrDefault().Title);
         }
 
         [TestMethod]
@@ -179,10 +204,10 @@ namespace LibraryAPI.UnitTests.BooksRepositoryTests
 
             // Assert
             Assert.AreEqual(4, books.Count());
-            Assert.AreEqual("The Lord of The Rings", books.Where(x => x.Title == "The Lord of The Rings").SingleOrDefault().Title);
-            Assert.AreEqual("A Game Of Thrones", books.Where(x => x.Title == "A Game Of Thrones").SingleOrDefault().Title);
-            Assert.AreEqual("The Hobbit", books.Where(x => x.Title == "The Hobbit").SingleOrDefault().Title);
-            Assert.AreEqual("Programming with c++", books.Where(x => x.Title == "Programming with c++").SingleOrDefault().Title);
+            Assert.AreEqual("The Lord of The Rings", books.Where(b => b.Title == "The Lord of The Rings").SingleOrDefault().Title);
+            Assert.AreEqual("A Game Of Thrones", books.Where(b => b.Title == "A Game Of Thrones").SingleOrDefault().Title);
+            Assert.AreEqual("The Hobbit", books.Where(b => b.Title == "The Hobbit").SingleOrDefault().Title);
+            Assert.AreEqual("Programming with c++", books.Where(b => b.Title == "Programming with c++").SingleOrDefault().Title);
         }
 
         [TestMethod]
@@ -190,13 +215,13 @@ namespace LibraryAPI.UnitTests.BooksRepositoryTests
         {
             // Arrange
             var repo = new BooksRepository(context);
-            int id = (context.Books.Where(u => u.Title == TITLE_LOTR).SingleOrDefault()).Id;
+            int id = (context.Books.Where(b => b.Title == TITLE_LOTR).SingleOrDefault()).Id;
 
             // Act
             repo.DeleteBookById(id);
 
             // Assert
-            Assert.AreEqual(0, context.Books.Count());
+            Assert.AreEqual(true, context.Books.Where(b => b.Id == id).SingleOrDefault().Deleted);
         }
         
         [TestMethod]
@@ -206,7 +231,7 @@ namespace LibraryAPI.UnitTests.BooksRepositoryTests
             // Arrange
             var repo = new BooksRepository(context);
                 // Get highest Id
-            int id = (context.Books.OrderByDescending(u => u.Id).FirstOrDefault()).Id;
+            int id = (context.Books.OrderByDescending(b => b.Id).FirstOrDefault()).Id;
 
             // Act
             repo.DeleteBookById(id+1);
@@ -220,7 +245,7 @@ namespace LibraryAPI.UnitTests.BooksRepositoryTests
         {
             // Arrange
             var repo = new BooksRepository(context);
-            int id = (context.Books.Where(u => u.Title == TITLE_LOTR).SingleOrDefault()).Id;
+            int id = (context.Books.Where(b => b.Title == TITLE_LOTR).SingleOrDefault()).Id;
             var updatedBook = new BookView {
                 Title = "Not a Game",
                 Author = "Jigsaw",
@@ -232,8 +257,8 @@ namespace LibraryAPI.UnitTests.BooksRepositoryTests
             repo.UpdateBookById(id, updatedBook);
             
             // Assert
-            Assert.AreEqual("Not a Game", context.Books.Where(x => x.Id == id).SingleOrDefault().Title);
-            Assert.AreEqual("Jigsaw", context.Books.Where(x => x.Id == id).SingleOrDefault().Author);
+            Assert.AreEqual("Not a Game", context.Books.Where(b => b.Id == id).SingleOrDefault().Title);
+            Assert.AreEqual("Jigsaw", context.Books.Where(b => b.Id == id).SingleOrDefault().Author);
         }
 
         [TestMethod]
@@ -242,7 +267,7 @@ namespace LibraryAPI.UnitTests.BooksRepositoryTests
         {
             // Arrange
             var repo = new BooksRepository(context);
-            int id = (context.Books.OrderByDescending(u => u.Id).FirstOrDefault()).Id;
+            int id = (context.Books.OrderByDescending(b => b.Id).FirstOrDefault()).Id;
 
             var updatedBook = new BookView {
                 Title = "Not a Game",

@@ -21,6 +21,12 @@ namespace LibraryAPI.Repositories
             List<string> books = new List<string>(); 
             List<string> authors = new List<string>();
 
+            var userCheck = _db.Users.Where(u => u.Id == userId).SingleOrDefault();
+
+            if (userCheck == null) {
+                throw new NotFoundException("User with id " + userId + " does not exist");
+            }
+
             // Get the user
             var user = (from u in _db.Users
             where u.Id == userId
@@ -32,8 +38,9 @@ namespace LibraryAPI.Repositories
                 Email = u.Email,
                 PhoneNumber = u.PhoneNumber,
                 LoanHistory = (from l in _db.Loans
-                                where l.UserId == userId
                                 join b in _db.Books on l.BookId equals b.Id
+                                where l.UserId == userId
+                                && b.Deleted == false
                                 select new LoanDTO {
                                     Id = l.Id,
                                     BookTitle = b.Title,
@@ -42,10 +49,6 @@ namespace LibraryAPI.Repositories
                                 }).ToList()
             }).SingleOrDefault();
             
-            if (user == null) {
-                throw new NotFoundException("User with id " + userId + " does not exist");
-            }
-
             // Dig into the users loan history
             if (user.LoanHistory != null) {
                 // Go over all the books the user has read
@@ -55,6 +58,7 @@ namespace LibraryAPI.Repositories
                     books.Add(book.BookTitle);
                     var author = (from b in _db.Books
                                     where b.Title == book.BookTitle
+                                    && b.Deleted == false
                                     select b.Author).SingleOrDefault();
                     authors.Add(author);
                 }
@@ -65,6 +69,7 @@ namespace LibraryAPI.Repositories
                  {
                      var recommendedBooks = (from b in _db.Books
                                                 where b.Author == author
+                                                && b.Deleted == false
                                                 select new BookDTO{
                                                     Id = b.Id,
                                                     Title = b.Title,

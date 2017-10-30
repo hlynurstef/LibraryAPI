@@ -43,6 +43,7 @@ namespace LibraryAPI.Repositories
         public BookDTOLite AddBook(BookView book){
             var bookCheck = (from b in _db.Books
                             where b.ISBN == book.ISBN
+                            && b.Deleted == false
                             select b).SingleOrDefault();
             if (bookCheck != null) {
                 throw new AlreadyExistsException("The request could not be completed due to a conflict with the current state of the resource.");
@@ -125,11 +126,7 @@ namespace LibraryAPI.Repositories
                 throw new NotFoundException("Book with id: " + id + " not found.");
             }
 
-            var bookEntity = (from b in _db.Books
-                       where b.Id == id
-                       select b).FirstOrDefault();
-
-            _db.Remove(bookEntity);
+            book.Deleted = true;
             
             try{
                 _db.SaveChanges();
@@ -140,10 +137,10 @@ namespace LibraryAPI.Repositories
         }
 
         public void UpdateBookById(int id, BookView book) {
-            var bookEntity = _db.Books.SingleOrDefault(b => b.Id == id);
+            var bookEntity = _db.Books.SingleOrDefault(b => b.Id == id && b.Deleted == false);
 
             if (bookEntity == null) {
-                throw new NotFoundException("Book with id: " + id + " not found.");
+                throw new NotFoundException("Book with id " + id + " not found.");
             }
             
             bookEntity.Author = book.Author;
@@ -163,9 +160,10 @@ namespace LibraryAPI.Repositories
         {
             var books = (from b in _db.Books
                         join l in _db.Loans on b.Id equals l.BookId
-                         where l.UserId == userId
-                         && l.HasBeenReturned == false
-                         select new BookDTOLite {
+                        where b.Deleted == false
+                        && l.UserId == userId
+                        && l.HasBeenReturned == false
+                        select new BookDTOLite {
                             Id = b.Id,
                             Title = b.Title,
                             Author = b.Author,
@@ -186,16 +184,20 @@ namespace LibraryAPI.Repositories
         }
 
         public void LendBookToUser(int userId, int bookId){
+            // Check if book exists and is available
             var bookEntity = _db.Books.SingleOrDefault(b => (b.Id == bookId && b.Deleted == false));
             if(bookEntity == null){
-                throw new NotFoundException("Book with id: " + bookId + " not found.");
+                throw new NotFoundException("Book with id " + bookId + " not found.");
             }
             if(bookEntity.Available == false){
-                throw new NotFoundException("Book with id: " + bookId + " is already out.");
+                // FIXME: NotAvailableException
+                throw new NotFoundException("Book with id " + bookId + " is already out.");
             }
+
+            // Check if user exists
             var userEntity = _db.Users.SingleOrDefault(u => (u.Id == userId && u.Deleted == false));
             if(userEntity == null){
-                throw new NotFoundException("Book with id: " + bookId + " not found.");
+                throw new NotFoundException("User with id " + userId + " not found.");
             }
 
             var loan = new Loan{
@@ -218,6 +220,18 @@ namespace LibraryAPI.Repositories
         }
         public void ReturnBook(int userId, int bookId)
         {
+            // Check if book exists
+            var bookEntity = _db.Books.SingleOrDefault(b => (b.Id == bookId && b.Deleted == false));
+            if(bookEntity == null){
+                throw new NotFoundException("Book with id " + bookId + " not found.");
+            }
+
+            // Check if user exists
+            var userEntity = _db.Users.SingleOrDefault(u => (u.Id == userId && u.Deleted == false));
+            if(userEntity == null){
+                throw new NotFoundException("User with id " + userId + " not found.");
+            }
+
             // Check if the user has a loan for the book
             Loan loan = (from l in _db.Loans
                         where l.UserId == userId
