@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using LibraryAPI.Exceptions;
+using LibraryAPI.Models.EntityModels;
 using LibraryAPI.Models.ViewModels;
 using LibraryAPI.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Builder;
 
 namespace LibraryAPI.Controllers
 {
@@ -50,9 +52,13 @@ namespace LibraryAPI.Controllers
             if(!ModelState.IsValid){
                 return StatusCode(412, "Modelstate is not valid");
             }
-
-            var newUser = _usersService.AddUser(user);
-            return CreatedAtRoute("GetUserById", new {userId = newUser.Id}, newUser);
+            try {
+                var newUser = _usersService.AddUser(user);
+                return CreatedAtRoute("GetUserById", new {userId = newUser.Id}, newUser);
+            }
+            catch(AlreadyExistsException e) {
+                return StatusCode(409, e.obj);
+            }
         }
 
         // GET /users/{userId} - Sækja upplýsingar um notanda (m.a. lánasögu)

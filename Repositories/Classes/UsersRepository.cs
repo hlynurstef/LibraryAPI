@@ -18,6 +18,14 @@ namespace LibraryAPI.Repositories
         }
 
         public UserDTO AddUser(UserView user) {
+            var userCheck = (from u in _db.Users
+                            where user.Email == u.Email
+                            select u).SingleOrDefault();
+            
+            if (userCheck != null) {
+                throw new AlreadyExistsException("The request could not be completed due to a conflict with the current state of the resource.");
+            }
+
             var userEntity = new User {
                 Name = user.Name,
                 Address = user.Address,
