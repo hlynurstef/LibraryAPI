@@ -48,6 +48,7 @@ namespace LibraryAPI.UnitTests.BooksRepositoryTests
             context = new AppDataContext(options);
 
             context.Users.Add(new User {
+                Id = 1,
                 Name = NAME_DABS,
                 Address = ADDRESS_DABS,
                 Email = EMAIL_DABS,
@@ -56,6 +57,7 @@ namespace LibraryAPI.UnitTests.BooksRepositoryTests
             });
 
             context.Books.Add(new Book {
+                Id = 1,
                 Title = TITLE_LOTR,
                 Author = AUTHOR_LOTR,
                 ReleaseDate = RELEASE_LOTR,
@@ -65,6 +67,7 @@ namespace LibraryAPI.UnitTests.BooksRepositoryTests
             });
 
             context.Loans.Add(new Loan {
+                Id = 1,
                 UserId = USERID_LOAN,
                 BookId = BOOKID_LOAN,
                 LoanDate = STARTDATE_LOAN,
@@ -162,7 +165,7 @@ namespace LibraryAPI.UnitTests.BooksRepositoryTests
         }
 
         [TestMethod]
-        public void Books_DeleteBookById()
+        public void Books_DeleteBookById_ThatExists()
         {
             // Arrange
             var repo = new BooksRepository(context);
@@ -172,6 +175,20 @@ namespace LibraryAPI.UnitTests.BooksRepositoryTests
 
             // Assert
             Assert.AreEqual(0, context.Books.Count());
+        }
+        
+        [TestMethod]
+        [ExpectedException(typeof(NotFoundException))]
+        public void Books_DeleteBookById_ThatDoesNotExist()
+        {
+            // Arrange
+            var repo = new BooksRepository(context);
+
+            // Act
+            repo.DeleteBookById(3);
+
+            // Assert
+            Assert.Fail();
         }
     }
 }
