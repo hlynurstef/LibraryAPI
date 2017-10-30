@@ -193,7 +193,6 @@ namespace LibraryAPI.UnitTests.UsersRepositoryTests
             var repo = new UsersRepository(context);
             int id = (context.Users.Where(u => u.Name == NAME_DABS).SingleOrDefault()).Id;
 
-            Assert.AreEqual(1, context.Users.Count());
             // Act
             repo.DeleteUser(id);
 
@@ -213,6 +212,46 @@ namespace LibraryAPI.UnitTests.UsersRepositoryTests
 
             // Assert
             Assert.Fail("Should have thrown NotFoundException");
+        }
+
+        [TestMethod]
+        public void Users_UpdateUser_ThatExists() {
+            // Arrange
+            var repo = new UsersRepository(context);
+            int id = (context.Users.Where(u => u.Name == NAME_DABS).SingleOrDefault()).Id;
+            var updatedUser = new UserView {
+                Name = "dabs",
+                Address = ADDRESS_DABS,
+                Email = EMAIL_DABS,
+                PhoneNumber = "55-12345"
+            };
+
+            // Act
+            repo.UpdateUser(updatedUser, id);
+
+            // Assert
+            Assert.AreEqual("dabs", (context.Users.Where(u => u.Id == id).SingleOrDefault()).Name);
+            Assert.AreEqual("55-12345", (context.Users.Where(u => u.Id == id).SingleOrDefault()).PhoneNumber);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(NotFoundException))]
+        public void Users_UpdateUser_ThatDoesntExists() {
+            // Arrange
+            var repo = new UsersRepository(context);
+            int id = (context.Books.OrderByDescending(u => u.Id).FirstOrDefault()).Id;
+            var updatedUser = new UserView {
+                Name = "dabs",
+                Address = ADDRESS_DABS,
+                Email = EMAIL_DABS,
+                PhoneNumber = "55-12345"
+            };
+
+            // Act
+            repo.UpdateUser(updatedUser, id+1);
+
+            // Assert
+            Assert.Fail("Should have thrown a NotFoundException");
         }
     }
 }
