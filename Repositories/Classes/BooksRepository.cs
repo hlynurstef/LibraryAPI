@@ -27,8 +27,15 @@ namespace LibraryAPI.Repositories
                             ReleaseDate = b.ReleaseDate,
                             ISBN = b.ISBN,
                             Available = b.Available,
-                            // TODO: Populate list of reviews
-                            Reviews = null
+                            Reviews = (from r in _db.Reviews
+                                        where r.BookId == b.Id
+                                        select new ReviewDTO {
+                                        BookId = r.BookId,
+                                        UserId = r.UserId,
+                                        BookTitle = b.Title,
+                                        ReviewText = r.ReviewText,
+                                        Stars = r.Stars 
+                            }).ToList()
                         }).ToList();
             return books;
         }
@@ -56,8 +63,15 @@ namespace LibraryAPI.Repositories
                 ReleaseDate = book.ReleaseDate,
                 ISBN = book.ISBN,
                 Available = true,
-                // TODO: Populate list of reviews
-                Reviews = null
+                Reviews = (from r in _db.Reviews
+                            where r.BookId == bookEntity.Id
+                            select new ReviewDTO{
+                                BookId = r.BookId,
+                                UserId = r.UserId,
+                                BookTitle = bookEntity.Title,
+                                ReviewText = r.ReviewText,
+                                Stars = r.Stars 
+                }).ToList()
             };
 
         }
@@ -109,8 +123,9 @@ namespace LibraryAPI.Repositories
                        where b.Id == id
                        select b).FirstOrDefault();
 
+            _db.Remove(bookEntity);
+            
             try{
-                _db.Remove(bookEntity);
                 _db.SaveChanges();
             }
             catch(System.Exception e){
@@ -185,8 +200,15 @@ namespace LibraryAPI.Repositories
                 HasBeenReturned = false
             };
             bookEntity.Available = false;
+            
             _db.Loans.Add(loan);
-            _db.SaveChanges();      
+
+            try {
+                _db.SaveChanges();
+            }
+            catch (Exception e) {
+                Console.WriteLine(e.Message);
+            }
         }
         public void ReturnBook(int userId, int bookId)
         {
@@ -215,23 +237,32 @@ namespace LibraryAPI.Repositories
         }
         public void UpdateLoanRegistration(int userId, int bookId, LoanView loan){
             var bookEntity = _db.Books.SingleOrDefault(b => (b.Id == bookId && b.Deleted == false));
-            if(bookEntity == null){
+            if(bookEntity == null) {
                 throw new NotFoundException("Book with id: " + bookId + " not found.");
             }
+            
             var userEntity = _db.Users.SingleOrDefault(u => (u.Id == userId && u.Deleted == false));
-            if(userEntity == null){
+            if(userEntity == null) {
                 throw new NotFoundException("Book with id: " + bookId + " not found.");
             }
+            
             var loanEntity = _db.Loans.SingleOrDefault(l => (l.Id == loan.Id));
-            if(loanEntity == null){
+            if(loanEntity == null) {
                 throw new NotFoundException("Loan with id: " + loan.Id + " not found.");
             }
+            
             loanEntity.BookId = loan.BookId;
             loanEntity.HasBeenReturned = loan.HasBeenReturned;
             loanEntity.LoanDate = loan.LoanDate;
             loanEntity.EndDate = loan.EndDate;
             loanEntity.UserId = loan.UserId;
-            _db.SaveChanges();
+
+            try {
+                _db.SaveChanges();
+            }
+            catch (Exception e) {
+                Console.WriteLine(e.Message);
+            }
         }
     }
 }

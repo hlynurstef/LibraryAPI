@@ -52,7 +52,12 @@ namespace LibraryAPI.Controllers
                 return NotFound(e.Message);
             }
         }
-
+        /// <summary>
+        /// User gets his review for the specified book
+        /// </summary>
+        /// <param name="bookId">The id of the book</param>
+        /// <param name="userId">The id of the user </param>
+        /// <returns>200 ok if succesful </returns>
         [HttpGet("books/{bookId}/reviews/{userId}")]
         public IActionResult GetBookReviewFromUser(int bookId, int userId){
             try {
@@ -141,8 +146,9 @@ namespace LibraryAPI.Controllers
         /// <summary>
         /// Updates the users review for the given book
         /// </summary>
-        /// <param name="userId"></param>
-        /// <param name="bookId"></param>
+        /// <param name="userId">The id of the user</param>
+        /// <param name="bookId">The id of the book </param>
+        /// <param name="updatedReview">The updated review</param>
         /// <returns>StatusCode 204 if everything went as planned</returns>
         [HttpPut("books/{bookId}/reviews/{userId}")]
         public IActionResult UpdateBooksUserReview(int bookId, int userId, [FromBody] ReviewView updatedReview) {
@@ -161,6 +167,7 @@ namespace LibraryAPI.Controllers
         /// </summary>
         /// <param name="userId"></param>
         /// <param name="bookId"></param>
+        /// <param name="updatedReview">The updated review</param>
         /// <returns>StatusCode 204 if everything went as planned</returns>
         [HttpPut("users/{userId}/reviews/{bookId}")]
         public IActionResult UpdateUsersBookReview(int userId, int bookId, [FromBody] ReviewView updatedReview) {

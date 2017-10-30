@@ -37,7 +37,8 @@ namespace LibraryAPI.Repositories
                                 select new LoanDTO {
                                     Id = l.Id,
                                     BookTitle = b.Title,
-                                    LoanDate = l.LoanDate
+                                    LoanDate = l.LoanDate,
+                                    EndDate = l.EndDate
                                 }).ToList()
             }).SingleOrDefault();
             
@@ -85,7 +86,8 @@ namespace LibraryAPI.Repositories
                                                                 select new LoanDTO{
                                                                     BookTitle = b.Title,
                                                                     Id = l.Id,
-                                                                    LoanDate = l.LoanDate
+                                                                    LoanDate = l.LoanDate,
+                                                                    EndDate = l.EndDate
                                                                 }).ToList() 
                                                         }).ToList();
 
@@ -140,7 +142,8 @@ namespace LibraryAPI.Repositories
                                            select new LoanDTO{
                                                BookTitle = b.Title,
                                                Id = l.Id,
-                                               LoanDate = l.LoanDate
+                                               LoanDate = l.LoanDate,
+                                               EndDate = l.EndDate
                                            }).ToList()                                   
                         }).ToList();
 

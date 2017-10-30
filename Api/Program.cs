@@ -10,6 +10,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Api
 {
+    #pragma warning disable 1591
     public class Program
     {
         public static void Main(string[] args)
@@ -22,4 +23,6 @@ namespace Api
                 .UseStartup<Startup>()
                 .Build();
     }
+
+    #pragma warning restore 1591
 }
