@@ -159,5 +159,32 @@ namespace LibraryAPI.UnitTests.UsersRepositoryTests
             // Assert
             Assert.AreEqual(0, users.Count());
         }
+
+        [TestMethod]
+        public void Users_GetUserById_ThatExists() {
+            // Arrange
+            var repo = new UsersRepository(context);
+            int id = (context.Users.Where(u => u.Name == NAME_DABS).SingleOrDefault()).Id;
+
+            // Act
+            var user = repo.GetUserById(id);
+
+            // Assert
+            Assert.AreEqual(NAME_DABS, user.Name);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(NotFoundException))]
+        public void Users_GetUserById_ThatDoesntExist() {
+            // Arrange
+            var repo = new UsersRepository(context);
+            int id = (context.Books.OrderByDescending(u => u.Id).FirstOrDefault()).Id;
+
+            // Act
+            var user = repo.GetUserById(id+1);
+
+            // Assert
+            Assert.Fail("Should have thrown NotFoundException");
+        }
     }
 }
