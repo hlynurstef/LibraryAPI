@@ -23,6 +23,7 @@ namespace LibraryAPI.Repositories
                             select u).SingleOrDefault();
             
             if (userCheck != null) {
+                Console.WriteLine("I'm throwing an exception!");
                 throw new AlreadyExistsException("The request could not be completed due to a conflict with the current state of the resource.");
             }
 

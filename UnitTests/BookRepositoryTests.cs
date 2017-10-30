@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using LibraryAPI.Exceptions;
 using LibraryAPI.Models.ViewModels;
@@ -7,10 +7,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using LibraryAPI.Models.EntityModels;
 
-namespace LibraryAPI.UnitTests.UsersRepositoryTests
+namespace LibraryAPI.UnitTests.BooksRepositoryTests
 {
     [TestClass]
-    public class UsersRepositoryTests
+    public class BooksRepositoryTests
     {
         #region UserInfo
         private const string NAME_DABS = "Daníel B. Sigurgeirsson";
@@ -81,47 +81,26 @@ namespace LibraryAPI.UnitTests.UsersRepositoryTests
         }
 
         [TestMethod]
-        public void AddUser_OneUser()
+        public void AddBook_OneBook()
         {
             // Arrange
-            var repo = new UsersRepository(context);
-            var user = new UserView {
-                Name = "Hlynur",
-                Address = "Laufrimi 85",
-                Email = "hlynurs15@ru.is",
-                PhoneNumber = "823-8028"
+            var repo = new BooksRepository(context);
+            var book = new BookView {
+                Title = "A Game Of Thrones",
+                Author = "George R.R. Martin",
+                ReleaseDate = new DateTime(1996, 8, 1),
+                ISBN = "535135468543246846541"
             };
 
             // Act
-            repo.AddUser(user);
+            repo.AddBook(book);
 
             // Assert
-            Assert.AreEqual(2, context.Users.Count());
-            Assert.AreEqual("Hlynur", context.Users.Where(x => x.Name == "Hlynur").SingleOrDefault().Name);
-            Assert.AreEqual("Laufrimi 85", context.Users.Where(x => x.Address == "Laufrimi 85").SingleOrDefault().Address);
-            Assert.AreEqual("hlynurs15@ru.is", context.Users.Where(x => x.Email == "hlynurs15@ru.is").SingleOrDefault().Email);
-            Assert.AreEqual("823-8028", context.Users.Where(x => x.PhoneNumber == "823-8028").SingleOrDefault().PhoneNumber);
-        }
-        
-        [TestMethod]
-        [ExpectedException(typeof(AlreadyExistsException))]
-        public void AddUser_SameUserTwice()
-        {
-            // Arrange
-            var repo = new UsersRepository(context);
-            var user = new UserView {
-                Name = "Hlynur",
-                Address = "Laufrimi 85",
-                Email = "hlynurs15@ru.is",
-                PhoneNumber = "823-8028"
-            };
-
-            // Act
-            repo.AddUser(user);
-            repo.AddUser(user);
-
-            // Assert
-            Assert.AreEqual(2, context.Users.Count());            
+            Assert.AreEqual(2, context.Books.Count());
+            Assert.AreEqual("A Game Of Thrones", context.Books.Where(x => x.Title == "A Game Of Thrones").SingleOrDefault().Title);
+            Assert.AreEqual("George R.R. Martin", context.Books.Where(x => x.Title == "A Game Of Thrones").SingleOrDefault().Author);
+            Assert.AreEqual(new DateTime(1996,8,1), context.Books.Where(x => x.Title == "A Game Of Thrones").SingleOrDefault().ReleaseDate);
+            Assert.AreEqual("535135468543246846541", context.Books.Where(x => x.Title == "A Game Of Thrones").SingleOrDefault().ISBN);
         }
     }
 }
