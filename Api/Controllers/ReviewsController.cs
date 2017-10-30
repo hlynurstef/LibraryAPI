@@ -144,7 +144,6 @@ namespace LibraryAPI.Controllers
         /// <param name="userId"></param>
         /// <param name="bookId"></param>
         /// <returns>StatusCode 204 if everything went as planned</returns>
-        // TODO: PUT    /books/{bookId}/reviews/{userId} - Breyta dómi notanda um bók♂
         [HttpPut("books/{bookId}/reviews/{userId}")]
         public IActionResult UpdateBooksUserReview(int bookId, int userId, [FromBody] ReviewView updatedReview) {
             try {
@@ -157,9 +156,21 @@ namespace LibraryAPI.Controllers
         }
         
 
-
-        // TODO: PUT    /users/{userId}/reviews/{bookId} - Uppfæra dóma um bók
-
-
+        /// <summary>
+        /// Updates the users review for the given book
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="bookId"></param>
+        /// <returns>StatusCode 204 if everything went as planned</returns>
+        [HttpPut("users/{userId}/reviews/{bookId}")]
+        public IActionResult UpdateUsersBookReview(int userId, int bookId, [FromBody] ReviewView updatedReview) {
+            try {
+                _reviewsService.UpdateBooksUserReview(bookId, userId, updatedReview);
+                return NoContent();
+            }
+            catch (NotFoundException e) {
+                return NotFound(e.Message);
+            }
+        }
     }
 }
