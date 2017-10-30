@@ -81,7 +81,7 @@ namespace LibraryAPI.UnitTests.BooksRepositoryTests
         }
 
         [TestMethod]
-        public void AddBook_OneBook()
+        public void Books_AddBook_OneBook()
         {
             // Arrange
             var repo = new BooksRepository(context);

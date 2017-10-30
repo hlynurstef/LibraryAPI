@@ -81,7 +81,7 @@ namespace LibraryAPI.UnitTests.UsersRepositoryTests
         }
 
         [TestMethod]
-        public void AddUser_OneUser()
+        public void Users_AddUser_OneUser()
         {
             // Arrange
             var repo = new UsersRepository(context);
@@ -105,7 +105,7 @@ namespace LibraryAPI.UnitTests.UsersRepositoryTests
         
         [TestMethod]
         [ExpectedException(typeof(AlreadyExistsException))]
-        public void AddUser_SameUserTwice()
+        public void Users_AddUser_SameUserTwice()
         {
             // Arrange
             var repo = new UsersRepository(context);
