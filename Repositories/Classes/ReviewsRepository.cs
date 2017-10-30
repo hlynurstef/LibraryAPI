@@ -171,7 +171,12 @@ namespace LibraryAPI.Repositories
                 throw new NotFoundException("Review for book with id "+ bookId + " user with id " + userId + " not found.");
             }
             _db.Remove(reviewEntity);
-            _db.SaveChanges();
+            try {
+                _db.SaveChanges();
+            }
+            catch(Exception e) {
+                Console.WriteLine(e.Message);
+            }
         }
 
         public void UpdateBooksUserReview(int bookId, int userId, ReviewView updatedReview) {

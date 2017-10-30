@@ -138,8 +138,6 @@ namespace LibraryAPI.Controllers
             }
         }
 
-
-
         // POST  /users/{userId}/books/{bookId}
         /// <summary>
         /// Lends a book to a user
@@ -157,12 +155,17 @@ namespace LibraryAPI.Controllers
                 return NotFound(e.Message);
             }
         }
-        // TODO: PUT    /users/{userId}/books/{bookId} - Uppfæra útlánaskráningu
 
+        /// <summary>
+        /// Updates a users loan for a given book
+        /// </summary>
+        /// <param name="userId">The id of the user</param>
+        /// <param name="bookId">The id of the book </param>
+        /// <param name="loan">The updated loan itself </param>
+        /// <returns></returns>
         [HttpPut("/users/{userId}/books/{bookId}")]
         public IActionResult UpdateLoanRegistration(int userId, int bookId, [FromBody]LoanView loan){
             if(loan == null){
-                Console.WriteLine("whut!!!!");
                 return BadRequest();
             }
             try{
