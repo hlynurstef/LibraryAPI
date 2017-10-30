@@ -135,6 +135,7 @@ namespace LibraryAPI.Repositories
                                     UserId = user.vinur_id,
                                     BookId = loan.bok_id,
                                     LoanDate = loan.lanadagsetning,
+                                    EndDate = null,
                                     HasBeenReturned = false
                                 };
 

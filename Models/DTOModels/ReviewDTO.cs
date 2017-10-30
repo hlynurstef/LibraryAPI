@@ -25,6 +25,6 @@ namespace LibraryAPI.Models.DTOModels
         /// <summary>
         /// The star count of this review.
         /// </summary>
-        public int? Stars { get; set; }
+        public int Stars { get; set; }
     }
 }

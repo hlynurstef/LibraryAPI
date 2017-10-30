@@ -183,7 +183,7 @@ namespace LibraryAPI.Repositories
             }
 
             oldReview.ReviewText = updatedReview.ReviewText;
-            oldReview.Stars = updatedReview.Stars;
+            oldReview.Stars = updatedReview.Stars.Value;
 
             try {
                 _db.SaveChanges();

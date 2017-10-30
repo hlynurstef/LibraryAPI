@@ -65,7 +65,6 @@ namespace LibraryAPI.Repositories
             var book = (from b in _db.Books
                         where b.Id == id 
                         && b.Deleted == false
-                        // TODO: should be BookDTO (has loan history as well)
                         select new BookDTO{
                             Id = b.Id,
                             Title = b.Title,
@@ -87,7 +86,8 @@ namespace LibraryAPI.Repositories
                                            select new LoanDTO{
                                                BookTitle = b.Title,
                                                Id = l.Id,
-                                               LoanDate = l.LoanDate
+                                               LoanDate = l.LoanDate,
+                                               EndDate = l.EndDate
                                            }).ToList()                                   
                         }).FirstOrDefault();
             if (book == null) {
@@ -181,6 +181,7 @@ namespace LibraryAPI.Repositories
                 BookId = bookEntity.Id,
                 UserId = userEntity.Id,
                 LoanDate = DateTime.Now,
+                EndDate = null,
                 HasBeenReturned = false
             };
             bookEntity.Available = false;
@@ -203,6 +204,7 @@ namespace LibraryAPI.Repositories
             }
 
             loan.HasBeenReturned = true;
+            loan.EndDate = DateTime.Now;
 
             try {
                 _db.SaveChanges();
@@ -227,6 +229,7 @@ namespace LibraryAPI.Repositories
             loanEntity.BookId = loan.BookId;
             loanEntity.HasBeenReturned = loan.HasBeenReturned;
             loanEntity.LoanDate = loan.LoanDate;
+            loanEntity.EndDate = loan.EndDate;
             loanEntity.UserId = loan.UserId;
             _db.SaveChanges();
         }

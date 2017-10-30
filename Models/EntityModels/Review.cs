@@ -23,6 +23,6 @@ namespace LibraryAPI.Models.EntityModels
         /// <summary>
         /// The star count of the review.
         /// </summary>
-        public int? Stars { get; set; }
+        public int Stars { get; set; }
     }
 }

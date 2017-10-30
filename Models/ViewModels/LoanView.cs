@@ -27,7 +27,13 @@ namespace LibraryAPI.Models.ViewModels
         public DateTime LoanDate { get; set; }
         /// <summary>
         /// Whether this book has been returned or not.
-        /// </summary>
+        /// </summary>        
         public bool HasBeenReturned { get; set; }
+
+        /// <summary>
+        /// The return date of the book
+        /// </summary>
+        /// <returns></returns>
+        public DateTime? EndDate { get; set; }
     }
 }

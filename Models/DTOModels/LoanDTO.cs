@@ -20,5 +20,11 @@ namespace LibraryAPI.Models.DTOModels
         /// The date of the loan.
         /// </summary>
         public DateTime LoanDate { get; set; }
+        
+        /// <summary>
+        /// The return date of the book
+        /// </summary>
+        /// <returns></returns>
+        public DateTime? EndDate { get; set; }
     }
 }
