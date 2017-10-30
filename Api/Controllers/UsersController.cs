@@ -57,7 +57,7 @@ namespace LibraryAPI.Controllers
                 return CreatedAtRoute("GetUserById", new {userId = newUser.Id}, newUser);
             }
             catch(AlreadyExistsException e) {
-                return StatusCode(409, e.obj);
+                return StatusCode(409, e.Message);
             }
         }
 
