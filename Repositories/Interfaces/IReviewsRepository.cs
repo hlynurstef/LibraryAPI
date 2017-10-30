@@ -17,5 +17,7 @@ namespace LibraryAPI.Repositories
         ReviewDTO GetBookReviewFromUser(int userId, int bookId);
 
         void DeleteUsersBookReview(int userId, int bookId);
+
+        void UpdateBooksUserReview(int bookId, int userId, ReviewView updatedReview);
     }
 }

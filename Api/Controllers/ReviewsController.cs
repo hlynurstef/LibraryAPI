@@ -63,7 +63,6 @@ namespace LibraryAPI.Controllers
                 return NotFound(e.Message);
             }
         }
-        // TODO: PUT    /books/{bookId}/reviews/{userId} - Breyta dómi notanda um bók
 
         /// <summary>
         /// Deletes the review of book with bookId and 
@@ -83,7 +82,6 @@ namespace LibraryAPI.Controllers
             }
         }
 
-        // TODO: GET    /users/{userId}/reviews          - Sækja dóma fyrir notanda
 
         /// <summary>
         /// Returns all the reviews that a user had given
@@ -130,7 +128,7 @@ namespace LibraryAPI.Controllers
         /// <param name="bookId"></param>
         /// <returns></returns>
         [HttpDelete("users/{userId}/reviews/{bookId}")]
-        public IActionResult DeleteUsersBookReview(int userId, int bookId){
+        public IActionResult DeleteUsersBookReview(int userId, int bookId) {
             try{
                 _reviewsService.DeleteUsersBookReview(userId, bookId);
                 return NoContent();
@@ -140,8 +138,27 @@ namespace LibraryAPI.Controllers
             }
         }
 
-        // TODO: PUT    /users/{userId}/reviews/{bookId} - Uppfæra dóma um bók
+        /// <summary>
+        /// Updates the users review for the given book
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="bookId"></param>
+        /// <returns>StatusCode 204 if everything went as planned</returns>
+        // TODO: PUT    /books/{bookId}/reviews/{userId} - Breyta dómi notanda um bók♂
+        [HttpPut("books/{bookId}/reviews/{userId}")]
+        public IActionResult UpdateBooksUserReview(int bookId, int userId, [FromBody] ReviewView updatedReview) {
+            try {
+                _reviewsService.UpdateBooksUserReview(bookId, userId, updatedReview);
+                return NoContent();
+            }
+            catch (NotFoundException e) {
+                return NotFound(e.Message);
+            }
+        }
+        
 
+
+        // TODO: PUT    /users/{userId}/reviews/{bookId} - Uppfæra dóma um bók
 
 
     }

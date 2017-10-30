@@ -106,7 +106,7 @@ namespace LibraryAPI.Repositories
                     ReviewText = review.ReviewText,
                     Stars = review.Stars.Value
                 };
-            } catch(System.Exception e) {
+            } catch(Exception e) {
                 Console.WriteLine(e);
                 return null;
             }
@@ -172,6 +172,25 @@ namespace LibraryAPI.Repositories
             }
             _db.Remove(reviewEntity);
             _db.SaveChanges();
+        }
+
+        public void UpdateBooksUserReview(int bookId, int userId, ReviewView updatedReview) {
+            var oldReview = (from r in _db.Reviews
+                            where r.BookId == bookId && r.UserId == userId
+                            select r).SingleOrDefault();
+            if(oldReview == null){
+                throw new NotFoundException("Review for book with id "+ bookId + " user with id " + userId + " not found.");
+            }
+
+            oldReview.ReviewText = updatedReview.ReviewText;
+            oldReview.Stars = updatedReview.Stars;
+
+            try {
+                _db.SaveChanges();
+            }
+            catch (Exception e) {
+                Console.WriteLine(e);
+            }
         }
     }
 }
