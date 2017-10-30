@@ -42,7 +42,7 @@ namespace LibraryAPI.UnitTests.BooksRepositoryTests
         [TestInitialize]
         public void InitializeTest() {
             var options = new DbContextOptionsBuilder<AppDataContext>()
-                .UseInMemoryDatabase(databaseName: "Add_writes_to_database")
+                .UseInMemoryDatabase(databaseName: "BooksDB")
                 .Options;
 
             context = new AppDataContext(options);
@@ -209,6 +209,25 @@ namespace LibraryAPI.UnitTests.BooksRepositoryTests
 
             // Assert
             Assert.Fail();
+        }
+
+        [TestMethod]
+        public void Books_UpdateBookById_UpdateName()
+        {
+            // Arrange
+            var repo = new BooksRepository(context);
+            var updatedBook = new BookView {
+                Title = "Not a Game",
+                Author = AUTHOR_LOTR,
+                ReleaseDate = RELEASE_LOTR,
+                ISBN = ISBN_LOTR
+            };
+
+            // Act
+            repo.UpdateBookById(1, updatedBook);
+            
+            // Assert
+            Assert.AreEqual("Not a Game", context.Books.Where(x => x.Title == "Not a Game").SingleOrDefault().Title);
         }
     }
 }
