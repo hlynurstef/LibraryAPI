@@ -346,5 +346,65 @@ namespace LibraryAPI.UnitTests.BooksRepositoryTests
             // Assert
             Assert.Fail("Should have thrown a NotFoundException");
         }
+
+        [TestMethod]
+        [ExpectedException(typeof(NotFoundException))]
+        public void Books_LendBookToUser_UserDoesntExist()
+        {
+            // Arrange
+            var repo = new BooksRepository(context);
+            int userId = (context.Users.OrderByDescending(u => u.Id).FirstOrDefault()).Id + 1;
+            int bookId = (context.Books.OrderByDescending(u => u.Id).FirstOrDefault()).Id;
+
+            // Act
+            repo.LendBookToUser(userId, bookId);
+            
+            // Assert
+            Assert.Fail("Should have thrown a NotFoundException");
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(NotFoundException))]
+        public void Books_LendBookToUser_BookAlreadyOut()
+        {
+            // Arrange
+            var repo = new BooksRepository(context);
+            int userId = (context.Users.OrderByDescending(u => u.Id).FirstOrDefault()).Id;
+            var book = context.Books.Where(b => b.Title == TITLE_LOTR).FirstOrDefault();
+            book.Available = false;
+            context.SaveChanges();
+
+            // Act
+            repo.LendBookToUser(userId, book.Id);
+            
+            // Assert
+            Assert.Fail("Should have thrown a NotFoundException");
+        }
+
+        [TestMethod]
+        public void Books_LendBookToUser_SuccessfulLoan()
+        {
+            // Arrange
+            var repo = new BooksRepository(context);
+            int userId = (context.Users.OrderByDescending(u => u.Id).FirstOrDefault()).Id;
+            var book = new Book {
+                Title = "New Book",
+                Author = "Some Guy",
+                ReleaseDate = DateTime.Now,
+                ISBN = "5318343518342168435",
+                Available = true,
+                Deleted = false
+            };
+            context.Add(book);
+            context.SaveChanges();
+
+            // Act
+            repo.LendBookToUser(userId, book.Id);
+            
+            // Assert
+            Assert.AreEqual(2, context.Loans.Count());
+            Assert.AreEqual(userId, context.Loans.OrderByDescending(l => l.Id).FirstOrDefault().UserId);
+            Assert.AreEqual(book.Id, context.Loans.OrderByDescending(l => l.Id).FirstOrDefault().BookId);
+        }
     }
 }

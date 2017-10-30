@@ -190,7 +190,6 @@ namespace LibraryAPI.Repositories
                 throw new NotFoundException("Book with id " + bookId + " not found.");
             }
             if(bookEntity.Available == false){
-                // FIXME: NotAvailableException
                 throw new NotFoundException("Book with id " + bookId + " is already out.");
             }
 
