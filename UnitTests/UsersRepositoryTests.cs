@@ -150,7 +150,9 @@ namespace LibraryAPI.UnitTests.UsersRepositoryTests
             var repo = new UsersRepository(context);
             var usersToDelete = (from u in context.Users
                                 select u).ToList();
-            context.Users.RemoveRange(usersToDelete);
+            foreach(User user in usersToDelete) {
+                user.Deleted = true;
+            }
             context.SaveChanges();
 
             // Act

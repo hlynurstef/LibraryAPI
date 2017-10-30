@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using LibraryAPI.Models.EntityModels;
 using LibraryAPI.Models.DTOModels;
+using System.Collections.Generic;
 
 namespace LibraryAPI.UnitTests.BooksRepositoryTests
 {
@@ -124,7 +125,7 @@ namespace LibraryAPI.UnitTests.BooksRepositoryTests
             repo.AddBook(book);
 
             // Assert
-            Assert.Fail();
+            Assert.Fail("Should have thrown AlreadyExistsException");
         }
 
         [TestMethod]
@@ -171,33 +172,34 @@ namespace LibraryAPI.UnitTests.BooksRepositoryTests
         {
             // Arrange
             var repo = new BooksRepository(context);
-            
-            var book1 = new BookView {
+
+            List<Book> booksToAdd = new List<Book>();
+            booksToAdd.Add(new Book {
                 Title = "A Game Of Thrones",
                 Author = "George R.R. Martin",
                 ReleaseDate = new DateTime(1996, 8, 1),
-                ISBN = "214124235"
-            };
-
-            var book2 = new BookView {
+                ISBN = "214124235",
+                Available = true,
+                Deleted = false
+            });
+            booksToAdd.Add(new Book {
                 Title = "The Hobbit",
                 Author = "Tolkien",
                 ReleaseDate = new DateTime(1996, 8,  1),
-                ISBN = "541312312"
-            };
-
-            var book3 = new BookView {
+                ISBN = "541312312",
+                Available = true,
+                Deleted = false
+            });
+            booksToAdd.Add(new Book {
                 Title = "Programming with c++",
                 Author = "Bjarne Stoustrup",
                 ReleaseDate = new DateTime(1996, 8, 1),
-                ISBN = "2423423123"
-            };
-
-            
-            // Act
-            repo.AddBook(book1);
-            repo.AddBook(book2);
-            repo.AddBook(book3);
+                ISBN = "2423423123",
+                Available = true,
+                Deleted = false
+            });
+            context.Books.AddRange(booksToAdd);
+            context.SaveChanges();
 
             // Act
             var books = repo.GetBooks();
@@ -208,6 +210,26 @@ namespace LibraryAPI.UnitTests.BooksRepositoryTests
             Assert.AreEqual("A Game Of Thrones", books.Where(b => b.Title == "A Game Of Thrones").SingleOrDefault().Title);
             Assert.AreEqual("The Hobbit", books.Where(b => b.Title == "The Hobbit").SingleOrDefault().Title);
             Assert.AreEqual("Programming with c++", books.Where(b => b.Title == "Programming with c++").SingleOrDefault().Title);
+        }
+
+        [TestMethod]
+        public void Books_GetBooks_EmptyList()
+        {
+            // Arrange
+            var repo = new BooksRepository(context);
+
+            var booksToDelete = (from b in context.Books
+                                select b).ToList();
+            foreach(Book book in booksToDelete) {
+                book.Deleted = true;
+            }
+            context.SaveChanges();
+            
+            // Act
+            var books = repo.GetBooks();
+
+            // Assert
+            Assert.AreEqual(0, books.Count());
         }
 
         [TestMethod]
@@ -231,13 +253,31 @@ namespace LibraryAPI.UnitTests.BooksRepositoryTests
             // Arrange
             var repo = new BooksRepository(context);
                 // Get highest Id
+            var bookToDelete = context.Books.Where(b => b.Title == TITLE_LOTR).SingleOrDefault();
+            bookToDelete.Deleted = true;
+            context.SaveChanges();
+
+            // Act
+            repo.DeleteBookById(bookToDelete.Id);
+
+            // Assert
+            Assert.Fail("Should have thrown NotFoundException");
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(NotFoundException))]
+        public void Books_DeleteBookById_ThatIsAlreadyDeleted()
+        {
+            // Arrange
+            var repo = new BooksRepository(context);
+                // Get highest Id
             int id = (context.Books.OrderByDescending(b => b.Id).FirstOrDefault()).Id;
 
             // Act
             repo.DeleteBookById(id+1);
 
             // Assert
-            Assert.Fail();
+            Assert.Fail("Should have thrown NotFoundException");
         }
 
         [TestMethod]
@@ -278,6 +318,30 @@ namespace LibraryAPI.UnitTests.BooksRepositoryTests
 
             // Act
             repo.UpdateBookById(id+1, updatedBook);
+            
+            // Assert
+            Assert.Fail("Should have thrown a NotFoundException");
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(NotFoundException))]
+        public void Books_UpdateBookById_ThatHasBeenDeleted()
+        {
+            // Arrange
+            var repo = new BooksRepository(context);
+            var book = context.Books.Where(b => b.Title == TITLE_LOTR).SingleOrDefault();
+            book.Deleted = true;
+            context.SaveChanges();
+
+            var updatedBook = new BookView {
+                Title = "Some new title",
+                Author = "Some new author",
+                ReleaseDate = RELEASE_LOTR,
+                ISBN = "42"
+            };
+
+            // Act
+            repo.UpdateBookById(book.Id, updatedBook);
             
             // Assert
             Assert.Fail("Should have thrown a NotFoundException");
