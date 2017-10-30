@@ -79,8 +79,8 @@ namespace LibraryAPI.Repositories
                                 Stars = r.Stars 
                 }).ToList()
             };
-
         }
+        
         public BookDTO GetBookById(int id){
             var book = (from b in _db.Books
                         where b.Id == id 

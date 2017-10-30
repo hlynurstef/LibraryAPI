@@ -107,6 +107,26 @@ namespace LibraryAPI.UnitTests.BooksRepositoryTests
         }
 
         [TestMethod]
+        [ExpectedException(typeof(AlreadyExistsException))]
+        public void Books_AddBook_Conflicting_Resource()
+        {
+            // Arrange
+            var repo = new BooksRepository(context);
+            var book = new BookView {
+                Title = TITLE_LOTR,
+                Author = AUTHOR_LOTR,
+                ReleaseDate = RELEASE_LOTR,
+                ISBN = ISBN_LOTR
+            };
+
+            // Act
+            repo.AddBook(book);
+
+            // Assert
+            Assert.Fail();
+        }
+
+        [TestMethod]
         public void Books_GetBooks_OneBook()
         {
             // Arrange
