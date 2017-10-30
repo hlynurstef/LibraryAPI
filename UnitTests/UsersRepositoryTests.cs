@@ -186,5 +186,33 @@ namespace LibraryAPI.UnitTests.UsersRepositoryTests
             // Assert
             Assert.Fail("Should have thrown NotFoundException");
         }
+
+        [TestMethod]
+        public void Users_DeleteUser_ThatExist() {
+            // Arrange
+            var repo = new UsersRepository(context);
+            int id = (context.Users.Where(u => u.Name == NAME_DABS).SingleOrDefault()).Id;
+
+            Assert.AreEqual(1, context.Users.Count());
+            // Act
+            repo.DeleteUser(id);
+
+            // Assert
+            Assert.AreEqual(true, (context.Users.Where(u => u.Name == NAME_DABS).SingleOrDefault()).Deleted);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(NotFoundException))]
+        public void Users_DeleteUser_ThatDoesntExist() {
+            // Arrange
+            var repo = new UsersRepository(context);
+            int id = (context.Books.OrderByDescending(u => u.Id).FirstOrDefault()).Id;
+
+            // Act
+            repo.DeleteUser(id+1);
+
+            // Assert
+            Assert.Fail("Should have thrown NotFoundException");
+        }
     }
 }
