@@ -9,8 +9,15 @@ namespace LibraryAPI.Controllers
     /// </summary>
     public class RecommendationsController : Controller
     {
+        /// <summary>
+        /// The service private variable
+        /// </summary>
         private readonly IRecommendationsService _recService;
 
+        /// <summary>
+        /// Constructor for RecommendationsController
+        /// </summary>
+        /// <param name="recService">Dependency injection for the service</param>
         public RecommendationsController(IRecommendationsService recService) {
             _recService = recService;
         }
