@@ -212,13 +212,13 @@ namespace LibraryAPI.UnitTests.BooksRepositoryTests
         }
 
         [TestMethod]
-        public void Books_UpdateBookById_UpdateName()
+        public void Books_UpdateBookById_UpdateNameAndAuthor()
         {
             // Arrange
             var repo = new BooksRepository(context);
             var updatedBook = new BookView {
                 Title = "Not a Game",
-                Author = AUTHOR_LOTR,
+                Author = "Jigsaw",
                 ReleaseDate = RELEASE_LOTR,
                 ISBN = ISBN_LOTR
             };
@@ -227,7 +227,28 @@ namespace LibraryAPI.UnitTests.BooksRepositoryTests
             repo.UpdateBookById(1, updatedBook);
             
             // Assert
-            Assert.AreEqual("Not a Game", context.Books.Where(x => x.Title == "Not a Game").SingleOrDefault().Title);
+            Assert.AreEqual("Not a Game", context.Books.Where(x => x.Id == 1).SingleOrDefault().Title);
+            Assert.AreEqual("Jigsaw", context.Books.Where(x => x.Id == 1).SingleOrDefault().Author);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(NotFoundException))]
+        public void Books_UpdateBookById_ThatDoesNotExist()
+        {
+            // Arrange
+            var repo = new BooksRepository(context);
+            var updatedBook = new BookView {
+                Title = "Not a Game",
+                Author = "Mr. Boom Bastic",
+                ReleaseDate = RELEASE_LOTR,
+                ISBN = "1337"
+            };
+
+            // Act
+            repo.UpdateBookById(15, updatedBook);
+            
+            // Assert
+            Assert.Fail();
         }
     }
 }
