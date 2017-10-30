@@ -41,6 +41,12 @@ namespace LibraryAPI.Repositories
         }
 
         public BookDTOLite AddBook(BookView book){
+            var bookCheck = (from b in _db.Books
+                            where b.ISBN == book.ISBN
+                            select b).SingleOrDefault();
+            if (bookCheck != null) {
+                throw new AlreadyExistsException("The request could not be completed due to a conflict with the current state of the resource.");
+            }
             var bookEntity = new Book{
                     Title = book.Title,
                     Author = book.Author,

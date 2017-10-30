@@ -48,8 +48,15 @@ namespace LibraryAPI.Controllers
             if(!ModelState.IsValid){
                 return StatusCode(412, "modelstate is not valid");
             }
-            var newBook = _booksService.AddBook(book);
-            return CreatedAtRoute("GetBookById", new {bookId = newBook.Id}, newBook);
+
+            try {
+                var newBook = _booksService.AddBook(book);
+                return CreatedAtRoute("GetBookById", new {bookId = newBook.Id}, newBook);
+            }
+            catch(AlreadyExistsException e) {
+                return StatusCode(409, e.Message);
+            }
+            
         }
 
         // GET /books/{bookId}
