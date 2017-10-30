@@ -4,6 +4,7 @@ using System.Collections.Generic;
 
 namespace Api.Migrations
 {
+    #pragma warning disable 1591
     public partial class InitialMigration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -90,4 +91,5 @@ namespace Api.Migrations
                 name: "Users");
         }
     }
+    #pragma warning restore 1591
 }

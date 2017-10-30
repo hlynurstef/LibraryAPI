@@ -17,6 +17,7 @@ using Swashbuckle.AspNetCore.Swagger;
 
 namespace Api
 {
+    #pragma warning disable 1591
     public class Startup
     {
         public Startup(IConfiguration configuration)
@@ -80,4 +81,5 @@ namespace Api
             app.UseMvc();
         }
     }
+    #pragma warning restore 1591
 }

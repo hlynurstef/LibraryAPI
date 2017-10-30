@@ -10,6 +10,7 @@ using System;
 
 namespace Api.Migrations
 {
+#pragma warning disable 1591
     [DbContext(typeof(AppDataContext))]
     [Migration("20171030134234_InitialMigration")]
     partial class InitialMigration
@@ -99,4 +100,5 @@ namespace Api.Migrations
 #pragma warning restore 612, 618
         }
     }
+#pragma warning restore 1591
 }
