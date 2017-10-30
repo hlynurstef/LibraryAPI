@@ -56,8 +56,14 @@ namespace LibraryAPI.Repositories
                 ReleaseDate = book.ReleaseDate,
                 ISBN = book.ISBN,
                 Available = true,
-                // TODO: Populate list of reviews
-                Reviews = null
+                Reviews = (from r in _db.Reviews
+                            where r.BookId == bookEntity.Id
+                            select new ReviewDTO{
+                                BookId = r.BookId,
+                                UserId = r.UserId,
+                                BookTitle = bookEntity.Title,
+                                ReviewText = r.ReviewText,
+                                Stars = r.Stars }).ToList()
             };
 
         }
@@ -185,8 +191,13 @@ namespace LibraryAPI.Repositories
                 HasBeenReturned = false
             };
             bookEntity.Available = false;
-            _db.Loans.Add(loan);
-            _db.SaveChanges();      
+            try {
+                _db.Loans.Add(loan);
+                _db.SaveChanges();
+            }
+            catch (Exception e) {
+                Console.WriteLine(e.Message);
+            }
         }
         public void ReturnBook(int userId, int bookId)
         {
@@ -231,7 +242,13 @@ namespace LibraryAPI.Repositories
             loanEntity.LoanDate = loan.LoanDate;
             loanEntity.EndDate = loan.EndDate;
             loanEntity.UserId = loan.UserId;
-            _db.SaveChanges();
+
+            try {
+                _db.SaveChanges();
+            }
+            catch (Exception e) {
+                Console.WriteLine(e.Message);
+            }
         }
     }
 }
