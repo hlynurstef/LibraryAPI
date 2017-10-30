@@ -42,7 +42,7 @@ namespace LibraryAPI.UnitTests.UsersRepositoryTests
         [TestInitialize]
         public void InitializeTest() {
             var options = new DbContextOptionsBuilder<AppDataContext>()
-                .UseInMemoryDatabase(databaseName: "Add_writes_to_database")
+                .UseInMemoryDatabase(databaseName: "UsersDB")
                 .Options;
 
             context = new AppDataContext(options);
@@ -121,7 +121,43 @@ namespace LibraryAPI.UnitTests.UsersRepositoryTests
             repo.AddUser(user);
 
             // Assert
-            Assert.AreEqual(2, context.Users.Count());            
+            Assert.Fail("Should have thrown an AlreadyExistsException");            
+        }
+
+        [TestMethod]
+        public void Users_GetUsers_GetTwoUsers() {
+            // Arrange
+            var repo = new UsersRepository(context);
+            context.Users.Add(new User {
+                Name = "Jón",
+                Address = "Dúfnahólar 10",
+                Email = "jon15@ru.is",
+                PhoneNumber = "123-4567",
+                Deleted = false
+            });
+            context.SaveChanges();
+
+            // Act
+            var users = repo.GetUsers();
+
+            // Assert
+            Assert.AreEqual(2, users.Count());
+        }
+
+        [TestMethod]
+        public void Users_GetUsers_EmptyList() {
+            // Arrange
+            var repo = new UsersRepository(context);
+            var usersToDelete = (from u in context.Users
+                                select u).ToList();
+            context.Users.RemoveRange(usersToDelete);
+            context.SaveChanges();
+
+            // Act
+            var users = repo.GetUsers();
+
+            // Assert
+            Assert.AreEqual(0, users.Count());
         }
     }
 }
