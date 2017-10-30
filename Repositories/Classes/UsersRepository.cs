@@ -106,7 +106,8 @@ namespace LibraryAPI.Repositories
                                             select new LoanDTO {
                                                 Id = l.Id,
                                                 BookTitle = b.Title,
-                                                LoanDate = l.LoanDate
+                                                LoanDate = l.LoanDate,
+                                                EndDate = l.EndDate
                                             }).ToList()
                         }).SingleOrDefault();
             if (user == null) {
