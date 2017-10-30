@@ -102,5 +102,63 @@ namespace LibraryAPI.UnitTests.BooksRepositoryTests
             Assert.AreEqual(new DateTime(1996,8,1), context.Books.Where(x => x.Title == "A Game Of Thrones").SingleOrDefault().ReleaseDate);
             Assert.AreEqual("535135468543246846541", context.Books.Where(x => x.Title == "A Game Of Thrones").SingleOrDefault().ISBN);
         }
+
+        [TestMethod]
+        public void Books_GetBooks_OneBook()
+        {
+            // Arrange
+            var repo = new BooksRepository(context);
+            
+            // Act
+            var books = repo.GetBooks();
+
+            // Assert
+            Assert.AreEqual(1, books.Count());
+            Assert.AreEqual("The Lord of The Rings", books.Where(x => x.Title == "The Lord of The Rings").SingleOrDefault().Title);
+        }
+
+        [TestMethod]
+        public void Books_GetBooks_FourBooks()
+        {
+            // Arrange
+            var repo = new BooksRepository(context);
+            
+            var book1 = new BookView {
+                Title = "A Game Of Thrones",
+                Author = "George R.R. Martin",
+                ReleaseDate = new DateTime(1996, 8, 1),
+                ISBN = "535135468543246846541"
+            };
+
+            var book2 = new BookView {
+                Title = "The Hobbit",
+                Author = "Tolkien",
+                ReleaseDate = new DateTime(1996, 8,  1),
+                ISBN = "535135468543246846541"
+            };
+
+            var book3 = new BookView {
+                Title = "Programming with c++",
+                Author = "Bjarne Stoustrup",
+                ReleaseDate = new DateTime(1996, 8, 1),
+                ISBN = "535135468543246846541"
+            };
+
+            
+            // Act
+            repo.AddBook(book1);
+            repo.AddBook(book2);
+            repo.AddBook(book3);
+
+            // Act
+            var books = repo.GetBooks();
+
+            // Assert
+            Assert.AreEqual(4, books.Count());
+            Assert.AreEqual("The Lord of The Rings", books.Where(x => x.Title == "The Lord of The Rings").SingleOrDefault().Title);
+            Assert.AreEqual("A Game Of Thrones", books.Where(x => x.Title == "A Game Of Thrones").SingleOrDefault().Title);
+            Assert.AreEqual("The Hobbit", books.Where(x => x.Title == "The Hobbit").SingleOrDefault().Title);
+            Assert.AreEqual("Programming with c++", books.Where(x => x.Title == "Programming with c++").SingleOrDefault().Title);
+        }
     }
 }
