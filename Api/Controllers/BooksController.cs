@@ -9,10 +9,17 @@ using LibraryAPI.Exceptions;
 
 namespace LibraryAPI.Controllers
 {
+    /// <summary>
+    /// Controller class for /books
+    /// </summary>
     public class BooksController : Controller
     {
         private readonly IBooksService _booksService;
 
+        /// <summary>
+        /// Constructor for the books controller
+        /// </summary>
+        /// <param name="booksService">Dependency injection for the booksservice</param>
         public BooksController(IBooksService booksService) {
             _booksService = booksService;
         }
