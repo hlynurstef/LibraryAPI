@@ -63,14 +63,25 @@ namespace LibraryAPI.Controllers
                 return NotFound(e.Message);
             }
         }
-        // TODO: GET    /books/{bookId}/reviews/{userId} - Fá dóm frá notanda fyrir bók
 
-        // TODO: PUT    /books/{bookId}/reviews/{userId} - Breyta dómi notanda um bók
+        /// <summary>
+        /// Deletes the review of book with bookId and 
+        /// that the user with userId made
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="bookId"></param>
+        /// <returns></returns>
+        [HttpDelete("books/{bookId}/reviews/{userId}")]
+        public IActionResult DeleteBookReview(int bookId, int userId){
+            try{
+                _reviewsService.DeleteUsersBookReview(userId, bookId);
+                return NoContent();
+            }
+            catch (NotFoundException e){
+                return NotFound(e.Message);
+            }
+        }
 
-        // TODO: DELETE /books/{bookId}/reviews/{userId} - Eyða dómi notanda um bók
-
-
-        // TODO: GET    /users/{userId}/reviews          - Sækja dóma fyrir notanda
 
         /// <summary>
         /// Returns all the reviews that a user had given
@@ -108,11 +119,58 @@ namespace LibraryAPI.Controllers
             }
         }
 
-        // TODO: DELETE /users/{userId}/reviews/{bookId} - Fjarlæga dóma
 
-        // TODO: PUT    /users/{userId}/reviews/{bookId} - Uppfæra dóma um bók
+        /// <summary>
+        /// Deletes the review of book with bookId and 
+        /// that the user with userId made
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="bookId"></param>
+        /// <returns></returns>
+        [HttpDelete("users/{userId}/reviews/{bookId}")]
+        public IActionResult DeleteUsersBookReview(int userId, int bookId) {
+            try{
+                _reviewsService.DeleteUsersBookReview(userId, bookId);
+                return NoContent();
+            }
+            catch (NotFoundException e){
+                return NotFound(e.Message);
+            }
+        }
 
+        /// <summary>
+        /// Updates the users review for the given book
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="bookId"></param>
+        /// <returns>StatusCode 204 if everything went as planned</returns>
+        [HttpPut("books/{bookId}/reviews/{userId}")]
+        public IActionResult UpdateBooksUserReview(int bookId, int userId, [FromBody] ReviewView updatedReview) {
+            try {
+                _reviewsService.UpdateBooksUserReview(bookId, userId, updatedReview);
+                return NoContent();
+            }
+            catch (NotFoundException e) {
+                return NotFound(e.Message);
+            }
+        }
+        
 
-
+        /// <summary>
+        /// Updates the users review for the given book
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="bookId"></param>
+        /// <returns>StatusCode 204 if everything went as planned</returns>
+        [HttpPut("users/{userId}/reviews/{bookId}")]
+        public IActionResult UpdateUsersBookReview(int userId, int bookId, [FromBody] ReviewView updatedReview) {
+            try {
+                _reviewsService.UpdateBooksUserReview(bookId, userId, updatedReview);
+                return NoContent();
+            }
+            catch (NotFoundException e) {
+                return NotFound(e.Message);
+            }
+        }
     }
 }

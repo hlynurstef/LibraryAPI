@@ -11,8 +11,8 @@ using System;
 namespace Api.Migrations
 {
     [DbContext(typeof(AppDataContext))]
-    [Migration("20171027133111_DeletedToBooks")]
-    partial class DeletedToBooks
+    [Migration("20171030134234_InitialMigration")]
+    partial class InitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -49,6 +49,8 @@ namespace Api.Migrations
 
                     b.Property<int>("BookId");
 
+                    b.Property<DateTime?>("EndDate");
+
                     b.Property<bool>("HasBeenReturned");
 
                     b.Property<DateTime>("LoanDate");
@@ -62,7 +64,7 @@ namespace Api.Migrations
 
             modelBuilder.Entity("LibraryAPI.Models.EntityModels.Review", b =>
                 {
-                    b.Property<int>("BookID");
+                    b.Property<int>("BookId");
 
                     b.Property<int>("UserId");
 
@@ -70,7 +72,7 @@ namespace Api.Migrations
 
                     b.Property<int>("Stars");
 
-                    b.HasKey("BookID", "UserId");
+                    b.HasKey("BookId", "UserId");
 
                     b.ToTable("Reviews");
                 });

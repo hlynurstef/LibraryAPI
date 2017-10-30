@@ -48,6 +48,8 @@ namespace Api.Migrations
 
                     b.Property<int>("BookId");
 
+                    b.Property<DateTime?>("EndDate");
+
                     b.Property<bool>("HasBeenReturned");
 
                     b.Property<DateTime>("LoanDate");
@@ -61,7 +63,7 @@ namespace Api.Migrations
 
             modelBuilder.Entity("LibraryAPI.Models.EntityModels.Review", b =>
                 {
-                    b.Property<int>("BookID");
+                    b.Property<int>("BookId");
 
                     b.Property<int>("UserId");
 
@@ -69,7 +71,7 @@ namespace Api.Migrations
 
                     b.Property<int>("Stars");
 
-                    b.HasKey("BookID", "UserId");
+                    b.HasKey("BookId", "UserId");
 
                     b.ToTable("Reviews");
                 });

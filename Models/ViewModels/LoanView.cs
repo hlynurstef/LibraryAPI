@@ -1,13 +1,13 @@
 using System;
+using System.ComponentModel.DataAnnotations;
 
-namespace LibraryAPI.Models.EntityModels
+namespace LibraryAPI.Models.ViewModels
 {
-    /// <summary>
-    /// An entity model of a loan that is used as the
-    /// data structure in our database.
-    /// This model should not be exposed to the user!
+        /// <summary>
+    /// A view model of a loan.
+    /// This is the model that is used when a user is updating an existing loan.
     /// </summary>
-    public class Loan
+    public class LoanView
     {
         /// <summary>
         /// The Id of the loan.
@@ -24,11 +24,10 @@ namespace LibraryAPI.Models.EntityModels
         /// <summary>
         /// The date of the loan.
         /// </summary>
-        
         public DateTime LoanDate { get; set; }
         /// <summary>
         /// Whether this book has been returned or not.
-        /// </summary>
+        /// </summary>        
         public bool HasBeenReturned { get; set; }
 
         /// <summary>

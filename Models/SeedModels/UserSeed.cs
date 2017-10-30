@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace LibraryAPI.Models.EntityModels
+namespace LibraryAPI.Models.SeedModels
 {
     /// <summary>
     /// An entity model of a user that is used as the 

@@ -1,4 +1,4 @@
-namespace Models
+namespace LibraryAPI.Models.SeedModels
 {
     /// <summary>
     /// Class that is only used when reading json data from the file to seed the database

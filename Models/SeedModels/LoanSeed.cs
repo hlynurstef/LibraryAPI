@@ -1,6 +1,6 @@
 using System;
 
-namespace LibraryAPI.Models.EntityModels
+namespace LibraryAPI.Models.SeedModels
 {
     public class LoanSeed
     {
