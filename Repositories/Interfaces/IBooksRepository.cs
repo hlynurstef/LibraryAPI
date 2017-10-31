@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using LibraryAPI.Models.DTOModels;
 using LibraryAPI.Models.ViewModels;
@@ -15,6 +16,7 @@ namespace LibraryAPI.Repositories
          void LendBookToUser(int userId, int bookId);
          void ReturnBook(int userId, int bookId);
          void UpdateLoanRegistration(int userId, int bookId, LoanView book);
+         IEnumerable<BookDTOLite> GetBooksOnLoan(DateTime loanDate);
     }
 
 }

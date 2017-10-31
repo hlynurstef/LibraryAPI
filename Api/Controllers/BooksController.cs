@@ -6,6 +6,7 @@ using LibraryAPI.Models.ViewModels;
 using LibraryAPI.Services;
 using Microsoft.AspNetCore.Mvc;
 using LibraryAPI.Exceptions;
+using LibraryAPI.Models.DTOModels;
 
 namespace LibraryAPI.Controllers
 {
@@ -29,9 +30,28 @@ namespace LibraryAPI.Controllers
         /// </summary>
         /// <returns>All books in the library.</returns>
         [HttpGet("books")]
-        public IActionResult GetBooks()
+        public IActionResult GetBooks([FromQuery] String loanDate)
         {
-            var books = _booksService.GetBooks();
+            IEnumerable<BookDTOLite> books;
+            if(loanDate != null && loanDate != "") {
+                var date = loanDate.Split("-");
+                if (date.Count() != 3) {
+                    return StatusCode(400, "loanDate not formatted correctly");
+                } 
+                DateTime datetime = new DateTime();
+                try {
+                    datetime = new DateTime(Int32.Parse(date[0]), Int32.Parse(date[1]), Int32.Parse(date[2]));
+                    
+                } catch( Exception ex ) {
+                    if (ex is FormatException || ex is OverflowException || ex is ArgumentNullException) {
+                        return StatusCode(400, "loanDate not formatted correctly");
+                    }
+                }
+                books = _booksService.GetBooksOnLoan(datetime);
+            } else {
+                books = _booksService.GetBooks();
+            }
+            
             return Ok(books);
         }
 

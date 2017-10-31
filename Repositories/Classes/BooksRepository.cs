@@ -264,5 +264,30 @@ namespace LibraryAPI.Repositories
                 Console.WriteLine(e.Message);
             }
         }
+
+        public IEnumerable<BookDTOLite> GetBooksOnLoan(DateTime loanDate){
+             var books = (from b in _db.Books
+                        join l in _db.Loans on b.Id equals l.BookId
+                        where l.EndDate < loanDate 
+                        || l.EndDate != null
+                        select new BookDTOLite {
+                            Id = b.Id,
+                            Title = b.Title,
+                            Author = b.Author,
+                            ReleaseDate = b.ReleaseDate,
+                            ISBN = b.ISBN,
+                            Available = b.Available,
+                            Reviews = (from r in _db.Reviews
+                                       where r.BookId == b.Id
+                                       select new ReviewDTO{
+                                           BookId = r.BookId,
+                                           UserId = r.UserId,
+                                           BookTitle = b.Title,
+                                           ReviewText = r.ReviewText,
+                                           Stars = r.Stars
+                                       }).ToList(),
+                         }).ToList();
+                return books;
+        }
     }
 }
