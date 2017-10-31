@@ -158,6 +158,11 @@ namespace LibraryAPI.Repositories
 
         public IEnumerable<BookDTOLite> GetBooksByUserId(int userId)
         {
+            var userEntity = _db.Users.SingleOrDefault(u => (u.Id == userId && u.Deleted == false));
+            if(userEntity == null){
+                throw new NotFoundException("User with id " + userId + " not found.");
+            }
+
             var books = (from b in _db.Books
                         join l in _db.Loans on b.Id equals l.BookId
                         where b.Deleted == false

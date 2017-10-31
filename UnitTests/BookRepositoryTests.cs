@@ -524,5 +524,36 @@ namespace LibraryAPI.UnitTests.BooksRepositoryTests
                                     .Where(l => l.UserId == userId && l.BookId == bookId)
                                     .SingleOrDefault()).HasBeenReturned);
         }
+
+        [TestMethod]
+        public void Books_GetBooksByUserId_UserExistOneBook()
+        {
+            // Arrange
+            var repo = new BooksRepository(context);
+            int userId = (context.Users.OrderByDescending(u => u.Id).FirstOrDefault()).Id;
+
+            // Act
+            var books = repo.GetBooksByUserId(userId);
+
+            // Assert
+            Assert.AreEqual(1, books.Count());
+            Assert.AreEqual("The Lord of The Rings", books.ElementAt(0).Title);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(NotFoundException))]
+        public void Books_GetBooksByUserId_UserDoesNotExist()
+        {
+            // Arrange
+            var repo = new BooksRepository(context);
+            int userId = (context.Books.OrderByDescending(b => b.Id).FirstOrDefault()).Id;
+
+            // Act
+            // Send an id that does not exist into repo
+            var books = repo.GetBooksByUserId(userId+1);
+
+            // Assert
+            Assert.Fail("Should have thrown NotFoundException");
+        }
     }
 }
