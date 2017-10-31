@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using LibraryAPI.Models.DTOModels;
 using LibraryAPI.Models.ViewModels;
 using LibraryAPI.Repositories;
+using System;
 
 namespace LibraryAPI.Services
 {
@@ -36,6 +37,10 @@ namespace LibraryAPI.Services
         public IEnumerable<UserDTOLite> GetUsers() {
             var users = _repo.GetUsers();
             return users;
+        }
+
+        public IEnumerable<UserDTOLite> GetUsersOnLoan(DateTime queryDate){
+            return _repo.GetUsersOnLoan(queryDate);
         }
     }
 }

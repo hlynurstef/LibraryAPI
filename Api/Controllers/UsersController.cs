@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using LibraryAPI.Exceptions;
+using LibraryAPI.Models.DTOModels;
 using LibraryAPI.Models.EntityModels;
 using LibraryAPI.Models.ViewModels;
 using LibraryAPI.Services;
@@ -31,9 +32,27 @@ namespace LibraryAPI.Controllers
         /// </summary>
         /// <returns>All users in the library.</returns>
         [HttpGet("users")]
-        public IActionResult GetUsers()
+        public IActionResult GetUsers([FromQuery] String loanDate)
         {
-            var users = _usersService.GetUsers();
+            IEnumerable<UserDTOLite> users;
+                if(loanDate != null && loanDate != "") {
+                var date = loanDate.Split("-");
+                if (date.Count() != 3) {
+                    return StatusCode(400, "loanDate not formatted correctly");
+                } 
+                DateTime queryDate = new DateTime();
+                try {
+                    queryDate = new DateTime(Int32.Parse(date[0]), Int32.Parse(date[1]), Int32.Parse(date[2]));
+                    
+                } catch( Exception ex ) {
+                    if (ex is FormatException || ex is OverflowException || ex is ArgumentNullException) {
+                        return StatusCode(400, "loanDate not formatted correctly");
+                    }
+                }
+                users = _usersService.GetUsersOnLoan(queryDate);
+            } else {
+                users = _usersService.GetUsers();
+            }
             return Ok(users);
         }
 

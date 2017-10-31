@@ -137,5 +137,22 @@ namespace LibraryAPI.Repositories
                         }).ToList();
             return users;
         }
+
+        public IEnumerable<UserDTOLite> GetUsersOnLoan(DateTime queryDate){
+            var users = (from u in _db.Users
+                        join l in _db.Loans
+                            on u.Id equals l.UserId 
+                            where queryDate >= l.LoanDate  
+                          && (queryDate < l.EndDate || l.EndDate == null)
+                          select new UserDTOLite{
+                              Id = u.Id,
+                              Name = u.Name,
+                              Address = u.Address,
+                              Email = u.Email,
+                              PhoneNumber = u.PhoneNumber
+                          }
+            ).ToList().Distinct();
+            return users;
+        }
     }
 }

@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using LibraryAPI.Models.DTOModels;
 using LibraryAPI.Models.ViewModels;
+using System;
 
 namespace LibraryAPI.Repositories
 {
@@ -11,5 +12,6 @@ namespace LibraryAPI.Repositories
         UserDTO GetUserById(int userId);
         void DeleteUser(int userId);
         void UpdateUser(UserView user, int userId);
+        IEnumerable<UserDTOLite> GetUsersOnLoan(DateTime queryDate);
     }
 }
