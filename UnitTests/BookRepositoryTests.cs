@@ -550,7 +550,7 @@ namespace LibraryAPI.UnitTests.BooksRepositoryTests
 
             // Act
             // Send an id that does not exist into repo
-            var books = repo.GetBooksByUserId(userId+1);
+            var books = repo.GetBooksByUserId(Int32.MaxValue);
 
             // Assert
             Assert.Fail("Should have thrown NotFoundException");
