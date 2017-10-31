@@ -141,5 +141,36 @@ namespace LibraryAPI.UnitTests.ReviewsRepositoryTests
             // Assert
             Assert.Fail("Should have thrown NotFoundException");
         }
+
+        [TestMethod]
+        public void Reviews_GetAllReviewsForBook_BookExists()
+        {
+            // Arrange
+            var repo = new ReviewsRepository(context);   
+            int bookId = (context.Books.OrderByDescending(b => b.Id).FirstOrDefault()).Id;
+
+            // Act
+            var reviews = repo.GetAllReviewsForBook(bookId);
+
+            // Assert
+            Assert.AreEqual(1, reviews.Count());
+            Assert.AreEqual("I really liked it", reviews.ElementAt(0).ReviewText);
+            Assert.AreEqual(5, reviews.ElementAt(0).Stars);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(NotFoundException))]
+        public void Reviews_GetAllReviewsForBook_BookDoesNotExist()
+        {
+            // Arrange
+            var repo = new ReviewsRepository(context);   
+            int bookId = (context.Books.OrderByDescending(b => b.Id).FirstOrDefault()).Id;
+
+            // Act
+            var reviews = repo.GetAllReviewsForBook(bookId + 1);
+
+            // Assert
+            Assert.Fail("Should have thrown NotFoundException");
+        }
     }
 }
