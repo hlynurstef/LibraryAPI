@@ -318,5 +318,92 @@ namespace LibraryAPI.UnitTests.ReviewsRepositoryTests
             // Assert
             Assert.Fail("Should have thrown NotFoundException");
         }
+
+        [TestMethod]
+        public void Reviews_UpdateUsersBookRewiew_UserAndBookAndReviewExist()
+        {
+            // Arrange
+            var repo = new ReviewsRepository(context);
+            int bookId = (context.Books.OrderByDescending(b => b.Id).FirstOrDefault()).Id;
+            int userId = (context.Users.OrderByDescending(b => b.Id).FirstOrDefault()).Id;
+
+            // Act
+            repo.UpdateBooksUserReview(bookId, userId, new ReviewView {
+                ReviewText = "Such wow",
+                Stars = 4
+            });
+
+            // Assert
+            Assert.AreEqual(1, context.Reviews.Count());
+            Assert.AreEqual("Such wow", context.Reviews.Where(b => b.ReviewText == "Such wow").SingleOrDefault().ReviewText);
+            Assert.AreEqual(4, context.Reviews.Where(b => b.Stars == 4).SingleOrDefault().Stars);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(NotFoundException))]
+        public void Reviews_UpdateUsersBookRewiew_UserDoesNotExist()
+        {
+            // Arrange
+            var repo = new ReviewsRepository(context);
+            int bookId = (context.Books.OrderByDescending(b => b.Id).FirstOrDefault()).Id;
+            int userId = (context.Users.OrderByDescending(b => b.Id).FirstOrDefault()).Id;
+
+            // Act
+            repo.UpdateBooksUserReview(bookId, userId + 1, new ReviewView {
+                ReviewText = "Such wow",
+                Stars = 4
+            });
+
+            // Assert
+            Assert.Fail("Should have thrown NotFoundException");
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(NotFoundException))]
+        public void Reviews_UpdateUsersBookRewiew_BookDoesNotExist()
+        {
+            // Arrange
+            var repo = new ReviewsRepository(context);
+            int bookId = (context.Books.OrderByDescending(b => b.Id).FirstOrDefault()).Id;
+            int userId = (context.Users.OrderByDescending(b => b.Id).FirstOrDefault()).Id;
+
+            // Act
+            repo.UpdateBooksUserReview(bookId + 1, userId, new ReviewView {
+                ReviewText = "Such wow",
+                Stars = 4
+            });
+
+            // Assert
+            Assert.Fail("Should have thrown NotFoundException");
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(NotFoundException))]
+        public void Reviews_UpdateUsersBookRewiew_ReviewDoesNotExist()
+        {
+            // Arrange
+            var repo = new ReviewsRepository(context);
+            int bookId = (context.Books.OrderByDescending(b => b.Id).FirstOrDefault()).Id;
+            int userId = (context.Users.OrderByDescending(b => b.Id).FirstOrDefault()).Id;
+            
+            var newUser = new User {
+                Name = "Gux",
+                Address = "Rvk",
+                Email = "Gux@gmail.com",
+                PhoneNumber = "699-6666",
+                Deleted = false
+            };
+
+            context.Users.Add(newUser);
+            context.SaveChanges();
+            // Act
+            repo.UpdateBooksUserReview(bookId, newUser.Id, new ReviewView {
+                ReviewText = "Such wow",
+                Stars = 4
+            });
+
+            // Assert
+            Assert.Fail("Should have thrown NotFoundException");
+        }
     }
 }
