@@ -289,11 +289,11 @@ namespace LibraryAPI.Repositories
             }
         }
 
-        public IEnumerable<BookDTOLite> GetBooksOnLoan(DateTime loanDate){
+        public IEnumerable<BookDTOLite> GetBooksOnLoan(DateTime queryDate){
              var books = (from b in _db.Books
                         join l in _db.Loans on b.Id equals l.BookId
-                        where l.EndDate < loanDate 
-                        || l.EndDate != null
+                        where queryDate >= l.LoanDate  
+                          && (queryDate < l.EndDate || l.EndDate == null)
                         select new BookDTOLite {
                             Id = b.Id,
                             Title = b.Title,
