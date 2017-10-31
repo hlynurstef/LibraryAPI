@@ -292,5 +292,77 @@ namespace LibraryAPI.UnitTests.UsersRepositoryTests
             Assert.AreEqual(1, users.Count());
             Assert.AreEqual("Daníel B. Sigurgeirsson", (context.Users.Where(u => u.Id == userId).SingleOrDefault()).Name);
         }
+
+        [TestMethod]
+        public void Users_GetUsersOnLoan_WithEmptyList()
+        {
+            // Arrange
+            var repo = new UsersRepository(context);
+            int userId = (context.Users.OrderByDescending(u => u.Id).FirstOrDefault()).Id;  
+
+
+
+            // Act
+            var users = repo.GetUsersOnLoan(new DateTime(2017,10,30));
+
+            // Assert
+            Assert.AreEqual(0, users.Count());
+            Assert.AreEqual("Daníel B. Sigurgeirsson", (context.Users.Where(u => u.Id == userId).SingleOrDefault()).Name);
+        }
+
+        [TestMethod]
+        public void Users_GetUsersOnLoan_WithTwoResults()
+        {
+            // Arrange
+            var repo = new UsersRepository(context);
+            int userId = (context.Users.OrderByDescending(u => u.Id).FirstOrDefault()).Id;  
+
+
+            var extraUser = new User {
+                Name = "Jón",
+                Address = "Dúfnahólar 10",
+                Email = "jon15@ru.is",
+                PhoneNumber = "123-4567",
+                Deleted = false
+            };
+            context.Users.Add(extraUser);
+            context.SaveChanges();
+
+            var book1 = (new Book {
+                Title = "Stuff",
+                Author = "Things",
+                ReleaseDate = new DateTime(1999, 10, 10),
+                ISBN = "15252",
+                Available = true,
+                Deleted = false
+            });
+
+            context.Loans.Add(new Loan {
+                UserId = userId,
+                BookId = book1.Id,
+                LoanDate = new DateTime(2017,10,29),
+                EndDate = null,
+                HasBeenReturned = false
+            });
+
+            context.Loans.Add(new Loan {
+                UserId = extraUser.Id,
+                BookId = book1.Id,
+                LoanDate = new DateTime(2017,10,25),
+                EndDate = null,
+                HasBeenReturned = false
+            });
+
+            context.Books.Add(book1);
+            context.SaveChanges();
+
+            // Act
+            var users = repo.GetUsersOnLoan(new DateTime(2017,10,30));
+
+            // Assert
+            Assert.AreEqual(2, users.Count());
+            Assert.AreEqual("Daníel B. Sigurgeirsson", (context.Users.Where(u => u.Id == userId).SingleOrDefault()).Name);
+            Assert.AreEqual("Jón", (context.Users.Where(u => u.Id == extraUser.Id).SingleOrDefault()).Name);
+        }
     }
 }
