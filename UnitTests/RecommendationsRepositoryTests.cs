@@ -123,7 +123,7 @@ namespace LibraryAPI.UnitTests.RecommendationsRepositoryTests
             Assert.AreEqual("0987654321", recommendations.Where(b => b.Title == "Silmarillion").SingleOrDefault().ISBN);
         }
 
-                [TestMethod]
+        [TestMethod]
         public void Recommendations_GetRecommendationsForUser_WithNoMatchSoRandomResults()
         {
             // Arrange
@@ -154,6 +154,21 @@ namespace LibraryAPI.UnitTests.RecommendationsRepositoryTests
             Assert.AreEqual("Book 3", recommendations.Where(b => b.Title == "Book 3").SingleOrDefault().Title);
             Assert.AreEqual("Book 4", recommendations.Where(b => b.Title == "Book 4").SingleOrDefault().Title);
             Assert.AreEqual("Book 5", recommendations.Where(b => b.Title == "Book 5").SingleOrDefault().Title);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(NotFoundException))]
+        public void Recommendations_GetRecommendationsForUser_InvalidUserId()
+        {
+            // Arrange
+            var repo = new RecommendationsRepository(context);
+            int userId = Int32.MaxValue;
+
+            // Act
+            var recommendations = repo.GetRecommendationsForUser(userId);
+
+            // Assert
+            Assert.Fail("Should have thrown NotFoundException");
         }
     }
 }

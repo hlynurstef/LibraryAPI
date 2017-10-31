@@ -167,7 +167,7 @@ namespace LibraryAPI.Repositories
                     int newIndex = 0;
                     while (true) {
                         newIndex = rnd.Next(1, books.Count);
-                        if(!recommendations.Contains(books[newIndex])) {
+                        if(!recommendations.Contains(books[newIndex]) && !titles.Contains(books[bookId].Title)) {
                             recommendations.Add(books[newIndex]);
                             break;
                         }
