@@ -232,6 +232,101 @@ namespace LibraryAPI.UnitTests.BooksRepositoryTests
         }
 
         [TestMethod]
+        public void Books_GetBooksOnLoan_WithResults()
+        {   
+            // Arrange
+            var repo = new BooksRepository(context);
+            
+            // Act
+            var books = repo.GetBooksOnLoan(new DateTime(2017,11,29));
+
+            // Assert
+            Assert.AreEqual(1, books.Count());
+            Assert.AreEqual(TITLE_LOTR, books.ElementAt(0).Title);
+        }
+
+        [TestMethod]
+        public void Books_GetBooksOnLoan_WithNoResults()
+        {   
+            // Arrange
+            var repo = new BooksRepository(context);
+            
+            // Act
+            var books = repo.GetBooksOnLoan(new DateTime(2011,11,29));
+
+            // Assert
+            Assert.AreEqual(0, books.Count());
+        }
+
+        [TestMethod]        
+        public void Books_GetBooksOnLoan_WithThreeResults()
+        {   
+            // Arrange
+            var repo = new BooksRepository(context);
+
+            var book1 = new Book {
+                Title = "Programming",
+                Author = "Bjarne",
+                ReleaseDate = new DateTime(1996, 8, 1),
+                ISBN = "5235262",
+                Available = true,
+                Deleted = false
+            };
+            var book2 = new Book {
+                Title = "Programming with c++",
+                Author = "Bjarne Stoustrup",
+                ReleaseDate = new DateTime(1996, 8, 1),
+                ISBN = "52352",
+                Available = true,
+                Deleted = false
+            };
+            var book3 = new Book {
+                Title = "Programming with Python",
+                Author = "Stoustrup",
+                ReleaseDate = new DateTime(1996, 8, 1),
+                ISBN = "231512",
+                Available = true,
+                Deleted = false
+            };
+            context.Books.Add(book1);
+            context.Books.Add(book2);
+            context.Books.Add(book3);
+
+            context.SaveChanges();
+
+            context.Loans.Add(new Loan {
+                UserId = 1,
+                BookId = book1.Id,
+                LoanDate = new DateTime(2017,01,10),
+                EndDate = new DateTime(2017,01,15),
+                HasBeenReturned = RETURNED_LOAN
+            });
+            context.Loans.Add(new Loan {
+                UserId = 1,
+                BookId = book2.Id,
+                LoanDate = new DateTime(2017,01,10),
+                EndDate = new DateTime(2017,01,21),
+                HasBeenReturned = RETURNED_LOAN
+            });
+            context.Loans.Add(new Loan {
+                UserId = 1,
+                BookId = book3.Id,
+                LoanDate = new DateTime(2015,01,10),
+                EndDate = null,
+                HasBeenReturned = RETURNED_LOAN
+            });
+            
+            context.SaveChanges();
+            // Act
+            var books = repo.GetBooksOnLoan(new DateTime(2017,01,20));
+
+            // Assert
+            Assert.AreEqual(2, books.Count());
+            Assert.AreEqual("Programming with c++", books.Where(b => b.Id == book2.Id).SingleOrDefault().Title);
+            Assert.AreEqual("Programming with Python", books.Where(b => b.Id == book3.Id).SingleOrDefault().Title);
+        }
+
+        [TestMethod]
         public void Books_DeleteBookById_ThatExists()
         {
             // Arrange
