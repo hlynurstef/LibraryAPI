@@ -255,5 +255,42 @@ namespace LibraryAPI.UnitTests.UsersRepositoryTests
             // Assert
             Assert.Fail("Should have thrown a NotFoundException");
         }
+
+        [TestMethod]
+        public void Users_GetUsersOnLoan_WithValidResult()
+        {
+            // Arrange
+            var repo = new UsersRepository(context);
+            int userId = (context.Users.OrderByDescending(u => u.Id).FirstOrDefault()).Id;  
+
+
+
+            var book1 = (new Book {
+                Title = "Stuff",
+                Author = "Things",
+                ReleaseDate = new DateTime(1999, 10, 10),
+                ISBN = "15252",
+                Available = true,
+                Deleted = false
+            });
+
+            context.Loans.Add(new Loan {
+                UserId = userId,
+                BookId = book1.Id,
+                LoanDate = new DateTime(2017,10,29),
+                EndDate = null,
+                HasBeenReturned = false
+            });
+
+            context.Books.Add(book1);
+            context.SaveChanges();
+
+            // Act
+            var users = repo.GetUsersOnLoan(new DateTime(2017,10,30));
+
+            // Assert
+            Assert.AreEqual(1, users.Count());
+            Assert.AreEqual("Daníel B. Sigurgeirsson", (context.Users.Where(u => u.Id == userId).SingleOrDefault()).Name);
+        }
     }
 }
