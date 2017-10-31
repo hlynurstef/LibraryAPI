@@ -47,7 +47,7 @@ namespace LibraryAPI.UnitTests.ReviewsRepositoryTests
         [TestInitialize]
         public void InitializeTest() {
             var options = new DbContextOptionsBuilder<AppDataContext>()
-                .UseInMemoryDatabase(databaseName: "ReviewsFB")
+                .UseInMemoryDatabase(databaseName: "ReviewsDB")
                 .Options;
 
             context = new AppDataContext(options);

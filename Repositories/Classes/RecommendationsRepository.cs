@@ -121,7 +121,7 @@ namespace LibraryAPI.Repositories
             return recommendations;
         }
 
-        public List<BookDTO> GetRandomRecommendations(List<string> titles)
+        private List<BookDTO> GetRandomRecommendations(List<string> titles)
         {
             List<BookDTO> recommendations = new List<BookDTO>();
             var books = (from b in _db.Books
@@ -160,8 +160,18 @@ namespace LibraryAPI.Repositories
 
             foreach(var bookId in bookIds) 
             {
-                if(!titles.Contains(books[bookId].Title) ) {
+                if(!titles.Contains(books[bookId].Title) && !recommendations.Contains(books[bookId])) {
                     recommendations.Add(books[bookId]);
+                }
+                else if (recommendations.Contains(books[bookId])) {
+                    int newIndex = 0;
+                    while (true) {
+                        newIndex = rnd.Next(1, books.Count);
+                        if(!recommendations.Contains(books[newIndex])) {
+                            recommendations.Add(books[newIndex]);
+                            break;
+                        }
+                    }
                 }
             }
 
