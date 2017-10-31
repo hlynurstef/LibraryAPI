@@ -1,11 +1,9 @@
-namespace LibraryAPI.Models.DTOModels
-{
+namespace LibraryAPI.Models.DTOModels {
     /// <summary>
     /// A DTO model of a review used when displaying
     /// information to the user
     /// </summary>
-    public class ReviewDTO
-    {
+    public class ReviewDTO {
         /// <summary>
         /// The Id of the user that gave this review.
         /// </summary>

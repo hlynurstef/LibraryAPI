@@ -7,23 +7,21 @@ using LibraryAPI.Models.DTOModels;
 using LibraryAPI.Models.EntityModels;
 using LibraryAPI.Models.ViewModels;
 using LibraryAPI.Services;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Mvc;
 
-namespace LibraryAPI.Controllers
-{
+namespace LibraryAPI.Controllers {
     /// <summary>
     /// User controller class that handles all user related queries.
     /// </summary>
-    public class UsersController : Controller
-    {
+    public class UsersController : Controller {
         private readonly IUsersService _usersService;
 
         /// <summary>
         /// Instantiates a new user service when creating the controller
         /// </summary>
         /// <param name="usersService">User Serivce</param>
-        public UsersController(IUsersService usersService) {
+        public UsersController (IUsersService usersService) {
             _usersService = usersService;
         }
         // GET /users
@@ -31,29 +29,32 @@ namespace LibraryAPI.Controllers
         /// Gets all users.
         /// </summary>
         /// <returns>All users in the library.</returns>
-        [HttpGet("users")]
-        public IActionResult GetUsers([FromQuery] String loanDate)
-        {
+        [HttpGet ("users")]
+        public IActionResult GetUsers ([FromQuery] String loanDate, [FromQuery] int? loanDuration) {
             IEnumerable<UserDTOLite> users;
-                if(loanDate != null && loanDate != "") {
-                var date = loanDate.Split("-");
-                if (date.Count() != 3) {
-                    return StatusCode(400, "loanDate not formatted correctly");
-                } 
-                DateTime queryDate = new DateTime();
+            DateTime queryDate = DateTime.Now;
+            if (loanDate != null && loanDuration == null) {
+                var date = loanDate.Split ("-");
+                if (date.Count () != 3) {
+                    return StatusCode (400, "loanDate not formatted correctly");
+                }
                 try {
-                    queryDate = new DateTime(Int32.Parse(date[0]), Int32.Parse(date[1]), Int32.Parse(date[2]));
-                    
-                } catch( Exception ex ) {
+                    queryDate = new DateTime (Int32.Parse (date[0]), Int32.Parse (date[1]), Int32.Parse (date[2]));
+
+                } catch (Exception ex) {
                     if (ex is FormatException || ex is OverflowException || ex is ArgumentNullException) {
-                        return StatusCode(400, "loanDate not formatted correctly");
+                        return StatusCode (400, "loanDate not formatted correctly");
                     }
                 }
-                users = _usersService.GetUsersOnLoan(queryDate);
+                users = _usersService.GetUsersQuery (queryDate);
+            } else if (loanDuration != null) {
+                Console.WriteLine (loanDuration);
+                users = _usersService.GetUsersOnDuration (queryDate, loanDuration.Value);
             } else {
-                users = _usersService.GetUsers();
+                users = _usersService.GetUsers ();
             }
-            return Ok(users);
+
+            return Ok (users);
         }
 
         // POST /users
@@ -63,20 +64,19 @@ namespace LibraryAPI.Controllers
         /// </summary>
         /// <param name="user">The UserView object from the request body</param>
         /// <returns>The newly created user</returns>
-        [HttpPost("users")]
-        public IActionResult AddUser([FromBody] UserView user) {
-            if(user == null){
-                return BadRequest();
+        [HttpPost ("users")]
+        public IActionResult AddUser ([FromBody] UserView user) {
+            if (user == null) {
+                return BadRequest ();
             }
-            if(!ModelState.IsValid){
-                return StatusCode(412, "Modelstate is not valid");
+            if (!ModelState.IsValid) {
+                return StatusCode (412, "Modelstate is not valid");
             }
             try {
-                var newUser = _usersService.AddUser(user);
-                return CreatedAtRoute("GetUserById", new {userId = newUser.Id}, newUser);
-            }
-            catch(AlreadyExistsException e) {
-                return StatusCode(409, e.Message);
+                var newUser = _usersService.AddUser (user);
+                return CreatedAtRoute ("GetUserById", new { userId = newUser.Id }, newUser);
+            } catch (AlreadyExistsException e) {
+                return StatusCode (409, e.Message);
             }
         }
 
@@ -86,14 +86,13 @@ namespace LibraryAPI.Controllers
         /// </summary>
         /// <param name="userId">The Id of the user to get</param>
         /// <returns>The requested User</returns>
-        [HttpGet("users/{userId}", Name = "GetUserById")]
-        public IActionResult GetUserById(int userId) {
+        [HttpGet ("users/{userId}", Name = "GetUserById")]
+        public IActionResult GetUserById (int userId) {
             try {
-                var user = _usersService.GetUserById(userId);
-                return Ok(user);
-            }
-            catch(NotFoundException e) {
-                return NotFound(e.Message);
+                var user = _usersService.GetUserById (userId);
+                return Ok (user);
+            } catch (NotFoundException e) {
+                return NotFound (e.Message);
             }
         }
 
@@ -102,15 +101,13 @@ namespace LibraryAPI.Controllers
         /// </summary>
         /// <param name="userId"></param>
         /// <returns></returns>
-        [HttpDelete("users/{userId}")]
-        public IActionResult DeleteUser(int userId) {
-            // TODO: Add cascade on delete?
+        [HttpDelete ("users/{userId}")]
+        public IActionResult DeleteUser (int userId) {
             try {
-                _usersService.DeleteUser(userId);
-                return StatusCode(204);
-            }
-            catch(NotFoundException e) {
-                return NotFound(e.Message);
+                _usersService.DeleteUser (userId);
+                return StatusCode (204);
+            } catch (NotFoundException e) {
+                return NotFound (e.Message);
             }
         }
 
@@ -120,21 +117,20 @@ namespace LibraryAPI.Controllers
         /// <param name="user">The view model with the updated user information</param>
         /// <param name="userId">The user id corresponding to the user that should be updated</param>
         /// <returns>204 if succesful</returns>
-        [HttpPut("users/{userId}")]
-        public IActionResult DeleteUser([FromBody] UserView user, int userId) {
-            if(user == null){
-                return BadRequest();
+        [HttpPut ("users/{userId}")]
+        public IActionResult DeleteUser ([FromBody] UserView user, int userId) {
+            if (user == null) {
+                return BadRequest ();
             }
-            if(!ModelState.IsValid){
-                return StatusCode(412, "Modelstate is not valid");
+            if (!ModelState.IsValid) {
+                return StatusCode (412, "Modelstate is not valid");
             }
 
             try {
-                _usersService.UpdateUser(user, userId);
-                return StatusCode(204);
-            }
-            catch(NotFoundException e) {
-                return NotFound(e.Message);
+                _usersService.UpdateUser (user, userId);
+                return StatusCode (204);
+            } catch (NotFoundException e) {
+                return NotFound (e.Message);
             }
         }
     }

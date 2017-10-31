@@ -1,14 +1,12 @@
 using System;
 
-namespace LibraryAPI.Models.EntityModels
-{
+namespace LibraryAPI.Models.EntityModels {
     /// <summary>
     /// An entity model of a loan that is used as the
     /// data structure in our database.
     /// This model should not be exposed to the user!
     /// </summary>
-    public class Loan
-    {
+    public class Loan {
         /// <summary>
         /// The Id of the loan.
         /// </summary>
@@ -24,7 +22,7 @@ namespace LibraryAPI.Models.EntityModels
         /// <summary>
         /// The date of the loan.
         /// </summary>
-        
+
         public DateTime LoanDate { get; set; }
         /// <summary>
         /// Whether this book has been returned or not.

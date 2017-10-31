@@ -8,21 +8,18 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
-namespace Api
-{
-    #pragma warning disable 1591
-    public class Program
-    {
-        public static void Main(string[] args)
-        {
-            BuildWebHost(args).Run();
+namespace Api {
+#pragma warning disable 1591
+    public class Program {
+        public static void Main (string[] args) {
+            BuildWebHost (args).Run ();
         }
 
-        public static IWebHost BuildWebHost(string[] args) =>
-            WebHost.CreateDefaultBuilder(args)
-                .UseStartup<Startup>()
-                .Build();
+        public static IWebHost BuildWebHost (string[] args) =>
+            WebHost.CreateDefaultBuilder (args)
+            .UseStartup<Startup> ()
+            .Build ();
     }
 
-    #pragma warning restore 1591
+#pragma warning restore 1591
 }

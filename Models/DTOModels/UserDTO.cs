@@ -1,13 +1,11 @@
 using System.Collections.Generic;
 
-namespace LibraryAPI.Models.DTOModels
-{
+namespace LibraryAPI.Models.DTOModels {
     /// <summary>
     /// A DTO model of a user used when displaying
     /// information to the user.
     /// </summary>
-    public class UserDTO
-    {
+    public class UserDTO {
         /// <summary>
         /// The Id of the user.
         /// </summary>
@@ -32,6 +30,6 @@ namespace LibraryAPI.Models.DTOModels
         /// The history of loans for this user.
         /// </summary>
         public IEnumerable<LoanDTO> LoanHistory { get; set; }
-        
+
     }
 }

@@ -1,19 +1,17 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using LibraryAPI.Exceptions;
+using LibraryAPI.Models.DTOModels;
+using LibraryAPI.Models.EntityModels;
 using LibraryAPI.Models.ViewModels;
 using LibraryAPI.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using LibraryAPI.Models.EntityModels;
-using LibraryAPI.Models.DTOModels;
-using System.Collections.Generic;
 
-namespace LibraryAPI.UnitTests.BooksRepositoryTests
-{
+namespace LibraryAPI.UnitTests.BooksRepositoryTests {
     [TestClass]
-    public class BooksRepositoryTests
-    {
+    public class BooksRepositoryTests {
         #region UserInfo
         private const string NAME_DABS = "Daníel B. Sigurgeirsson";
         private const string ADDRESS_DABS = "Rauðrófustígur 14";
@@ -25,7 +23,7 @@ namespace LibraryAPI.UnitTests.BooksRepositoryTests
         #region BookInfo
         private const string TITLE_LOTR = "The Lord of The Rings";
         private const string AUTHOR_LOTR = "J.R.R. Tolkien";
-        private DateTime RELEASE_LOTR = new DateTime(1954,6,29);
+        private DateTime RELEASE_LOTR = new DateTime (1954, 6, 29);
         private const string ISBN_LOTR = "123456789";
         private const bool AVAILABLE_LOTR = true;
         private const bool DELETED_LOTR = false;
@@ -34,7 +32,7 @@ namespace LibraryAPI.UnitTests.BooksRepositoryTests
         #region LoanInfo
         private const int USERID_LOAN = 1;
         private const int BOOKID_LOAN = 1;
-        private DateTime STARTDATE_LOAN = new DateTime(2017,10,29);
+        private DateTime STARTDATE_LOAN = new DateTime (2017, 10, 29);
         private const bool RETURNED_LOAN = false;
         private DateTime? ENDDATE_LOAN = null;
         #endregion
@@ -42,12 +40,12 @@ namespace LibraryAPI.UnitTests.BooksRepositoryTests
         private AppDataContext context;
 
         [TestInitialize]
-        public void InitializeTest() {
-            var options = new DbContextOptionsBuilder<AppDataContext>()
-                .UseInMemoryDatabase(databaseName: "BooksDB")
+        public void InitializeTest () {
+            var options = new DbContextOptionsBuilder<AppDataContext> ()
+                .UseInMemoryDatabase (databaseName: "BooksDB")
                 .Options;
 
-            context = new AppDataContext(options);
+            context = new AppDataContext (options);
 
             var user = new User {
                 Name = NAME_DABS,
@@ -65,54 +63,52 @@ namespace LibraryAPI.UnitTests.BooksRepositoryTests
                 Deleted = DELETED_LOTR
             };
 
-            context.Users.Add(user);
-            context.Books.Add(book);
-            context.SaveChanges();
+            context.Users.Add (user);
+            context.Books.Add (book);
+            context.SaveChanges ();
 
-            context.Loans.Add(new Loan {
+            context.Loans.Add (new Loan {
                 UserId = user.Id,
-                BookId = book.Id,
-                LoanDate = STARTDATE_LOAN,
-                EndDate = ENDDATE_LOAN,
-                HasBeenReturned = RETURNED_LOAN
+                    BookId = book.Id,
+                    LoanDate = STARTDATE_LOAN,
+                    EndDate = ENDDATE_LOAN,
+                    HasBeenReturned = RETURNED_LOAN
             });
-            context.SaveChanges();
+            context.SaveChanges ();
         }
 
         [TestCleanup]
-        public void CleanupTest() {
-            context.Database.EnsureDeleted();
+        public void CleanupTest () {
+            context.Database.EnsureDeleted ();
         }
 
         [TestMethod]
-        public void Books_AddBook_OneBook()
-        {
+        public void Books_AddBook_OneBook () {
             // Arrange
-            var repo = new BooksRepository(context);
+            var repo = new BooksRepository (context);
             var book = new BookView {
                 Title = "A Game Of Thrones",
                 Author = "George R.R. Martin",
-                ReleaseDate = new DateTime(1996, 8, 1),
+                ReleaseDate = new DateTime (1996, 8, 1),
                 ISBN = "535135468543246846541"
             };
 
             // Act
-            repo.AddBook(book);
+            repo.AddBook (book);
 
             // Assert
-            Assert.AreEqual(2, context.Books.Count());
-            Assert.AreEqual("A Game Of Thrones", context.Books.Where(b => b.Title == "A Game Of Thrones").SingleOrDefault().Title);
-            Assert.AreEqual("George R.R. Martin", context.Books.Where(b => b.Title == "A Game Of Thrones").SingleOrDefault().Author);
-            Assert.AreEqual(new DateTime(1996,8,1), context.Books.Where(b => b.Title == "A Game Of Thrones").SingleOrDefault().ReleaseDate);
-            Assert.AreEqual("535135468543246846541", context.Books.Where(b => b.Title == "A Game Of Thrones").SingleOrDefault().ISBN);
+            Assert.AreEqual (2, context.Books.Count ());
+            Assert.AreEqual ("A Game Of Thrones", context.Books.Where (b => b.Title == "A Game Of Thrones").SingleOrDefault ().Title);
+            Assert.AreEqual ("George R.R. Martin", context.Books.Where (b => b.Title == "A Game Of Thrones").SingleOrDefault ().Author);
+            Assert.AreEqual (new DateTime (1996, 8, 1), context.Books.Where (b => b.Title == "A Game Of Thrones").SingleOrDefault ().ReleaseDate);
+            Assert.AreEqual ("535135468543246846541", context.Books.Where (b => b.Title == "A Game Of Thrones").SingleOrDefault ().ISBN);
         }
 
         [TestMethod]
-        [ExpectedException(typeof(AlreadyExistsException))]
-        public void Books_AddBook_AddSameBook()
-        {
+        [ExpectedException (typeof (AlreadyExistsException))]
+        public void Books_AddBook_AddSameBook () {
             // Arrange
-            var repo = new BooksRepository(context);
+            var repo = new BooksRepository (context);
             var book = new BookView {
                 Title = TITLE_LOTR,
                 Author = AUTHOR_LOTR,
@@ -121,22 +117,19 @@ namespace LibraryAPI.UnitTests.BooksRepositoryTests
             };
 
             // Act
-            repo.AddBook(book);
+            repo.AddBook (book);
 
             // Assert
-            Assert.Fail("Should have thrown AlreadyExistsException");
+            Assert.Fail ("Should have thrown AlreadyExistsException");
         }
 
         [TestMethod]
-        public void Books_AddBook_AddBookAgainThatHasBeenDeleted()
-        {
+        public void Books_AddBook_AddBookAgainThatHasBeenDeleted () {
             // Arrange
-            var repo = new BooksRepository(context);
-            var deletedBook = (from b in context.Books
-                                where b.Title == TITLE_LOTR
-                                select b).SingleOrDefault();
+            var repo = new BooksRepository (context);
+            var deletedBook = (from b in context.Books where b.Title == TITLE_LOTR select b).SingleOrDefault ();
             deletedBook.Deleted = true;
-            context.SaveChanges();
+            context.SaveChanges ();
 
             var book = new BookView {
                 Title = TITLE_LOTR,
@@ -146,128 +139,121 @@ namespace LibraryAPI.UnitTests.BooksRepositoryTests
             };
 
             // Act
-            repo.AddBook(book);
+            repo.AddBook (book);
 
             // Assert
-            Assert.AreEqual(2, context.Books.Where(b => b.ISBN == ISBN_LOTR).ToList().Count());
+            Assert.AreEqual (2, context.Books.Where (b => b.ISBN == ISBN_LOTR).ToList ().Count ());
         }
 
         [TestMethod]
-        public void Books_GetBooks_OneBook()
-        {
+        public void Books_GetBooks_OneBook () {
             // Arrange
-            var repo = new BooksRepository(context);
-            
+            var repo = new BooksRepository (context);
+
             // Act
-            var books = repo.GetBooks();
+            var books = repo.GetBooks ();
 
             // Assert
-            Assert.AreEqual(1, books.Count());
-            Assert.AreEqual("The Lord of The Rings", books.Where(b => b.Title == "The Lord of The Rings").SingleOrDefault().Title);
+            Assert.AreEqual (1, books.Count ());
+            Assert.AreEqual ("The Lord of The Rings", books.Where (b => b.Title == "The Lord of The Rings").SingleOrDefault ().Title);
         }
 
         [TestMethod]
-        public void Books_GetBooks_FourBooks()
-        {
+        public void Books_GetBooks_FourBooks () {
             // Arrange
-            var repo = new BooksRepository(context);
+            var repo = new BooksRepository (context);
 
-            List<Book> booksToAdd = new List<Book>();
-            booksToAdd.Add(new Book {
+            List<Book> booksToAdd = new List<Book> ();
+            booksToAdd.Add (new Book {
                 Title = "A Game Of Thrones",
-                Author = "George R.R. Martin",
-                ReleaseDate = new DateTime(1996, 8, 1),
-                ISBN = "214124235",
-                Available = true,
-                Deleted = false
+                    Author = "George R.R. Martin",
+                    ReleaseDate = new DateTime (1996, 8, 1),
+                    ISBN = "214124235",
+                    Available = true,
+                    Deleted = false
             });
-            booksToAdd.Add(new Book {
+            booksToAdd.Add (new Book {
                 Title = "The Hobbit",
-                Author = "Tolkien",
-                ReleaseDate = new DateTime(1996, 8,  1),
-                ISBN = "541312312",
-                Available = true,
-                Deleted = false
+                    Author = "Tolkien",
+                    ReleaseDate = new DateTime (1996, 8, 1),
+                    ISBN = "541312312",
+                    Available = true,
+                    Deleted = false
             });
-            booksToAdd.Add(new Book {
+            booksToAdd.Add (new Book {
                 Title = "Programming with c++",
-                Author = "Bjarne Stoustrup",
-                ReleaseDate = new DateTime(1996, 8, 1),
-                ISBN = "2423423123",
-                Available = true,
-                Deleted = false
+                    Author = "Bjarne Stoustrup",
+                    ReleaseDate = new DateTime (1996, 8, 1),
+                    ISBN = "2423423123",
+                    Available = true,
+                    Deleted = false
             });
-            context.Books.AddRange(booksToAdd);
-            context.SaveChanges();
+            context.Books.AddRange (booksToAdd);
+            context.SaveChanges ();
 
             // Act
-            var books = repo.GetBooks();
+            var books = repo.GetBooks ();
 
             // Assert
-            Assert.AreEqual(4, books.Count());
-            Assert.AreEqual("The Lord of The Rings", books.Where(b => b.Title == "The Lord of The Rings").SingleOrDefault().Title);
-            Assert.AreEqual("A Game Of Thrones", books.Where(b => b.Title == "A Game Of Thrones").SingleOrDefault().Title);
-            Assert.AreEqual("The Hobbit", books.Where(b => b.Title == "The Hobbit").SingleOrDefault().Title);
-            Assert.AreEqual("Programming with c++", books.Where(b => b.Title == "Programming with c++").SingleOrDefault().Title);
+            Assert.AreEqual (4, books.Count ());
+            Assert.AreEqual ("The Lord of The Rings", books.Where (b => b.Title == "The Lord of The Rings").SingleOrDefault ().Title);
+            Assert.AreEqual ("A Game Of Thrones", books.Where (b => b.Title == "A Game Of Thrones").SingleOrDefault ().Title);
+            Assert.AreEqual ("The Hobbit", books.Where (b => b.Title == "The Hobbit").SingleOrDefault ().Title);
+            Assert.AreEqual ("Programming with c++", books.Where (b => b.Title == "Programming with c++").SingleOrDefault ().Title);
         }
 
         [TestMethod]
-        public void Books_GetBooks_EmptyList()
-        {
+        public void Books_GetBooks_EmptyList () {
             // Arrange
-            var repo = new BooksRepository(context);
+            var repo = new BooksRepository (context);
 
-            var booksToDelete = (from b in context.Books
-                                select b).ToList();
-            foreach(Book book in booksToDelete) {
+            var booksToDelete = (from b in context.Books select b).ToList ();
+            foreach (Book book in booksToDelete) {
                 book.Deleted = true;
             }
-            context.SaveChanges();
-            
+            context.SaveChanges ();
+
             // Act
-            var books = repo.GetBooks();
+            var books = repo.GetBooks ();
 
             // Assert
-            Assert.AreEqual(0, books.Count());
+            Assert.AreEqual (0, books.Count ());
         }
 
         [TestMethod]
-        public void Books_GetBooksOnLoan_WithResults()
-        {   
+        public void Books_GetBooksOnLoan_WithResults () {
             // Arrange
-            var repo = new BooksRepository(context);
-            
+            var repo = new BooksRepository (context);
+
             // Act
-            var books = repo.GetBooksOnLoan(new DateTime(2017,11,29));
+            var books = repo.GetBooksOnLoan (new DateTime (2017, 11, 29));
 
             // Assert
-            Assert.AreEqual(1, books.Count());
-            Assert.AreEqual(TITLE_LOTR, books.ElementAt(0).Title);
+            Assert.AreEqual (1, books.Count ());
+            Assert.AreEqual (TITLE_LOTR, books.ElementAt (0).Title);
         }
 
         [TestMethod]
-        public void Books_GetBooksOnLoan_WithNoResults()
-        {   
+        public void Books_GetBooksOnLoan_WithNoResults () {
             // Arrange
-            var repo = new BooksRepository(context);
-            
+            var repo = new BooksRepository (context);
+
             // Act
-            var books = repo.GetBooksOnLoan(new DateTime(2011,11,29));
+            var books = repo.GetBooksOnLoan (new DateTime (2011, 11, 29));
 
             // Assert
-            Assert.AreEqual(0, books.Count());
+            Assert.AreEqual (0, books.Count ());
         }
 
-        [TestMethod]        
-        public void Books_GetBooksOnLoan_WithThreeResults()
-        {   
+        [TestMethod]
+        public void Books_GetBooksOnLoan_WithThreeResults () {
             // Arrange
-            var repo = new BooksRepository(context);
+            var repo = new BooksRepository (context);
 
             var book1 = new Book {
                 Title = "Programming",
                 Author = "Bjarne",
-                ReleaseDate = new DateTime(1996, 8, 1),
+                ReleaseDate = new DateTime (1996, 8, 1),
                 ISBN = "5235262",
                 Available = true,
                 Deleted = false
@@ -275,7 +261,7 @@ namespace LibraryAPI.UnitTests.BooksRepositoryTests
             var book2 = new Book {
                 Title = "Programming with c++",
                 Author = "Bjarne Stoustrup",
-                ReleaseDate = new DateTime(1996, 8, 1),
+                ReleaseDate = new DateTime (1996, 8, 1),
                 ISBN = "52352",
                 Available = true,
                 Deleted = false
@@ -283,103 +269,99 @@ namespace LibraryAPI.UnitTests.BooksRepositoryTests
             var book3 = new Book {
                 Title = "Programming with Python",
                 Author = "Stoustrup",
-                ReleaseDate = new DateTime(1996, 8, 1),
+                ReleaseDate = new DateTime (1996, 8, 1),
                 ISBN = "231512",
                 Available = true,
                 Deleted = false
             };
-            context.Books.Add(book1);
-            context.Books.Add(book2);
-            context.Books.Add(book3);
+            context.Books.Add (book1);
+            context.Books.Add (book2);
+            context.Books.Add (book3);
 
-            context.SaveChanges();
+            context.SaveChanges ();
 
-            context.Loans.Add(new Loan {
+            context.Loans.Add (new Loan {
                 UserId = 1,
-                BookId = book1.Id,
-                LoanDate = new DateTime(2017,01,10),
-                EndDate = new DateTime(2017,01,15),
-                HasBeenReturned = RETURNED_LOAN
+                    BookId = book1.Id,
+                    LoanDate = new DateTime (2017, 01, 10),
+                    EndDate = new DateTime (2017, 01, 15),
+                    HasBeenReturned = RETURNED_LOAN
             });
-            context.Loans.Add(new Loan {
+            context.Loans.Add (new Loan {
                 UserId = 1,
-                BookId = book2.Id,
-                LoanDate = new DateTime(2017,01,10),
-                EndDate = new DateTime(2017,01,21),
-                HasBeenReturned = RETURNED_LOAN
+                    BookId = book2.Id,
+                    LoanDate = new DateTime (2017, 01, 10),
+                    EndDate = new DateTime (2017, 01, 21),
+                    HasBeenReturned = RETURNED_LOAN
             });
-            context.Loans.Add(new Loan {
+            context.Loans.Add (new Loan {
                 UserId = 1,
-                BookId = book3.Id,
-                LoanDate = new DateTime(2015,01,10),
-                EndDate = null,
-                HasBeenReturned = RETURNED_LOAN
+                    BookId = book3.Id,
+                    LoanDate = new DateTime (2015, 01, 10),
+                    EndDate = null,
+                    HasBeenReturned = RETURNED_LOAN
             });
-            
-            context.SaveChanges();
+
+            context.SaveChanges ();
             // Act
-            var books = repo.GetBooksOnLoan(new DateTime(2017,01,20));
+            var books = repo.GetBooksOnLoan (new DateTime (2017, 01, 20));
 
             // Assert
-            Assert.AreEqual(2, books.Count());
-            Assert.AreEqual("Programming with c++", books.Where(b => b.Id == book2.Id).SingleOrDefault().Title);
-            Assert.AreEqual("Programming with Python", books.Where(b => b.Id == book3.Id).SingleOrDefault().Title);
+            Assert.AreEqual (2, books.Count ());
+            Assert.AreEqual ("Programming with c++", books.Where (b => b.Id == book2.Id).SingleOrDefault ().Title);
+            Assert.AreEqual ("Programming with Python", books.Where (b => b.Id == book3.Id).SingleOrDefault ().Title);
         }
 
         [TestMethod]
-        public void Books_DeleteBookById_ThatExists()
-        {
+        public void Books_DeleteBookById_ThatExists () {
             // Arrange
-            var repo = new BooksRepository(context);
-            int id = (context.Books.Where(b => b.Title == TITLE_LOTR).SingleOrDefault()).Id;
+            var repo = new BooksRepository (context);
+            int id = (context.Books.Where (b => b.Title == TITLE_LOTR).SingleOrDefault ()).Id;
 
             // Act
-            repo.DeleteBookById(id);
+            repo.DeleteBookById (id);
 
             // Assert
-            Assert.AreEqual(true, context.Books.Where(b => b.Id == id).SingleOrDefault().Deleted);
+            Assert.AreEqual (true, context.Books.Where (b => b.Id == id).SingleOrDefault ().Deleted);
         }
-        
+
         [TestMethod]
-        [ExpectedException(typeof(NotFoundException))]
-        public void Books_DeleteBookById_ThatDoesNotExist()
-        {
+        [ExpectedException (typeof (NotFoundException))]
+        public void Books_DeleteBookById_ThatDoesNotExist () {
             // Arrange
-            var repo = new BooksRepository(context);
-                // Get highest Id
-            var bookToDelete = context.Books.Where(b => b.Title == TITLE_LOTR).SingleOrDefault();
+            var repo = new BooksRepository (context);
+            // Get highest Id
+            var bookToDelete = context.Books.Where (b => b.Title == TITLE_LOTR).SingleOrDefault ();
             bookToDelete.Deleted = true;
-            context.SaveChanges();
+            context.SaveChanges ();
 
             // Act
-            repo.DeleteBookById(bookToDelete.Id);
+            repo.DeleteBookById (bookToDelete.Id);
 
             // Assert
-            Assert.Fail("Should have thrown NotFoundException");
+            Assert.Fail ("Should have thrown NotFoundException");
         }
 
         [TestMethod]
-        [ExpectedException(typeof(NotFoundException))]
-        public void Books_DeleteBookById_ThatIsAlreadyDeleted()
-        {
+        [ExpectedException (typeof (NotFoundException))]
+        public void Books_DeleteBookById_ThatIsAlreadyDeleted () {
             // Arrange
-            var repo = new BooksRepository(context);
-                // Get highest Id
-            int id = (context.Books.OrderByDescending(b => b.Id).FirstOrDefault()).Id;
+            var repo = new BooksRepository (context);
+            // Get highest Id
+            int id = (context.Books.OrderByDescending (b => b.Id).FirstOrDefault ()).Id;
 
             // Act
-            repo.DeleteBookById(id+1);
+            repo.DeleteBookById (id + 1);
 
             // Assert
-            Assert.Fail("Should have thrown NotFoundException");
+            Assert.Fail ("Should have thrown NotFoundException");
         }
 
         [TestMethod]
-        public void Books_UpdateBookById_UpdateNameAndAuthor()
-        {
+        public void Books_UpdateBookById_UpdateNameAndAuthor () {
             // Arrange
-            var repo = new BooksRepository(context);
-            int id = (context.Books.Where(b => b.Title == TITLE_LOTR).SingleOrDefault()).Id;
+            var repo = new BooksRepository (context);
+            int id = (context.Books.Where (b => b.Title == TITLE_LOTR).SingleOrDefault ()).Id;
             var updatedBook = new BookView {
                 Title = "Not a Game",
                 Author = "Jigsaw",
@@ -388,20 +370,19 @@ namespace LibraryAPI.UnitTests.BooksRepositoryTests
             };
 
             // Act
-            repo.UpdateBookById(id, updatedBook);
-            
+            repo.UpdateBookById (id, updatedBook);
+
             // Assert
-            Assert.AreEqual("Not a Game", context.Books.Where(b => b.Id == id).SingleOrDefault().Title);
-            Assert.AreEqual("Jigsaw", context.Books.Where(b => b.Id == id).SingleOrDefault().Author);
+            Assert.AreEqual ("Not a Game", context.Books.Where (b => b.Id == id).SingleOrDefault ().Title);
+            Assert.AreEqual ("Jigsaw", context.Books.Where (b => b.Id == id).SingleOrDefault ().Author);
         }
 
         [TestMethod]
-        [ExpectedException(typeof(NotFoundException))]
-        public void Books_UpdateBookById_ThatDoesNotExist()
-        {
+        [ExpectedException (typeof (NotFoundException))]
+        public void Books_UpdateBookById_ThatDoesNotExist () {
             // Arrange
-            var repo = new BooksRepository(context);
-            int id = (context.Books.OrderByDescending(b => b.Id).FirstOrDefault()).Id;
+            var repo = new BooksRepository (context);
+            int id = (context.Books.OrderByDescending (b => b.Id).FirstOrDefault ()).Id;
 
             var updatedBook = new BookView {
                 Title = "Not a Game",
@@ -411,21 +392,20 @@ namespace LibraryAPI.UnitTests.BooksRepositoryTests
             };
 
             // Act
-            repo.UpdateBookById(id+1, updatedBook);
-            
+            repo.UpdateBookById (id + 1, updatedBook);
+
             // Assert
-            Assert.Fail("Should have thrown a NotFoundException");
+            Assert.Fail ("Should have thrown a NotFoundException");
         }
 
         [TestMethod]
-        [ExpectedException(typeof(NotFoundException))]
-        public void Books_UpdateBookById_ThatHasBeenDeleted()
-        {
+        [ExpectedException (typeof (NotFoundException))]
+        public void Books_UpdateBookById_ThatHasBeenDeleted () {
             // Arrange
-            var repo = new BooksRepository(context);
-            var book = context.Books.Where(b => b.Title == TITLE_LOTR).SingleOrDefault();
+            var repo = new BooksRepository (context);
+            var book = context.Books.Where (b => b.Title == TITLE_LOTR).SingleOrDefault ();
             book.Deleted = true;
-            context.SaveChanges();
+            context.SaveChanges ();
 
             var updatedBook = new BookView {
                 Title = "Some new title",
@@ -435,52 +415,49 @@ namespace LibraryAPI.UnitTests.BooksRepositoryTests
             };
 
             // Act
-            repo.UpdateBookById(book.Id, updatedBook);
-            
+            repo.UpdateBookById (book.Id, updatedBook);
+
             // Assert
-            Assert.Fail("Should have thrown a NotFoundException");
+            Assert.Fail ("Should have thrown a NotFoundException");
         }
 
         [TestMethod]
-        [ExpectedException(typeof(NotFoundException))]
-        public void Books_LendBookToUser_UserDoesntExist()
-        {
+        [ExpectedException (typeof (NotFoundException))]
+        public void Books_LendBookToUser_UserDoesntExist () {
             // Arrange
-            var repo = new BooksRepository(context);
-            int userId = (context.Users.OrderByDescending(u => u.Id).FirstOrDefault()).Id + 1;
-            int bookId = (context.Books.OrderByDescending(u => u.Id).FirstOrDefault()).Id;
+            var repo = new BooksRepository (context);
+            int userId = (context.Users.OrderByDescending (u => u.Id).FirstOrDefault ()).Id + 1;
+            int bookId = (context.Books.OrderByDescending (u => u.Id).FirstOrDefault ()).Id;
 
             // Act
-            repo.LendBookToUser(userId, bookId);
-            
+            repo.LendBookToUser (userId, bookId);
+
             // Assert
-            Assert.Fail("Should have thrown a NotFoundException");
+            Assert.Fail ("Should have thrown a NotFoundException");
         }
 
         [TestMethod]
-        [ExpectedException(typeof(NotFoundException))]
-        public void Books_LendBookToUser_BookAlreadyOut()
-        {
+        [ExpectedException (typeof (NotFoundException))]
+        public void Books_LendBookToUser_BookAlreadyOut () {
             // Arrange
-            var repo = new BooksRepository(context);
-            int userId = (context.Users.OrderByDescending(u => u.Id).FirstOrDefault()).Id;
-            var book = context.Books.Where(b => b.Title == TITLE_LOTR).FirstOrDefault();
+            var repo = new BooksRepository (context);
+            int userId = (context.Users.OrderByDescending (u => u.Id).FirstOrDefault ()).Id;
+            var book = context.Books.Where (b => b.Title == TITLE_LOTR).FirstOrDefault ();
             book.Available = false;
-            context.SaveChanges();
+            context.SaveChanges ();
 
             // Act
-            repo.LendBookToUser(userId, book.Id);
-            
+            repo.LendBookToUser (userId, book.Id);
+
             // Assert
-            Assert.Fail("Should have thrown a NotFoundException");
+            Assert.Fail ("Should have thrown a NotFoundException");
         }
 
         [TestMethod]
-        public void Books_LendBookToUser_SuccessfulLoan()
-        {
+        public void Books_LendBookToUser_SuccessfulLoan () {
             // Arrange
-            var repo = new BooksRepository(context);
-            int userId = (context.Users.OrderByDescending(u => u.Id).FirstOrDefault()).Id;
+            var repo = new BooksRepository (context);
+            int userId = (context.Users.OrderByDescending (u => u.Id).FirstOrDefault ()).Id;
             var book = new Book {
                 Title = "New Book",
                 Author = "Some Guy",
@@ -489,26 +466,25 @@ namespace LibraryAPI.UnitTests.BooksRepositoryTests
                 Available = true,
                 Deleted = false
             };
-            context.Books.Add(book);
-            context.SaveChanges();
+            context.Books.Add (book);
+            context.SaveChanges ();
 
             // Act
-            repo.LendBookToUser(userId, book.Id);
-            
+            repo.LendBookToUser (userId, book.Id);
+
             // Assert
-            Assert.AreEqual(2, context.Loans.Count());
-            Assert.AreEqual(userId, context.Loans.OrderByDescending(l => l.Id).FirstOrDefault().UserId);
-            Assert.AreEqual(book.Id, context.Loans.OrderByDescending(l => l.Id).FirstOrDefault().BookId);
+            Assert.AreEqual (2, context.Loans.Count ());
+            Assert.AreEqual (userId, context.Loans.OrderByDescending (l => l.Id).FirstOrDefault ().UserId);
+            Assert.AreEqual (book.Id, context.Loans.OrderByDescending (l => l.Id).FirstOrDefault ().BookId);
         }
-        
+
         [TestMethod]
-        [ExpectedException(typeof(NotFoundException))]
-        public void Books_UpdateLoanRegistration_UserDoesntExist()
-        {
+        [ExpectedException (typeof (NotFoundException))]
+        public void Books_UpdateLoanRegistration_UserDoesntExist () {
             // Arrange
-            var repo = new BooksRepository(context);
-            int userId = (context.Users.OrderByDescending(u => u.Id).FirstOrDefault()).Id + 1;
-            int bookId = (context.Books.OrderByDescending(u => u.Id).FirstOrDefault()).Id;
+            var repo = new BooksRepository (context);
+            int userId = (context.Users.OrderByDescending (u => u.Id).FirstOrDefault ()).Id + 1;
+            int bookId = (context.Books.OrderByDescending (u => u.Id).FirstOrDefault ()).Id;
 
             var loan = new LoanView {
                 UserId = userId,
@@ -519,20 +495,19 @@ namespace LibraryAPI.UnitTests.BooksRepositoryTests
             };
 
             // Act
-            repo.UpdateLoanRegistration(userId, bookId, loan);
-            
+            repo.UpdateLoanRegistration (userId, bookId, loan);
+
             // Assert
-            Assert.Fail("Should have thrown a NotFoundException");
+            Assert.Fail ("Should have thrown a NotFoundException");
         }
 
         [TestMethod]
-        [ExpectedException(typeof(NotFoundException))]
-        public void Books_UpdateLoanRegistration_BookDoesntExist()
-        {
+        [ExpectedException (typeof (NotFoundException))]
+        public void Books_UpdateLoanRegistration_BookDoesntExist () {
             // Arrange
-            var repo = new BooksRepository(context);
-            int userId = (context.Users.OrderByDescending(u => u.Id).FirstOrDefault()).Id;
-            int bookId = (context.Books.OrderByDescending(u => u.Id).FirstOrDefault()).Id + 1;
+            var repo = new BooksRepository (context);
+            int userId = (context.Users.OrderByDescending (u => u.Id).FirstOrDefault ()).Id;
+            int bookId = (context.Books.OrderByDescending (u => u.Id).FirstOrDefault ()).Id + 1;
 
             var loan = new LoanView {
                 UserId = userId,
@@ -543,18 +518,17 @@ namespace LibraryAPI.UnitTests.BooksRepositoryTests
             };
 
             // Act
-            repo.UpdateLoanRegistration(userId, bookId, loan);
-            
+            repo.UpdateLoanRegistration (userId, bookId, loan);
+
             // Assert
-            Assert.Fail("Should have thrown a NotFoundException");
+            Assert.Fail ("Should have thrown a NotFoundException");
         }
 
         [TestMethod]
-        [ExpectedException(typeof(NotFoundException))]
-        public void Books_UpdateLoanRegistration_LoanDoesntExist()
-        {
+        [ExpectedException (typeof (NotFoundException))]
+        public void Books_UpdateLoanRegistration_LoanDoesntExist () {
             // Arrange
-            var repo = new BooksRepository(context);
+            var repo = new BooksRepository (context);
             var newUser = new User {
                 Name = "New Guy",
                 Address = "Some street",
@@ -570,10 +544,10 @@ namespace LibraryAPI.UnitTests.BooksRepositoryTests
                 Available = true,
                 Deleted = false
             };
-            context.Books.Add(newBook);
-            context.Users.Add(newUser);
-            context.SaveChanges();
-            
+            context.Books.Add (newBook);
+            context.Users.Add (newUser);
+            context.SaveChanges ();
+
             var loan = new LoanView {
                 UserId = newUser.Id,
                 BookId = newBook.Id,
@@ -583,180 +557,169 @@ namespace LibraryAPI.UnitTests.BooksRepositoryTests
             };
 
             // Act
-            repo.UpdateLoanRegistration(newUser.Id, newBook.Id, loan);
-            
+            repo.UpdateLoanRegistration (newUser.Id, newBook.Id, loan);
+
             // Assert
-            Assert.Fail("Should have thrown a NotFoundException");
+            Assert.Fail ("Should have thrown a NotFoundException");
         }
 
         [TestMethod]
-        public void Books_UpdateLoanRegistration_SuccessfulUpdate()
-        {
+        public void Books_UpdateLoanRegistration_SuccessfulUpdate () {
             // Arrange
-            var repo = new BooksRepository(context);
-            int userId = (context.Users.OrderByDescending(u => u.Id).FirstOrDefault()).Id;
-            int bookId = (context.Books.OrderByDescending(u => u.Id).FirstOrDefault()).Id;
+            var repo = new BooksRepository (context);
+            int userId = (context.Users.OrderByDescending (u => u.Id).FirstOrDefault ()).Id;
+            int bookId = (context.Books.OrderByDescending (u => u.Id).FirstOrDefault ()).Id;
 
             var updatedLoan = new LoanView {
                 UserId = userId,
                 BookId = bookId,
-                LoanDate = new DateTime(1999, 12, 24),
+                LoanDate = new DateTime (1999, 12, 24),
                 HasBeenReturned = true,
-                EndDate = new DateTime(2019, 12, 24)
+                EndDate = new DateTime (2019, 12, 24)
             };
 
             // Act
-            repo.UpdateLoanRegistration(userId, bookId, updatedLoan);
-            
+            repo.UpdateLoanRegistration (userId, bookId, updatedLoan);
+
             // Assert
-            Assert.AreEqual(new DateTime(1999, 12, 24), (context.Loans
-                                                        .Where(l => l.UserId == userId && l.BookId == bookId)
-                                                        .SingleOrDefault()).LoanDate);
-            Assert.AreEqual(new DateTime(2019, 12, 24), (context.Loans
-                                                        .Where(l => l.UserId == userId && l.BookId == bookId)
-                                                        .SingleOrDefault()).EndDate);
-            Assert.AreEqual(true, (context.Loans
-                                    .Where(l => l.UserId == userId && l.BookId == bookId)
-                                    .SingleOrDefault()).HasBeenReturned);
+            Assert.AreEqual (new DateTime (1999, 12, 24), (context.Loans
+                .Where (l => l.UserId == userId && l.BookId == bookId)
+                .SingleOrDefault ()).LoanDate);
+            Assert.AreEqual (new DateTime (2019, 12, 24), (context.Loans
+                .Where (l => l.UserId == userId && l.BookId == bookId)
+                .SingleOrDefault ()).EndDate);
+            Assert.AreEqual (true, (context.Loans
+                .Where (l => l.UserId == userId && l.BookId == bookId)
+                .SingleOrDefault ()).HasBeenReturned);
         }
 
         [TestMethod]
-        public void Books_GetBooksByUserId_UserExistOneBook()
-        {
+        public void Books_GetBooksByUserId_UserExistOneBook () {
             // Arrange
-            var repo = new BooksRepository(context);
-            int userId = (context.Users.OrderByDescending(u => u.Id).FirstOrDefault()).Id;
+            var repo = new BooksRepository (context);
+            int userId = (context.Users.OrderByDescending (u => u.Id).FirstOrDefault ()).Id;
 
             // Act
-            var books = repo.GetBooksByUserId(userId);
+            var books = repo.GetBooksByUserId (userId);
 
             // Assert
-            Assert.AreEqual(1, books.Count());
-            Assert.AreEqual("The Lord of The Rings", books.ElementAt(0).Title);
+            Assert.AreEqual (1, books.Count ());
+            Assert.AreEqual ("The Lord of The Rings", books.ElementAt (0).Title);
         }
 
         [TestMethod]
-        [ExpectedException(typeof(NotFoundException))]
-        public void Books_GetBooksByUserId_UserDoesNotExist()
-        {
+        [ExpectedException (typeof (NotFoundException))]
+        public void Books_GetBooksByUserId_UserDoesNotExist () {
             // Arrange
-            var repo = new BooksRepository(context);
-            int userId = (context.Books.OrderByDescending(b => b.Id).FirstOrDefault()).Id;
+            var repo = new BooksRepository (context);
+            int userId = (context.Books.OrderByDescending (b => b.Id).FirstOrDefault ()).Id;
 
             // Act
             // Send an id that does not exist into repo
-            var books = repo.GetBooksByUserId(Int32.MaxValue);
+            var books = repo.GetBooksByUserId (Int32.MaxValue);
 
             // Assert
-            Assert.Fail("Should have thrown NotFoundException");
+            Assert.Fail ("Should have thrown NotFoundException");
         }
 
         [TestMethod]
-        public void Book_ReturnBook_UserAndBookExistWithLoan()
-        {
+        public void Book_ReturnBook_UserAndBookExistWithLoan () {
             // Arrange
-            var repo = new BooksRepository(context);
+            var repo = new BooksRepository (context);
 
-            int userId = (context.Users.OrderByDescending(u => u.Id).FirstOrDefault()).Id;
-            int bookId = (context.Books.OrderByDescending(u => u.Id).FirstOrDefault()).Id;
+            int userId = (context.Users.OrderByDescending (u => u.Id).FirstOrDefault ()).Id;
+            int bookId = (context.Books.OrderByDescending (u => u.Id).FirstOrDefault ()).Id;
 
             // Act
-            repo.ReturnBook(userId, bookId);
+            repo.ReturnBook (userId, bookId);
 
             // Assert
-            Assert.AreEqual(userId, context.Loans.OrderByDescending(l => l.Id).FirstOrDefault().UserId);
-            Assert.AreEqual(bookId, context.Loans.OrderByDescending(l => l.Id).FirstOrDefault().BookId);
-            Assert.AreEqual(true, context.Loans.OrderByDescending(l => l.Id).FirstOrDefault().HasBeenReturned);
+            Assert.AreEqual (userId, context.Loans.OrderByDescending (l => l.Id).FirstOrDefault ().UserId);
+            Assert.AreEqual (bookId, context.Loans.OrderByDescending (l => l.Id).FirstOrDefault ().BookId);
+            Assert.AreEqual (true, context.Loans.OrderByDescending (l => l.Id).FirstOrDefault ().HasBeenReturned);
         }
 
-        
         [TestMethod]
-        [ExpectedException(typeof(NotFoundException))]
-        public void Book_ReturnBook_UserDoesNotExist()
-        {
+        [ExpectedException (typeof (NotFoundException))]
+        public void Book_ReturnBook_UserDoesNotExist () {
             // Arrange
-            var repo = new BooksRepository(context);
+            var repo = new BooksRepository (context);
 
-            int userId = (context.Users.OrderByDescending(u => u.Id).FirstOrDefault()).Id;
-            int bookId = (context.Books.OrderByDescending(u => u.Id).FirstOrDefault()).Id;
+            int userId = (context.Users.OrderByDescending (u => u.Id).FirstOrDefault ()).Id;
+            int bookId = (context.Books.OrderByDescending (u => u.Id).FirstOrDefault ()).Id;
 
             // Act
             // Send an invalid userId down to the repository
-            repo.ReturnBook(userId + 1, bookId);
+            repo.ReturnBook (userId + 1, bookId);
 
             // Assert
-            Assert.Fail("Should have thrown a NotFoundException");
+            Assert.Fail ("Should have thrown a NotFoundException");
         }
 
-        
         [TestMethod]
-        [ExpectedException(typeof(NotFoundException))]
-        public void Book_ReturnBook_BookIdDoesNotExist()
-        {
-             // Arrange
-            var repo = new BooksRepository(context);
+        [ExpectedException (typeof (NotFoundException))]
+        public void Book_ReturnBook_BookIdDoesNotExist () {
+            // Arrange
+            var repo = new BooksRepository (context);
 
-            int userId = (context.Users.OrderByDescending(u => u.Id).FirstOrDefault()).Id;
-            int bookId = (context.Books.OrderByDescending(u => u.Id).FirstOrDefault()).Id;
+            int userId = (context.Users.OrderByDescending (u => u.Id).FirstOrDefault ()).Id;
+            int bookId = (context.Books.OrderByDescending (u => u.Id).FirstOrDefault ()).Id;
 
             // Act
             // Send an invalid bookId down to the repository
-            repo.ReturnBook(userId, bookId + 1);
+            repo.ReturnBook (userId, bookId + 1);
 
             // Assert
-            Assert.Fail("Should have thrown a NotFoundException");
+            Assert.Fail ("Should have thrown a NotFoundException");
         }
- 
-        [TestMethod]
-        [ExpectedException(typeof(NotFoundException))]
-        public void Book_ReturnBook_UserAndBookExistWithNoLoan()
-        {
-             // Arrange
-            var repo = new BooksRepository(context);
 
-            int userId = (context.Users.OrderByDescending(u => u.Id).FirstOrDefault()).Id;
-            int bookId = (context.Books.OrderByDescending(u => u.Id).FirstOrDefault()).Id;
-            context.Loans.OrderByDescending(u => u.Id).FirstOrDefault().HasBeenReturned = true;
+        [TestMethod]
+        [ExpectedException (typeof (NotFoundException))]
+        public void Book_ReturnBook_UserAndBookExistWithNoLoan () {
+            // Arrange
+            var repo = new BooksRepository (context);
+
+            int userId = (context.Users.OrderByDescending (u => u.Id).FirstOrDefault ()).Id;
+            int bookId = (context.Books.OrderByDescending (u => u.Id).FirstOrDefault ()).Id;
+            context.Loans.OrderByDescending (u => u.Id).FirstOrDefault ().HasBeenReturned = true;
             // Act
-            
+
             // Should throw NotFoundException since the book has already been returned
-            repo.ReturnBook(userId, bookId);
+            repo.ReturnBook (userId, bookId);
 
             // Assert
-            Assert.Fail("Should have thrown a NotFoundException");
+            Assert.Fail ("Should have thrown a NotFoundException");
         }
 
         [TestMethod]
-        public void Book_GetBookById_IdExists()
-        {
+        public void Book_GetBookById_IdExists () {
             // Arrange
-            var repo =new BooksRepository(context);
+            var repo = new BooksRepository (context);
 
-            int bookId = (context.Books.OrderByDescending(u => u.Id).FirstOrDefault()).Id;
+            int bookId = (context.Books.OrderByDescending (u => u.Id).FirstOrDefault ()).Id;
 
             // Act
-            var book = repo.GetBookById(bookId);
+            var book = repo.GetBookById (bookId);
 
             // Arrange
-            Assert.AreEqual(bookId, book.Id);
-            Assert.AreEqual("The Lord of The Rings", book.Title);
-            Assert.AreEqual("J.R.R. Tolkien", book.Author);
+            Assert.AreEqual (bookId, book.Id);
+            Assert.AreEqual ("The Lord of The Rings", book.Title);
+            Assert.AreEqual ("J.R.R. Tolkien", book.Author);
         }
 
         [TestMethod]
-        [ExpectedException(typeof(NotFoundException))]
-        public void Book_GetBookById_IdDoesNotExist()
-        {
+        [ExpectedException (typeof (NotFoundException))]
+        public void Book_GetBookById_IdDoesNotExist () {
             // Arrange
-            var repo =new BooksRepository(context);
+            var repo = new BooksRepository (context);
 
-            int bookId = (context.Books.OrderByDescending(u => u.Id).FirstOrDefault()).Id;
+            int bookId = (context.Books.OrderByDescending (u => u.Id).FirstOrDefault ()).Id;
 
             // Act
-            var book = repo.GetBookById(bookId + 1);
+            var book = repo.GetBookById (bookId + 1);
 
             // Arrange
-            Assert.Fail("Should have thrown NotFoundException");
+            Assert.Fail ("Should have thrown NotFoundException");
         }
     }
 }

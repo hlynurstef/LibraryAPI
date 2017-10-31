@@ -1,14 +1,12 @@
-using LibraryAPI.Services;
 using LibraryAPI.Exceptions;
+using LibraryAPI.Services;
 using Microsoft.AspNetCore.Mvc;
 
-namespace LibraryAPI.Controllers
-{
+namespace LibraryAPI.Controllers {
     /// <summary>
     /// A controller class for book recommendations
     /// </summary>
-    public class RecommendationsController : Controller
-    {
+    public class RecommendationsController : Controller {
         /// <summary>
         /// The service private variable
         /// </summary>
@@ -18,7 +16,7 @@ namespace LibraryAPI.Controllers
         /// Constructor for RecommendationsController
         /// </summary>
         /// <param name="recService">Dependency injection for the service</param>
-        public RecommendationsController(IRecommendationsService recService) {
+        public RecommendationsController (IRecommendationsService recService) {
             _recService = recService;
         }
 
@@ -32,13 +30,12 @@ namespace LibraryAPI.Controllers
         /// </remarks>
         /// <param name="userId">The id of the user in question</param>
         /// <returns>A list of books that we recommend to the user</returns>
-        [HttpGet("users/{userId}/recommendation")]
-        public IActionResult GetRecommendationsForUser(int userId) {
+        [HttpGet ("users/{userId}/recommendation")]
+        public IActionResult GetRecommendationsForUser (int userId) {
             try {
-                return Ok(_recService.GetRecommendationsForUser(userId));
-            }
-            catch(NotFoundException e) {
-                return NotFound(e.Message);
+                return Ok (_recService.GetRecommendationsForUser (userId));
+            } catch (NotFoundException e) {
+                return NotFound (e.Message);
             }
         }
     }
