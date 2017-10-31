@@ -242,5 +242,81 @@ namespace LibraryAPI.UnitTests.ReviewsRepositoryTests
             // Assert
             Assert.Fail("Should have thrown NotFoundException");
         }
+
+        [TestMethod]
+        public void Reviews_DeleteUsersBookReview_UserAndBookAndReviewExist()
+        {
+            // Arrange
+            var repo = new ReviewsRepository(context);
+            int bookId = (context.Books.OrderByDescending(b => b.Id).FirstOrDefault()).Id;
+            int userId = (context.Users.OrderByDescending(b => b.Id).FirstOrDefault()).Id;
+
+            // Act
+            repo.DeleteUsersBookReview(userId, bookId);
+
+            // Assert
+            Assert.AreEqual(0, context.Reviews.Count());   
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(NotFoundException))]
+        public void Reviews_DeleteUsersBookReview_UserDoesNotExist()
+        {
+            // Arrange
+            var repo = new ReviewsRepository(context);
+            int bookId = (context.Books.OrderByDescending(b => b.Id).FirstOrDefault()).Id;
+            int userId = (context.Users.OrderByDescending(b => b.Id).FirstOrDefault()).Id;
+
+            // Act
+            repo.DeleteUsersBookReview(userId + 1, bookId);
+
+            // Assert
+            Assert.Fail("Should have thrown NotFoundException");
+        }
+
+        
+        [TestMethod]
+        [ExpectedException(typeof(NotFoundException))]
+        public void Reviews_DeleteUsersBookReview_BookDoesNotExist()
+        {
+            // Arrange
+            var repo = new ReviewsRepository(context);
+            int bookId = (context.Books.OrderByDescending(b => b.Id).FirstOrDefault()).Id;
+            int userId = (context.Users.OrderByDescending(b => b.Id).FirstOrDefault()).Id;
+
+            // Act
+            repo.DeleteUsersBookReview(userId, bookId + 1);
+
+            // Assert
+            Assert.Fail("Should have thrown NotFoundException");
+        }
+
+        
+        [TestMethod]
+        [ExpectedException(typeof(NotFoundException))]
+        public void Reviews_DeleteUsersBookReview_ReviewDoesNotExist()
+        {
+            // Arrange
+            var repo = new ReviewsRepository(context);
+            int bookId = (context.Books.OrderByDescending(b => b.Id).FirstOrDefault()).Id;
+            int userId = (context.Users.OrderByDescending(b => b.Id).FirstOrDefault()).Id;
+            
+            var newUser = new User {
+                Name = "Gux",
+                Address = "Rvk",
+                Email = "Gux@gmail.com",
+                PhoneNumber = "699-6666",
+                Deleted = false
+            };
+
+            context.Users.Add(newUser);
+            context.SaveChanges();
+
+            // Act
+            repo.DeleteUsersBookReview(newUser.Id, bookId);
+
+            // Assert
+            Assert.Fail("Should have thrown NotFoundException");
+        }
     }
 }
