@@ -1,13 +1,11 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace LibraryAPI.Models.ViewModels
-{
+namespace LibraryAPI.Models.ViewModels {
     /// <summary>
     /// A view model of a user.
     /// This is the model that is used when a user is creating and updating a user.
     /// </summary>
-    public class UserView
-    {
+    public class UserView {
         /// <summary>
         /// The name of the user.
         /// </summary>

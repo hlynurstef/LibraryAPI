@@ -1,13 +1,11 @@
-namespace LibraryAPI.Models.EntityModels
-{
+namespace LibraryAPI.Models.EntityModels {
     /// <summary>
     /// An entity model of a book that is used as the
     /// data structure in our database.
     /// This model should not be exposed to the user!
     /// </summary>
-    public class Review
-    {
-        
+    public class Review {
+
         /// <summary>
         /// The User Id of the review.
         /// </summary>

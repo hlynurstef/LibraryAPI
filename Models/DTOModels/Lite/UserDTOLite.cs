@@ -1,13 +1,11 @@
 using System.Collections.Generic;
 
-namespace LibraryAPI.Models.DTOModels
-{
+namespace LibraryAPI.Models.DTOModels {
     /// <summary>
     /// A DTO model of a user used when displaying
     /// information to the user.
     /// </summary>
-    public class UserDTOLite
-    {
+    public class UserDTOLite {
         /// <summary>
         /// The Id of the user.
         /// </summary>
@@ -27,6 +25,6 @@ namespace LibraryAPI.Models.DTOModels
         /// <summary>
         /// The phone number of the user.
         /// </summary>
-        public string PhoneNumber { get; set; }        
+        public string PhoneNumber { get; set; }
     }
 }

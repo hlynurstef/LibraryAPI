@@ -1,14 +1,12 @@
 using System;
 
-namespace LibraryAPI.Models.EntityModels
-{
+namespace LibraryAPI.Models.EntityModels {
     /// <summary>
     /// An entity model of a book that is used as the 
     /// data structure in our database.
     /// This model should not be exposed to the user!
     /// </summary>
-    public class Book
-    {
+    public class Book {
         /// <summary>
         /// The Id of the book.
         /// </summary>
@@ -37,7 +35,6 @@ namespace LibraryAPI.Models.EntityModels
         /// Whether this book has been deleted or not.
         /// </summary>
         public bool Deleted { get; set; }
-        
-        
+
     }
 }

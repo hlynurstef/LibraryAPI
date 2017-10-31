@@ -1,14 +1,12 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace LibraryAPI.Models.ViewModels
-{
-        /// <summary>
+namespace LibraryAPI.Models.ViewModels {
+    /// <summary>
     /// A view model of a loan.
     /// This is the model that is used when a user is updating an existing loan.
     /// </summary>
-    public class LoanView
-    {
+    public class LoanView {
         /// <summary>
         /// The User Id of this loan.
         /// </summary>

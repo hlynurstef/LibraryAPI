@@ -1,12 +1,10 @@
-namespace LibraryAPI.Models.EntityModels
-{
+namespace LibraryAPI.Models.EntityModels {
     /// <summary>
     /// An entity model of a user that is used as the 
     /// data structure in our database.
     /// This model should not be exposed to the user!
     /// </summary>
-    public class User
-    {
+    public class User {
         /// <summary>
         /// The Id of the user.
         /// </summary>
@@ -31,6 +29,6 @@ namespace LibraryAPI.Models.EntityModels
         /// If true, the user has been deleted and should not show up in any get request
         /// </summary>
         public bool Deleted { get; set; }
-        
+
     }
 }

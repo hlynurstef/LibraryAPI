@@ -1,14 +1,12 @@
 using System.Collections.Generic;
 
-namespace LibraryAPI.Models.SeedModels
-{
+namespace LibraryAPI.Models.SeedModels {
     /// <summary>
     /// An entity model of a user that is used as the 
     /// data structure in our database.
     /// This model should not be exposed to the user!
     /// </summary>
-    public class UserSeed
-    {
+    public class UserSeed {
         /// <summary>
         /// The Id of the user.
         /// </summary>

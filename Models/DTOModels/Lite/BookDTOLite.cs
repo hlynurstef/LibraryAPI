@@ -2,14 +2,12 @@ using System;
 using System.Collections.Generic;
 using LibraryAPI.Models.EntityModels;
 
-namespace LibraryAPI.Models.DTOModels
-{
+namespace LibraryAPI.Models.DTOModels {
     /// <summary>
     /// A DTO model of a book used when displaying
     /// information to the user.
     /// </summary>
-    public class BookDTOLite
-    {
+    public class BookDTOLite {
         /// <summary>
         /// The Id of the book.
         /// </summary>

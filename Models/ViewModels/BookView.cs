@@ -1,14 +1,12 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace LibraryAPI.Models.ViewModels
-{
+namespace LibraryAPI.Models.ViewModels {
     /// <summary>
     /// A view model of a book.
     /// This is the model that is used when a user is creating a new book.
     /// </summary>
-    public class BookView
-    {
+    public class BookView {
         /// <summary>
         /// The title of the book.
         /// </summary>
