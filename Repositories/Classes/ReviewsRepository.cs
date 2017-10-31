@@ -23,6 +23,7 @@ namespace LibraryAPI.Repositories
         public IEnumerable<ReviewDTO> GetAllBookReviews() {
             var reviews = (from r in _db.Reviews
                             join b in _db.Books on r.BookId equals b.Id
+                            where b.Deleted == false
                             select new ReviewDTO {
                                 UserId = r.UserId,
                                 BookTitle = b.Title,
@@ -53,6 +54,7 @@ namespace LibraryAPI.Repositories
             var reviews = (from r in _db.Reviews
                             join b in _db.Books on r.BookId equals b.Id
                             where b.Id == bookId
+                            && b.Deleted == false
                             select new ReviewDTO {
                                 UserId = r.UserId,
                                 BookTitle = b.Title,
@@ -79,7 +81,7 @@ namespace LibraryAPI.Repositories
                         where u.Id == userId && u.Deleted == false
                         select u).SingleOrDefault();
             if(user == null) {
-                throw new NotFoundException("User with id: " + userId + " not found.");
+                throw new NotFoundException("User with id " + userId + " not found.");
             }
 
             // Check if book exists
@@ -88,7 +90,7 @@ namespace LibraryAPI.Repositories
                         && b.Deleted == false
                         select b).SingleOrDefault();
             if (book == null) {
-                throw new NotFoundException("Book with id: " + bookId + " not found.");
+                throw new NotFoundException("Book with id " + bookId + " not found.");
             }
 
             _db.Reviews.Add(new Review {
@@ -123,6 +125,7 @@ namespace LibraryAPI.Repositories
             return (from r in _db.Reviews
                     where r.UserId == userId
                     join b in _db.Books on r.BookId equals b.Id
+                    where b.Deleted == false
                     select new ReviewDTO {
                         UserId = userId,
                         BookTitle = b.Title,
@@ -140,14 +143,15 @@ namespace LibraryAPI.Repositories
             }
             var userEntity = _db.Users.SingleOrDefault(u => (u.Id == userId && u.Deleted == false));
             if(userEntity == null) {
-                throw new NotFoundException("User with id: " + userId + " not found.");
+                throw new NotFoundException("User with id " + userId + " not found.");
             }
 
             var review = (from r in _db.Reviews
-                        where r.BookId == bookId && r.UserId == userId
+                        where r.BookId == bookId
+                        && r.UserId == userId
                         select r).SingleOrDefault();
             if(review == null){
-                throw new NotFoundException("Review for book with id "+ bookId + " user with id " + userId + " not found.");
+                throw new NotFoundException("Review for book with id "+ bookId + " and user with id " + userId + " not found.");
             }
             return new ReviewDTO{
                 UserId = review.UserId,
@@ -164,7 +168,7 @@ namespace LibraryAPI.Repositories
             }
             var userEntity = _db.Users.SingleOrDefault(u => (u.Id == userId && u.Deleted == false));
             if(userEntity == null) {
-                throw new NotFoundException("User with id: " + userId + " not found.");
+                throw new NotFoundException("User with id " + userId + " not found.");
             }
             var reviewEntity = _db.Reviews.SingleOrDefault(r => (r.BookId == bookId && r.UserId == userId));
             if(reviewEntity == null){
@@ -180,6 +184,19 @@ namespace LibraryAPI.Repositories
         }
 
         public void UpdateBooksUserReview(int bookId, int userId, ReviewView updatedReview) {
+            var bookEntity = _db.Books.SingleOrDefault(b => (b.Id == bookId && b.Deleted == false));
+            if(bookEntity == null){
+                throw new NotFoundException("Book with id "+ bookId + " not found.");
+            }
+            var userEntity = _db.Users.SingleOrDefault(u => (u.Id == userId && u.Deleted == false));
+            if(userEntity == null) {
+                throw new NotFoundException("User with id " + userId + " not found.");
+            }
+            var reviewEntity = _db.Reviews.SingleOrDefault(r => (r.BookId == bookId && r.UserId == userId));
+            if(reviewEntity == null){
+                throw new NotFoundException("Review for book with id "+ bookId + " user with id " + userId + " not found.");
+            }
+
             var oldReview = (from r in _db.Reviews
                             where r.BookId == bookId && r.UserId == userId
                             select r).SingleOrDefault();
