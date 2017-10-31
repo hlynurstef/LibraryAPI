@@ -32,15 +32,15 @@ namespace LibraryAPI.Controllers
         /// </summary>
         /// <returns>All users in the library.</returns>
         [HttpGet("users")]
-        public IActionResult GetUsers([FromQuery] String loanDate)
+        public IActionResult GetUsers([FromQuery] String loanDate, [FromQuery] int? loanDuration)
         {
             IEnumerable<UserDTOLite> users;
-                if(loanDate != null && loanDate != "") {
+            DateTime queryDate = DateTime.Now;
+                if(loanDate != null && loanDuration == null) {
                 var date = loanDate.Split("-");
                 if (date.Count() != 3) {
                     return StatusCode(400, "loanDate not formatted correctly");
                 } 
-                DateTime queryDate = new DateTime();
                 try {
                     queryDate = new DateTime(Int32.Parse(date[0]), Int32.Parse(date[1]), Int32.Parse(date[2]));
                     
@@ -49,10 +49,15 @@ namespace LibraryAPI.Controllers
                         return StatusCode(400, "loanDate not formatted correctly");
                     }
                 }
-                users = _usersService.GetUsersOnLoan(queryDate);
+                users = _usersService.GetUsersQuery(queryDate);
+            } else if(loanDuration != null){
+                Console.WriteLine(loanDuration);
+                users = _usersService.GetUsersOnDuration(queryDate, loanDuration.Value);
             } else {
                 users = _usersService.GetUsers();
             }
+
+            
             return Ok(users);
         }
 

@@ -39,8 +39,12 @@ namespace LibraryAPI.Services
             return users;
         }
 
-        public IEnumerable<UserDTOLite> GetUsersOnLoan(DateTime queryDate){
-            return _repo.GetUsersOnLoan(queryDate);
+        public IEnumerable<UserDTOLite> GetUsersQuery(DateTime queryDate){
+            return _repo.GetUsersQuery(queryDate);
+        }
+
+        public IEnumerable<UserDTOLite> GetUsersOnDuration(DateTime queryDate, int loanDuration){
+            return _repo.GetUsersOnDuration(queryDate, loanDuration);
         }
     }
 }

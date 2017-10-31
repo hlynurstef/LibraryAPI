@@ -12,6 +12,7 @@ namespace LibraryAPI.Repositories
         UserDTO GetUserById(int userId);
         void DeleteUser(int userId);
         void UpdateUser(UserView user, int userId);
-        IEnumerable<UserDTOLite> GetUsersOnLoan(DateTime queryDate);
+        IEnumerable<UserDTOLite> GetUsersQuery(DateTime queryDate);
+        IEnumerable<UserDTOLite> GetUsersOnDuration(DateTime queryDate,int loanDuration);
     }
 }

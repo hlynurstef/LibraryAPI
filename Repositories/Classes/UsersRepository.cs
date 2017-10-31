@@ -138,7 +138,7 @@ namespace LibraryAPI.Repositories
             return users;
         }
 
-        public IEnumerable<UserDTOLite> GetUsersOnLoan(DateTime queryDate){
+        public IEnumerable<UserDTOLite> GetUsersQuery(DateTime queryDate){
             var users = (from u in _db.Users
                         join l in _db.Loans
                             on u.Id equals l.UserId 
@@ -154,5 +154,41 @@ namespace LibraryAPI.Repositories
             ).ToList().Distinct();
             return users;
         }
+
+        public IEnumerable<UserDTOLite> GetUsersOnDuration(DateTime queryDate, int loanDuration){
+
+            var allLoans = (from l in _db.Loans
+                        where queryDate >= l.LoanDate  
+                        && (queryDate < l.EndDate || l.EndDate == null)
+                        select l).ToList();
+            List<Loan> loans = new List<Loan>();
+            TimeSpan span = new TimeSpan();
+            foreach (var item in allLoans)
+            {
+                span = queryDate.Subtract(((DateTime)item.LoanDate));
+                Console.WriteLine("totaldays:");
+                Console.WriteLine((span).TotalDays);
+                Console.WriteLine("loanduration:");
+                Console.WriteLine(loanDuration);
+                if((span).TotalDays >= loanDuration){
+                    Console.WriteLine(item.Id);
+                    loans.Add(item);
+                }
+            }
+            var users = (from u in _db.Users
+                join l in loans
+                on u.Id equals l.UserId
+                select new UserDTOLite{
+                    Id = u.Id,
+                    Name = u.Name,
+                    Address = u.Address,
+                    Email = u.Email,
+                    PhoneNumber = u.PhoneNumber
+                    }
+                ).Distinct().ToList();
+
+            return users;
+        }
+        
     }
 }
