@@ -131,10 +131,11 @@ namespace LibraryAPI.Repositories
                         
                         if (user.lanasafn != null) {
                             foreach(LoanSeed loan in user.lanasafn) {
+                                Console.WriteLine(loan.bok_lanadagsetning);
                                 Loan newLoan = new Loan {
                                     UserId = user.vinur_id,
                                     BookId = loan.bok_id,
-                                    LoanDate = loan.lanadagsetning,
+                                    LoanDate = loan.bok_lanadagsetning,
                                     EndDate = null,
                                     HasBeenReturned = false
                                 };
