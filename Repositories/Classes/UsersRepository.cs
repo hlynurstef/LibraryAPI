@@ -20,6 +20,7 @@ namespace LibraryAPI.Repositories
         public UserDTO AddUser(UserView user) {
             var userCheck = (from u in _db.Users
                             where user.Email == u.Email
+                            && u.Deleted == false
                             select u).SingleOrDefault();
             
             if (userCheck != null) {
