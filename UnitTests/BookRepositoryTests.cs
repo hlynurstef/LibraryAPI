@@ -598,7 +598,7 @@ namespace LibraryAPI.UnitTests.BooksRepositoryTests
         [ExpectedException(typeof(NotFoundException))]
         public void Book_ReturnBook_BookIdDoesNotExist()
         {
-           // Arrange
+             // Arrange
             var repo = new BooksRepository(context);
 
             int userId = (context.Users.OrderByDescending(u => u.Id).FirstOrDefault()).Id;
@@ -616,7 +616,7 @@ namespace LibraryAPI.UnitTests.BooksRepositoryTests
         [ExpectedException(typeof(NotFoundException))]
         public void Book_ReturnBook_UserAndBookExistWithNoLoan()
         {
-          // Arrange
+             // Arrange
             var repo = new BooksRepository(context);
 
             int userId = (context.Users.OrderByDescending(u => u.Id).FirstOrDefault()).Id;
@@ -629,6 +629,39 @@ namespace LibraryAPI.UnitTests.BooksRepositoryTests
 
             // Assert
             Assert.Fail("Should have thrown a NotFoundException");
+        }
+
+        [TestMethod]
+        public void Book_GetBookById_IdExists()
+        {
+            // Arrange
+            var repo =new BooksRepository(context);
+
+            int bookId = (context.Books.OrderByDescending(u => u.Id).FirstOrDefault()).Id;
+
+            // Act
+            var book = repo.GetBookById(bookId);
+
+            // Arrange
+            Assert.AreEqual(bookId, book.Id);
+            Assert.AreEqual("The Lord of The Rings", book.Title);
+            Assert.AreEqual("J.R.R. Tolkien", book.Author);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(NotFoundException))]
+        public void Book_GetBookById_IdDoesNotExist()
+        {
+            // Arrange
+            var repo =new BooksRepository(context);
+
+            int bookId = (context.Books.OrderByDescending(u => u.Id).FirstOrDefault()).Id;
+
+            // Act
+            var book = repo.GetBookById(bookId + 1);
+
+            // Arrange
+            Assert.Fail("Should have thrown NotFoundException");
         }
     }
 }
