@@ -555,5 +555,80 @@ namespace LibraryAPI.UnitTests.BooksRepositoryTests
             // Assert
             Assert.Fail("Should have thrown NotFoundException");
         }
+
+        [TestMethod]
+        public void Book_ReturnBook_UserAndBookExistWithLoan()
+        {
+            // Arrange
+            var repo = new BooksRepository(context);
+
+            int userId = (context.Users.OrderByDescending(u => u.Id).FirstOrDefault()).Id;
+            int bookId = (context.Books.OrderByDescending(u => u.Id).FirstOrDefault()).Id;
+
+            // Act
+            repo.ReturnBook(userId, bookId);
+
+            // Assert
+            Assert.AreEqual(userId, context.Loans.OrderByDescending(l => l.Id).FirstOrDefault().UserId);
+            Assert.AreEqual(bookId, context.Loans.OrderByDescending(l => l.Id).FirstOrDefault().BookId);
+            Assert.AreEqual(true, context.Loans.OrderByDescending(l => l.Id).FirstOrDefault().HasBeenReturned);
+        }
+
+        
+        [TestMethod]
+        [ExpectedException(typeof(NotFoundException))]
+        public void Book_ReturnBook_UserDoesNotExist()
+        {
+            // Arrange
+            var repo = new BooksRepository(context);
+
+            int userId = (context.Users.OrderByDescending(u => u.Id).FirstOrDefault()).Id;
+            int bookId = (context.Books.OrderByDescending(u => u.Id).FirstOrDefault()).Id;
+
+            // Act
+            // Send an invalid userId down to the repository
+            repo.ReturnBook(userId + 1, bookId);
+
+            // Assert
+            Assert.Fail("Should have thrown a NotFoundException");
+        }
+
+        
+        [TestMethod]
+        [ExpectedException(typeof(NotFoundException))]
+        public void Book_ReturnBook_BookIdDoesNotExist()
+        {
+           // Arrange
+            var repo = new BooksRepository(context);
+
+            int userId = (context.Users.OrderByDescending(u => u.Id).FirstOrDefault()).Id;
+            int bookId = (context.Books.OrderByDescending(u => u.Id).FirstOrDefault()).Id;
+
+            // Act
+            // Send an invalid bookId down to the repository
+            repo.ReturnBook(userId, bookId + 1);
+
+            // Assert
+            Assert.Fail("Should have thrown a NotFoundException");
+        }
+ 
+        [TestMethod]
+        [ExpectedException(typeof(NotFoundException))]
+        public void Book_ReturnBook_UserAndBookExistWithNoLoan()
+        {
+          // Arrange
+            var repo = new BooksRepository(context);
+
+            int userId = (context.Users.OrderByDescending(u => u.Id).FirstOrDefault()).Id;
+            int bookId = (context.Books.OrderByDescending(u => u.Id).FirstOrDefault()).Id;
+            context.Loans.OrderByDescending(u => u.Id).FirstOrDefault().HasBeenReturned = true;
+            // Act
+            
+            // Should throw NotFoundException since the book has already been returned
+            repo.ReturnBook(userId, bookId);
+
+            // Assert
+            Assert.Fail("Should have thrown a NotFoundException");
+        }
     }
 }
