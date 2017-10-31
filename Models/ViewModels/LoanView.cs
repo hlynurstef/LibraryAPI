@@ -10,10 +10,6 @@ namespace LibraryAPI.Models.ViewModels
     public class LoanView
     {
         /// <summary>
-        /// The Id of the loan.
-        /// </summary>
-        public int Id { get; set; }
-        /// <summary>
         /// The User Id of this loan.
         /// </summary>
         public int UserId { get; set; }

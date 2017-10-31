@@ -257,17 +257,17 @@ namespace LibraryAPI.Repositories
         public void UpdateLoanRegistration(int userId, int bookId, LoanView loan){
             var bookEntity = _db.Books.SingleOrDefault(b => (b.Id == bookId && b.Deleted == false));
             if(bookEntity == null) {
-                throw new NotFoundException("Book with id: " + bookId + " not found.");
+                throw new NotFoundException("Book with id " + bookId + " not found.");
             }
             
             var userEntity = _db.Users.SingleOrDefault(u => (u.Id == userId && u.Deleted == false));
             if(userEntity == null) {
-                throw new NotFoundException("Book with id: " + bookId + " not found.");
+                throw new NotFoundException("User with id " + userId + " not found.");
             }
             
-            var loanEntity = _db.Loans.SingleOrDefault(l => (l.Id == loan.Id));
+            var loanEntity = _db.Loans.SingleOrDefault(l => (l.UserId == userId && l.BookId == bookId));
             if(loanEntity == null) {
-                throw new NotFoundException("Loan with id: " + loan.Id + " not found.");
+                throw new NotFoundException("Loan for book id " + bookId + " and user id " + userId + " not found.");
             }
             
             loanEntity.BookId = loan.BookId;

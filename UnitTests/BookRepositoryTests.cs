@@ -49,34 +49,33 @@ namespace LibraryAPI.UnitTests.BooksRepositoryTests
 
             context = new AppDataContext(options);
 
-            context.Users.Add(new User {
-                //Id = 1,
+            var user = new User {
                 Name = NAME_DABS,
                 Address = ADDRESS_DABS,
                 Email = EMAIL_DABS,
                 PhoneNumber = PHONE_DABS,
                 Deleted = DELETED_DABS
-            });
-
-            context.Books.Add(new Book {
-                //Id = 1,
+            };
+            var book = new Book {
                 Title = TITLE_LOTR,
                 Author = AUTHOR_LOTR,
                 ReleaseDate = RELEASE_LOTR,
                 ISBN = ISBN_LOTR,
                 Available = AVAILABLE_LOTR,
                 Deleted = DELETED_LOTR
-            });
+            };
+
+            context.Users.Add(user);
+            context.Books.Add(book);
+            context.SaveChanges();
 
             context.Loans.Add(new Loan {
-                //Id = 1,
-                UserId = USERID_LOAN,
-                BookId = BOOKID_LOAN,
+                UserId = user.Id,
+                BookId = book.Id,
                 LoanDate = STARTDATE_LOAN,
                 EndDate = ENDDATE_LOAN,
                 HasBeenReturned = RETURNED_LOAN
             });
-
             context.SaveChanges();
         }
 
@@ -395,7 +394,7 @@ namespace LibraryAPI.UnitTests.BooksRepositoryTests
                 Available = true,
                 Deleted = false
             };
-            context.Add(book);
+            context.Books.Add(book);
             context.SaveChanges();
 
             // Act
@@ -405,6 +404,125 @@ namespace LibraryAPI.UnitTests.BooksRepositoryTests
             Assert.AreEqual(2, context.Loans.Count());
             Assert.AreEqual(userId, context.Loans.OrderByDescending(l => l.Id).FirstOrDefault().UserId);
             Assert.AreEqual(book.Id, context.Loans.OrderByDescending(l => l.Id).FirstOrDefault().BookId);
+        }
+        
+        [TestMethod]
+        [ExpectedException(typeof(NotFoundException))]
+        public void Books_UpdateLoanRegistration_UserDoesntExist()
+        {
+            // Arrange
+            var repo = new BooksRepository(context);
+            int userId = (context.Users.OrderByDescending(u => u.Id).FirstOrDefault()).Id + 1;
+            int bookId = (context.Books.OrderByDescending(u => u.Id).FirstOrDefault()).Id;
+
+            var loan = new LoanView {
+                UserId = userId,
+                BookId = bookId,
+                LoanDate = DateTime.Now,
+                HasBeenReturned = false,
+                EndDate = null
+            };
+
+            // Act
+            repo.UpdateLoanRegistration(userId, bookId, loan);
+            
+            // Assert
+            Assert.Fail("Should have thrown a NotFoundException");
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(NotFoundException))]
+        public void Books_UpdateLoanRegistration_BookDoesntExist()
+        {
+            // Arrange
+            var repo = new BooksRepository(context);
+            int userId = (context.Users.OrderByDescending(u => u.Id).FirstOrDefault()).Id;
+            int bookId = (context.Books.OrderByDescending(u => u.Id).FirstOrDefault()).Id + 1;
+
+            var loan = new LoanView {
+                UserId = userId,
+                BookId = bookId,
+                LoanDate = DateTime.Now,
+                HasBeenReturned = false,
+                EndDate = null
+            };
+
+            // Act
+            repo.UpdateLoanRegistration(userId, bookId, loan);
+            
+            // Assert
+            Assert.Fail("Should have thrown a NotFoundException");
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(NotFoundException))]
+        public void Books_UpdateLoanRegistration_LoanDoesntExist()
+        {
+            // Arrange
+            var repo = new BooksRepository(context);
+            var newUser = new User {
+                Name = "New Guy",
+                Address = "Some street",
+                Email = "email@example.com",
+                PhoneNumber = "1597534",
+                Deleted = false
+            };
+            var newBook = new Book {
+                Title = "New Book",
+                Author = "Some Guy",
+                ReleaseDate = DateTime.Now,
+                ISBN = "5318343518342168435",
+                Available = true,
+                Deleted = false
+            };
+            context.Books.Add(newBook);
+            context.Users.Add(newUser);
+            context.SaveChanges();
+            
+            var loan = new LoanView {
+                UserId = newUser.Id,
+                BookId = newBook.Id,
+                LoanDate = DateTime.Now,
+                HasBeenReturned = false,
+                EndDate = null
+            };
+
+            // Act
+            repo.UpdateLoanRegistration(newUser.Id, newBook.Id, loan);
+            
+            // Assert
+            Assert.Fail("Should have thrown a NotFoundException");
+        }
+
+        [TestMethod]
+        public void Books_UpdateLoanRegistration_SuccessfulUpdate()
+        {
+            // Arrange
+            var repo = new BooksRepository(context);
+            int userId = (context.Users.OrderByDescending(u => u.Id).FirstOrDefault()).Id;
+            int bookId = (context.Books.OrderByDescending(u => u.Id).FirstOrDefault()).Id;
+
+            var updatedLoan = new LoanView {
+                UserId = userId,
+                BookId = bookId,
+                LoanDate = new DateTime(1999, 12, 24),
+                HasBeenReturned = true,
+                EndDate = new DateTime(2019, 12, 24)
+            };
+
+            // Act
+            repo.UpdateLoanRegistration(userId, bookId, updatedLoan);
+            
+            // Assert
+            Assert.AreEqual(new DateTime(1999, 12, 24), (context.Loans
+                                                        .Where(l => l.UserId == userId && l.BookId == bookId)
+                                                        .SingleOrDefault()).LoanDate);
+            Assert.AreEqual(new DateTime(2019, 12, 24), (context.Loans
+                                                        .Where(l => l.UserId == userId && l.BookId == bookId)
+                                                        .SingleOrDefault()).EndDate);
+            Assert.AreEqual(true, (context.Loans
+                                    .Where(l => l.UserId == userId && l.BookId == bookId)
+                                    .SingleOrDefault()).HasBeenReturned);
         }
     }
 }
