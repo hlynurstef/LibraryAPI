@@ -110,5 +110,36 @@ namespace LibraryAPI.UnitTests.ReviewsRepositoryTests
             Assert.AreEqual(1, reviews.Count());
             Assert.AreEqual(5, reviews.Where(b => b.ReviewText == "I really liked it").SingleOrDefault().Stars);
         }
+
+        [TestMethod]
+        public void Reviews_GetReviewsForUser_UserExists()
+        {
+            // Arrange
+            var repo = new ReviewsRepository(context);
+            int userId = (context.Users.OrderByDescending(b => b.Id).FirstOrDefault()).Id;
+
+            // Act
+            var reviews = repo.GetReviewsForUser(userId);
+
+            // Assert
+            Assert.AreEqual(1, reviews.Count());
+            Assert.AreEqual("I really liked it", reviews.ElementAt(0).ReviewText);
+            Assert.AreEqual(5, reviews.ElementAt(0).Stars);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(NotFoundException))]
+        public void Reviews_GetReviewsForUser_UserDoesNotExist()
+        {
+            // Arrange
+            var repo = new ReviewsRepository(context);
+            int userId = (context.Users.OrderByDescending(b => b.Id).FirstOrDefault()).Id;
+
+            // Act
+            var reviews = repo.GetReviewsForUser(userId + 1);
+
+            // Assert
+            Assert.Fail("Should have thrown NotFoundException");
+        }
     }
 }
