@@ -20,6 +20,7 @@ namespace LibraryAPI.Repositories
         public UserDTO AddUser(UserView user) {
             var userCheck = (from u in _db.Users
                             where user.Email == u.Email
+                            && u.Deleted == false
                             select u).SingleOrDefault();
             
             if (userCheck != null) {
@@ -140,17 +141,16 @@ namespace LibraryAPI.Repositories
 
         public IEnumerable<UserDTOLite> GetUsersQuery(DateTime queryDate){
             var users = (from u in _db.Users
-                        join l in _db.Loans
-                            on u.Id equals l.UserId 
+                            join l in _db.Loans on u.Id equals l.UserId 
                             where queryDate >= l.LoanDate  
-                          && (queryDate < l.EndDate || l.EndDate == null)
-                          select new UserDTOLite{
-                              Id = u.Id,
-                              Name = u.Name,
-                              Address = u.Address,
-                              Email = u.Email,
-                              PhoneNumber = u.PhoneNumber
-                          }
+                                && (queryDate < l.EndDate || l.EndDate == null)
+                            select new UserDTOLite{
+                                Id = u.Id,
+                                Name = u.Name,
+                                Address = u.Address,
+                                Email = u.Email,
+                                PhoneNumber = u.PhoneNumber
+                            }
             ).ToList().Distinct();
             return users;
         }
