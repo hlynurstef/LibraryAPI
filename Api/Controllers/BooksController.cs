@@ -76,7 +76,6 @@ namespace LibraryAPI.Controllers
             catch(AlreadyExistsException e) {
                 return StatusCode(409, e.Message);
             }
-            
         }
 
         // GET /books/{bookId}
