@@ -278,7 +278,7 @@ namespace LibraryAPI.UnitTests.UsersRepositoryTests {
             context.SaveChanges ();
 
             // Act
-            var users = repo.GetUsersOnLoan (new DateTime (2017, 10, 30));
+            var users = repo.GetUsersQuery (new DateTime (2017, 10, 30));
 
             // Assert
             Assert.AreEqual (1, users.Count ());
@@ -292,7 +292,7 @@ namespace LibraryAPI.UnitTests.UsersRepositoryTests {
             int userId = (context.Users.OrderByDescending (u => u.Id).FirstOrDefault ()).Id;
 
             // Act
-            var users = repo.GetUsersOnLoan (new DateTime (2017, 10, 30));
+            var users = repo.GetUsersQuery (new DateTime (2017, 10, 30));
 
             // Assert
             Assert.AreEqual (0, users.Count ());
@@ -344,7 +344,7 @@ namespace LibraryAPI.UnitTests.UsersRepositoryTests {
             context.SaveChanges ();
 
             // Act
-            var users = repo.GetUsersOnLoan (new DateTime (2017, 10, 30));
+            var users = repo.GetUsersQuery (new DateTime (2017, 10, 30));
 
             // Assert
             Assert.AreEqual (2, users.Count ());
